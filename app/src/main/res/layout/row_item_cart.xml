@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="@dimen/x10">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/img_item_pic"
+            android:layout_width="@dimen/x72"
+            android:layout_height="@dimen/x72"
+            android:contentDescription="@string/profile"
+            android:scaleType="fitXY"
+            android:src="@drawable/dummyprofile"/>
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/x5"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="Just Courage"
+                android:textAllCaps="true"
+                android:textColor="@color/app_font_black"
+                android:textSize="@dimen/x15"
+                app:layout_constraintEnd_toStartOf="@+id/btn_delete"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typeface="@string/font_bold"/>
+
+            <ImageView
+                android:id="@+id/btn_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cross_big"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/txt_title"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_narrator"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/x5"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="@string/narrator"
+                android:textColor="@color/app_font_black"
+                android:textSize="@dimen/x13"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_title"
+                app:typeface="@string/font_normal"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_narrator_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/x5"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="Peter Parker"
+                android:textColor="@color/app_font_gray"
+                android:textSize="@dimen/x13"
+                app:layout_constraintEnd_toStartOf="@+id/btn_delete"
+                app:layout_constraintStart_toEndOf="@+id/txt_narrator"
+                app:layout_constraintTop_toBottomOf="@id/txt_title"
+                app:typeface="@string/font_normal"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_author"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/x5"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="@string/author"
+                android:textColor="@color/app_font_black"
+                android:textSize="@dimen/x13"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_narrator"
+                app:typeface="@string/font_normal"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_author_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/x5"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="Peter Parker"
+                android:textColor="@color/app_font_gray"
+                android:textSize="@dimen/x13"
+                app:layout_constraintEnd_toStartOf="@+id/btn_delete"
+                app:layout_constraintStart_toEndOf="@+id/txt_author"
+                app:layout_constraintTop_toBottomOf="@id/txt_narrator_text"
+                app:typeface="@string/font_normal"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_genre"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/x5"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="@string/genre"
+                android:textColor="@color/app_font_black"
+                android:textSize="@dimen/x13"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_author"
+                app:typeface="@string/font_normal"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_genre_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/x5"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="Thrill"
+                android:textColor="@color/app_font_gray"
+                android:textSize="@dimen/x13"
+                app:layout_constraintEnd_toStartOf="@+id/txt_price"
+                app:layout_constraintStart_toEndOf="@+id/txt_genre"
+                app:layout_constraintTop_toBottomOf="@id/txt_author_text"
+                app:typeface="@string/font_normal"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginEnd="@dimen/x5"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="$99"
+                android:textColor="@color/app_font_green"
+                android:textSize="@dimen/x11"
+                app:layout_constraintBottom_toBottomOf="@+id/txt_genre_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/txt_genre_text"
+                app:typeface="@string/font_normal"/>
+        </android.support.constraint.ConstraintLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/x10"
+        android:background="@color/app_gray"/>
+</LinearLayout>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/header_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x50"
+                android:background="@color/transparent">
+
+
+    <ImageView
+        android:id="@+id/btnLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/x10"
+        android:scaleType="centerInside"
+        android:src="@drawable/nav"
+        android:visibility="invisible"/>
+
+
+    <com.ingic.auditix.ui.views.AnyTextView
+        android:id="@+id/txt_subHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+       android:layout_toEndOf="@+id/btnLeft"
+        android:layout_toStartOf="@id/btnRight2"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:singleLine="true"
+        android:layout_marginStart="@dimen/x10"
+        android:layout_marginEnd="@dimen/x10"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="@dimen/x20"
+        app:typeface="@string/font_normal"/>
+
+    <ImageView
+        android:id="@+id/btnRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_toStartOf="@+id/btnRight2"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_launcher"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/btnRight2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/x10"
+        android:scaleType="centerInside"
+        android:src="@drawable/notification_icon_white"
+        android:visibility="invisible"/>
+
+    <CheckBox
+        android:id="@+id/btn_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/btnRight2"
+        android:layout_marginEnd="@dimen/x10"
+        android:button="@drawable/checkbox_favorite"
+        android:paddingBottom="@dimen/x5"
+        android:paddingTop="@dimen/x5"
+        android:visibility="invisible"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnRight2"
+        android:layout_alignEnd="@+id/btnRight2"
+        android:layout_alignStart="@+id/btnRight2"
+        android:layout_alignTop="@+id/btnRight2"
+        android:visibility="gone">
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txtBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/badge_drawable"
+            android:gravity="center"
+            android:maxLength="2"
+            android:paddingBottom="@dimen/x3"
+            android:paddingLeft="@dimen/x4"
+            android:paddingRight="@dimen/x4"
+            android:paddingTop="@dimen/x3"
+            android:text="22"
+            android:textColor="@color/black"
+            android:textSize="@dimen/x7"
+            app:typeface="@string/font_bold"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

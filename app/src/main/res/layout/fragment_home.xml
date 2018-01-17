@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             android:id="@+id/linearLayout"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             android:layout_weight="1"
+                                             android:background="@drawable/bg2"
+                                             android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/seekbar_circle_new"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/icon_verticle_guide"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/icon_verticle_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.72"/>
+
+
+    <ImageView
+        android:id="@+id/btn_poscast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/podcast_circle_white"
+        android:scaleType="centerInside"
+        android:src="@drawable/podcast_icon_orange"
+        app:layout_constraintBottom_toBottomOf="@+id/podcast_down_guide"
+        app:layout_constraintStart_toStartOf="@id/podcast_verticle_guide"
+        app:layout_constraintTop_toTopOf="@id/podcast_upper_guide"
+        app:layout_constraintWidth_default="spread"
+        />
+
+    <ImageView
+        android:id="@+id/podcast_shape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/play_icon_orange"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_poscast"
+        app:layout_constraintStart_toEndOf="@id/btn_poscast"
+        app:layout_constraintTop_toTopOf="@+id/btn_poscast"/>
+
+    <com.ingic.auditix.ui.views.AnyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x10"
+        android:gravity="start"
+        android:text="@string/podcast"
+        android:textColor="@color/font_home_color"
+        android:textSize="@dimen/x16"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_poscast"
+        app:layout_constraintStart_toEndOf="@id/btn_poscast"
+        app:layout_constraintTop_toTopOf="@+id/btn_poscast"
+        app:typeface="@string/font_normal"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/podcast_upper_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.12"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/podcast_down_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/podcast_verticle_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4"/>
+
+
+    <ImageView
+        android:id="@+id/btn_books"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/book_circle"
+        android:scaleType="centerInside"
+        android:src="@drawable/book_white"
+        app:layout_constraintBottom_toBottomOf="@id/book_down_guide"
+        app:layout_constraintStart_toStartOf="@id/book_verticle_guide"
+        app:layout_constraintTop_toTopOf="@id/book_upper_guide"
+        />
+
+    <ImageView
+        android:id="@+id/books_shape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/play_icon_orange"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_books"
+        app:layout_constraintStart_toEndOf="@id/btn_books"
+        app:layout_constraintTop_toTopOf="@+id/btn_books"/>
+
+    <com.ingic.auditix.ui.views.AnyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x10"
+        android:gravity="start"
+        android:text="@string/books"
+        android:textColor="@color/font_home_color"
+        android:textSize="@dimen/x16"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_books"
+        app:layout_constraintStart_toEndOf="@id/btn_books"
+        app:layout_constraintTop_toTopOf="@+id/btn_books"
+        app:typeface="@string/font_normal"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/book_verticle_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.56"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/book_upper_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.38"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/book_down_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6"/>
+
+    <ImageView
+        android:id="@+id/btn_news"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/podcast_circle_white"
+        android:scaleType="centerInside"
+        android:src="@drawable/news_orange"
+        app:layout_constraintBottom_toBottomOf="@+id/news_down_guide"
+        app:layout_constraintStart_toStartOf="@id/podcast_verticle_guide"
+        app:layout_constraintTop_toTopOf="@+id/news_upper_guide"/>
+
+    <ImageView
+        android:id="@+id/news_shape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/play_icon_orange"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_news"
+        app:layout_constraintStart_toEndOf="@id/btn_news"
+        app:layout_constraintTop_toTopOf="@+id/btn_news"/>
+
+    <com.ingic.auditix.ui.views.AnyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x10"
+        android:gravity="start"
+        android:text="@string/news"
+        android:textColor="@color/font_home_color"
+        android:textSize="@dimen/x16"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_news"
+        app:layout_constraintStart_toEndOf="@id/btn_news"
+        app:layout_constraintTop_toTopOf="@+id/btn_news"
+        app:typeface="@string/font_normal"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/news_upper_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.63"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/news_down_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85"/>
+</android.support.constraint.ConstraintLayout>

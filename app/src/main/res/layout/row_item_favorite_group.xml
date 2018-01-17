@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x45"
+        android:background="@color/app_filter_gray">
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/x10"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="@string/news"
+            android:textColor="@color/black"
+            android:textSize="@dimen/x16"
+            app:typeface="@string/font_bold"/>
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/btn_seeall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:maxLines="1"
+            android:text="@string/see_all"
+            android:layout_marginEnd="@dimen/x10"
+            android:textColor="@color/app_title_orange"
+            android:textSize="@dimen/x14"
+            android:textStyle="bold"
+            app:typeface="@string/font_normal"/>
+    </FrameLayout>
+</LinearLayout>

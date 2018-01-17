@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/orange_top_circle"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/audio_icon"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.6"
+        android:gravity="center_horizontal">
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/choose_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/x60"
+            android:text="@string/chose_language"
+            android:textColor="@color/black"
+            android:textSize="@dimen/x20"
+            app:typeface="@string/font_normal"/>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/containerLanguageButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/choose_text"
+            android:layout_alignStart="@+id/choose_text"
+            android:layout_below="@+id/choose_text"
+            android:layout_marginTop="@dimen/x25">
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/btn_lan_eng"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/eng"
+                android:textColor="@color/app_orange"
+                android:textSize="@dimen/x18"
+                app:layout_constraintEnd_toStartOf="@id/lan_seperator"
+                app:layout_constraintStart_toStartOf="parent"
+                app:typeface="@string/font_normal"/>
+
+            <View
+                android:id="@+id/lan_seperator"
+                android:layout_width="@dimen/x1"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:alpha="0.4"
+                android:background="@color/app_font_gray"
+                app:layout_constraintBottom_toBottomOf="@id/btn_lan_eng"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btn_lan_eng"
+                />
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/btn_lan_ar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/ar"
+                android:textColor="@color/app_font_black"
+                android:textSize="@dimen/x18"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/lan_seperator"
+                app:typeface="@string/font_normal"/>
+        </android.support.constraint.ConstraintLayout>
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="@dimen/x250"
+            android:layout_height="@dimen/x40"
+            android:layout_below="@+id/containerLanguageButtons"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/x25"
+            android:background="@drawable/button_orange"
+            android:text="@string/next"
+            android:textAllCaps="false"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+</LinearLayout>

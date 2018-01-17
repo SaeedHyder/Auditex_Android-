@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             android:layout_width="match_parent"
+                                             android:background="?android:windowBackground"
+                                             android:layout_height="match_parent"
+                                             android:orientation="vertical">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/verticle_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="1"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/horizontal_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.33"/>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_guide"
+        app:layout_constraintEnd_toStartOf="@id/verticle_guide"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <ImageView
+            android:id="@+id/img_user_blur"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/com_facebook_profile_picture_blank_square"
+            android:scaleType="fitXY"
+            />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_background"
+            android:layout_width="@dimen/x82"
+            android:layout_height="@dimen/x82"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/profile_background_circle"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_profile"
+            android:layout_width="@dimen/x80"
+            android:layout_height="@dimen/x80"
+            android:layout_alignBottom="@+id/img_background"
+            android:layout_alignEnd="@+id/img_background"
+            android:layout_alignStart="@+id/img_background"
+            android:layout_alignTop="@+id/img_background"
+            android:layout_margin="@dimen/x2"
+            android:src="@drawable/com_facebook_profile_picture_blank_square"/>
+
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_profile"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/x5"
+            android:gravity="center_horizontal"
+            android:text="John Doe"
+            android:textColor="@color/font_home_color"
+            android:textSize="@dimen/x14"
+            app:typeface="@string/font_normal"/>
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_useraddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_username"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_horizontal"
+            android:text="Tampa, FL"
+            android:visibility="gone"
+            android:textColor="@color/font_home_color"
+            android:textSize="@dimen/x14"
+            app:typeface="@string/font_normal"/>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/sideoptions"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/x20"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/verticle_guide"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_guide"/>
+
+
+</android.support.constraint.ConstraintLayout>

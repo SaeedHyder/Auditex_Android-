@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+    <com.ingic.auditix.ui.views.AnyTextView
+        android:id="@+id/txt_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="start"
+        android:layout_marginStart="@dimen/x10"
+        android:layout_marginTop="@dimen/x10"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:text=""
+        android:textAllCaps="true"
+        android:textColor="@color/app_font_black"
+        android:textSize="@dimen/x15"
+        app:typeface="@string/font_normal"/>
+
+    <com.ingic.auditix.ui.views.AnyTextView
+        android:id="@+id/txt_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_position"
+        android:layout_gravity="start"
+        android:layout_marginStart="@dimen/x5"
+        android:layout_marginTop="@dimen/x5"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text=""
+        android:textAllCaps="true"
+        android:textColor="@color/app_font_black"
+        android:textSize="@dimen/x15"
+        app:typeface="@string/font_normal"/>
+
+
+    <ImageView
+        android:id="@+id/btn_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginTop="@dimen/x10"
+        android:src="@drawable/download_circle"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/txt_title"
+        android:layout_marginTop="@dimen/x10"
+        android:background="@color/black"/>
+
+</RelativeLayout>

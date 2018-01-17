@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.chauthai.swipereveallayout.SwipeRevealLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical"
+    android:padding="@dimen/x10"
+    app:dragEdge="right"
+    app:mode="same_level">
+    <!-- Your secondary layout here -->
+    <FrameLayout
+        android:layout_width="@dimen/x60"
+        android:layout_height="match_parent"
+        android:background="@color/red">
+
+        <ImageView
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/delete_icon"/>
+    </FrameLayout>
+
+    <!-- Your main layout here -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/img_item_pic"
+                    android:layout_width="@dimen/x72"
+                    android:layout_height="@dimen/x72"
+                    android:contentDescription="@string/profile"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/dummyprofile"/>
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/txt_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/x5"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="Just Courage"
+                        android:textAllCaps="true"
+                        android:textColor="@color/app_font_black"
+                        android:textSize="@dimen/x15"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typeface="@string/font_bold"/>
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/txt_narrator"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/x5"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="@string/narrator"
+                        android:textColor="@color/app_font_black"
+                        android:textSize="@dimen/x13"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_title"
+                        app:typeface="@string/font_normal"/>
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/txt_narrator_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/x5"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="Peter Parker"
+                        android:textColor="@color/app_font_gray"
+                        android:textSize="@dimen/x13"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/txt_narrator"
+                        app:layout_constraintTop_toBottomOf="@id/txt_title"
+                        app:typeface="@string/font_normal"/>
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/txt_duration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/x5"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="@string/duration"
+                        android:textColor="@color/app_font_black"
+                        android:textSize="@dimen/x13"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_narrator"
+                        app:typeface="@string/font_normal"/>
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/txt_duration_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/x5"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="105 mins"
+                        android:textColor="@color/app_font_gray"
+                        android:textSize="@dimen/x13"
+                        app:layout_constraintStart_toEndOf="@+id/txt_duration"
+                        app:layout_constraintTop_toBottomOf="@id/txt_narrator_text"
+                        app:typeface="@string/font_normal"/>
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/txt_download_on"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/x5"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="@string/downloaded_on"
+                        android:textColor="@color/app_font_black"
+                        android:textSize="@dimen/x13"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_duration"
+                        app:typeface="@string/font_normal"/>
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/txt_download_on_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginStart="@dimen/x5"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="3 Nov 2017"
+                        android:textColor="@color/app_font_gray"
+                        android:textSize="@dimen/x13"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/txt_download_on"
+                        app:layout_constraintTop_toBottomOf="@id/txt_duration_text"
+                        app:typeface="@string/font_normal"/>
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/x10"
+                android:background="@color/app_gray"/>
+        </LinearLayout>
+    </FrameLayout>
+</com.chauthai.swipereveallayout.SwipeRevealLayout>

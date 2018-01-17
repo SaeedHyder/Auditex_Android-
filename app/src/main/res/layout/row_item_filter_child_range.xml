@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.ingic.auditix.ui.views.sRangeSeekBar
+        android:id="@+id/hourRangeBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/x10"
+        android:visibility="visible"
+        app:absoluteMaxValue="6000"
+        app:absoluteMinValue="1"
+        app:activateOnDefaultValues="true"
+        app:activeColor="@color/app_filter_gray"
+        app:barHeight="@dimen/x5"
+        app:defaultColor="@color/app_gray"
+        app:showLabels="false"
+        app:singleThumb="false"
+        app:textAboveThumbsColor="@color/transparent"
+        app:thumbNormal="@drawable/circle_orange"
+        app:thumbPressed="@drawable/circle_orange"
+        app:valuesAboveThumbs="false"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/x10"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginStart="@dimen/x10">
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_min_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/x5"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="@string/min"
+            android:textColor="@color/app_font_black"
+            android:textSize="@dimen/x14"
+            app:typeface="@string/font_normal"/>
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_max_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/x5"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="@string/hrs"
+            android:textColor="@color/app_font_gray"
+            android:textSize="@dimen/x14"
+            app:typeface="@string/font_normal"/>
+    </FrameLayout>
+</LinearLayout>

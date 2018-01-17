@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Simple Colors -->
+    <color name="dark_blue">#2E3944</color>
+    <color name="blue">#0000FF</color>
+    <color name="red">#f00</color>
+    <color name="semi_tranparent">#77000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="light_grey">#858992</color>
+    <color name="c_light_blue">#1BB2E3</color>
+    <color name="c_dark_blue">#0953A4</color>
+    <color name="black">#000</color>
+    <color name="grey">#C0C0C0</color>
+    <color name="category_list_grey">#646464</color>
+    <color name="dark_grey">#3f3f3f</color>
+    <color name="cream">#E7E7E7</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="sky_blue">#1481FF</color>
+    <color name="lite_green">#82FA58</color>
+    <color name="dark_green">#006400</color>
+    <color name="lite_yellow">#F2F5A9</color>
+    <color name="top_bar">#654F76</color>
+    <color name="off_white">#E9E9EA</color>
+    <color name="setting_field">#D0D0D0</color>
+    <color name="lite_purple">#9C94A3</color>
+    <color name="gray_dark">#929292</color>
+
+
+
+    <!-- App specific colors -->
+    <color name="forgot_pass_color">#BB4000</color>
+    <color name="notification_date_color">#D15801</color>
+    <color name="text_color">#654F76</color>
+    
+    
+    <color name="color_rbtn">#0E8593</color>
+    <color name="holo_blue">#FF33B5E5</color>
+    <color name="progress_start">#B31025</color>
+    <color name="progress_end">#797B79</color>
+    <color name="blue_chat">#4896CA</color>
+    <color name="sidemenu">#62A6D8</color>
+    <color name="default_text">#212121</color>
+    <color name="default_hint_text">#757575</color>
+    <color name="app_font_gray">#747271</color>
+    <color name="app_font_black">#464646</color>
+    <color name="app_gray">#C4C4C4</color>
+    <color name="app_orange">#FF7E5B</color>
+    <color name="app_title_orange">#ee613b</color>
+    <color name="indication_gray">#949494</color>
+    <color name="font_home_color">#6B6B6B</color>
+    <color name="app_bagde_color">#ED5F39</color>
+    <color name="line_grey">#E3E3E3</color>
+    <color name="app_font_green">#94CA81</color>
+    <color name="app_filter_gray">#ECEFF4</color>
+    <color name="seekbar_progress_color">#c8ffffff</color>
+    <color name="seekbar_background_color">#1fffffff</color>
+    <color name="fb_button_color">#3E5D9D</color>
+    <color name="gp_button_color">#D6492F</color>
+    <color name="google_color">#D6492F</color>
+</resources>

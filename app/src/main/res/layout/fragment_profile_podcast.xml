@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical"
+    android:padding="@dimen/x10"
+    android:scrollbars="none">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/txt_subscription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/x10"
+                    android:maxLines="1"
+                    android:text="@string/my_subscriptions"
+                    android:textAllCaps="true"
+                    android:textColor="@color/app_font_black"
+                    android:textSize="@dimen/x16"
+                    android:textStyle="bold"
+                    app:typeface="@string/font_bold"/>
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/btn_subscription_seeall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:maxLines="1"
+                    android:text="@string/see_all"
+                    android:textColor="@color/app_title_orange"
+                    android:textSize="@dimen/x14"
+                    android:textStyle="bold"
+                    app:typeface="@string/font_normal"/>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x10"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingEnd="@dimen/x7">
+
+                    <ImageView
+                        android:id="@+id/si1_image"
+                        android:layout_width="@dimen/x160"
+                        android:layout_height="@dimen/x160"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/dummyalbum"
+                        />
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/si1_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_marginTop="@dimen/x5"
+                        android:maxLines="1"
+                        android:text="Barbaras"
+                        android:textColor="@color/app_font_black"
+                        android:textSize="@dimen/x14"
+                        app:typeface="@string/font_normal"/>
+
+
+                    <Button
+                        android:id="@+id/si1_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/x30"
+                        android:layout_gravity="start|bottom"
+                        android:layout_marginTop="@dimen/x5"
+                        android:background="@drawable/button_orange"
+                        android:paddingEnd="@dimen/x10"
+                        android:paddingStart="@dimen/x10"
+                        android:text="@string/unsubscribe"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/x7">
+
+                    <ImageView
+                        android:id="@+id/si2_image"
+                        android:layout_width="@dimen/x160"
+                        android:layout_height="@dimen/x160"
+                        android:src="@drawable/dummyalbum"
+                        />
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/si2text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_marginTop="@dimen/x5"
+                        android:maxLines="1"
+                        android:text="Barbaras"
+                        android:textColor="@color/app_font_black"
+                        android:textSize="@dimen/x14"
+                        app:typeface="@string/font_normal"/>
+
+                    <Button
+                        android:id="@+id/si2_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/x30"
+                        android:layout_gravity="start"
+
+                        android:layout_marginTop="@dimen/x5"
+                        android:background="@drawable/button_orange"
+                        android:paddingEnd="@dimen/x10"
+                        android:paddingStart="@dimen/x10"
+                        android:text="@string/unsubscribe"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.ingic.auditix.ui.views.CustomRecyclerView
+                android:id="@+id/rv_subscribe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x10"
+                android:divider="@null"
+                android:scrollbars="none"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/x10"
+                android:background="@color/app_gray"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_downloads"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/x10"
+                android:maxLines="1"
+                android:text="@string/downloads"
+                android:textAllCaps="true"
+                android:textColor="@color/app_font_black"
+                android:textSize="@dimen/x16"
+                app:typeface="@string/font_bold"/>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout"
+                style="@style/MyCustomTextAppearance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="@color/app_orange"
+                app:tabIndicatorHeight="@dimen/x5"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/app_title_orange"
+                app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/x10"
+                android:background="@color/app_gray"/>
+
+            <com.ingic.auditix.ui.views.CustomRecyclerView
+                android:id="@+id/lv_downloads"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/x65"
+                android:divider="@null"
+                android:visibility="visible"
+                />
+            <!--   <FrameLayout
+                   android:id="@+id/viewpager"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"/>-->
+
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>
