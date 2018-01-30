@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.WalkthroughEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.OnNextButtonListener;
 import com.ingic.auditix.ui.adapters.ViewPagerAdapter;
 import com.ingic.auditix.ui.views.TitleBar;
@@ -53,6 +55,15 @@ public class WalkThroughFragment extends BaseFragment implements OnNextButtonLis
     }
 
     @Override
+    public void ResponseSuccess(Object result, String Tag) {
+        switch (Tag) {
+            case WebServiceConstants.GET_ALL_WALKTHROUGH:
+                initViewPager((ArrayList<WalkthroughEnt>) result);
+                break;
+        }
+    }
+
+    @Override
     public void setTitleBar(TitleBar titleBar) {
         super.setTitleBar(titleBar);
         titleBar.hideTitleBar();
@@ -68,7 +79,7 @@ public class WalkThroughFragment extends BaseFragment implements OnNextButtonLis
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initViewPager();
+        serviceHelper.enqueueCall(webService.getAllWalkthrough(), WebServiceConstants.GET_ALL_WALKTHROUGH);
     }
 
     @Override
@@ -77,15 +88,25 @@ public class WalkThroughFragment extends BaseFragment implements OnNextButtonLis
         unbinder.unbind();
     }
 
-    private void initViewPager() {
+    private void initViewPager(ArrayList<WalkthroughEnt> result) {
         pagesArray = new ArrayList<>();
+    /*    pagesArray.add(new WalkThroughItemFragment());
         pagesArray.add(new WalkThroughItemFragment());
-        pagesArray.add(new WalkThroughItemFragment());
-        pagesArray.add(new WalkThroughItemFragment());
+        pagesArray.add(new WalkThroughItemFragment());*/
+        for (int i = 0; i < result.size(); i++) {
+            WalkThroughItemFragment fragment = new WalkThroughItemFragment();
+            fragment.setContent(i, result.size(), result.get(i));
+            pagesArray.add(fragment);
+        }
         adapter = new ViewPagerAdapter(getChildFragmentManager(), pagesArray);
         pager.setAdapter(adapter);
         totalcount = pagesArray.size();
+//        pageIndicatorView.setViewPager(pager);
+        pageIndicatorView.setCount(totalcount);
         pageIndicatorView.setSelection(pager.getCurrentItem());
+        if (0 == totalcount - 1) {
+            btnNext.setText(R.string.lets_begin);
+        }
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -96,6 +117,8 @@ public class WalkThroughFragment extends BaseFragment implements OnNextButtonLis
             public void onPageSelected(int position) {
                 if (position == totalcount - 1) {
                     btnNext.setText(R.string.lets_begin);
+                }else {
+                    btnNext.setText(R.string.next);
                 }
                 pageIndicatorView.setSelection(position);
             }

@@ -79,6 +79,17 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
             SubscribePodcastEnt ent = (SubscribePodcastEnt) Ent;
             serviceHelper.enqueueCall(webService.unSubscribePodcast(ent.getTrackId(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_PODCAST);
+            PodcastDetailHomeEnt item = new PodcastDetailHomeEnt();
+            item.setTrackId(ent.getTrackId());
+            if (podcastDefaultCollections.size() > 0) {
+                if (podcastDefaultCollections.contains(item)) {
+                    int itemIndex = podcastDefaultCollections.indexOf(item);
+                    if (itemIndex >= 0) {
+                        podcastDefaultCollections.get(itemIndex).setSubscribed(false);
+                        rvPodcastDefault.notifyItemChanged(itemIndex);
+                    }
+                }
+            }
         }
 
         @Override
@@ -154,7 +165,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
     @Override
     public void onResume() {
         super.onResume();
-
+        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
     }
 
     @Override
@@ -187,12 +198,16 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
     }
 
     public void setTitleBar(TitleBar titleBar) {
-        getMainActivity().settingFilterMenu();
+
         if (getMainActivity().filterFragment != null) {
+            getMainActivity().setRightSideFragment(getMainActivity().filterFragment);
+            getMainActivity().filterFragment.setListener(this);
+        } else {
+            getMainActivity().settingFilterMenu();
             getMainActivity().filterFragment.setListener(this);
         }
         titleBar.hideButtons();
-        titleBar.setSubHeading(getString(R.string.podcast));
+        titleBar.setSubHeading(getDockActivity().getResources().getString(R.string.podcast));
         titleBar.showBackButton();
         titleBar.showFilterButton(new View.OnClickListener() {
             @Override
@@ -243,12 +258,11 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
         options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
-        if (isFirstTime) {
-            initProgressDialog();
-            getFirstTimeData();
-        }
+
+        initProgressDialog();
+        getFirstTimeData();
+
 //        getFirstTimeData();
     }
 
@@ -260,9 +274,6 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
             rvPodcastDefault.clearList();
             rvSubscribe.clearList();
         }
-        if (getMainActivity() != null && getMainActivity().filterFragment != null) {
-            getMainActivity().filterFragment.clearFilters();
-        }
         canCallForMore = true;
         isOnCall = false;
         categoriesIds = "";
@@ -273,6 +284,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         if (prefHelper == null) {
             isFirstTime = true;
         } else {
+            categoriesIds = getMainActivity().filterFragment.getFiltersList();
             showProgressDialog();
             serviceHelper.enqueueCall(webService.getSubscribePodcasts(prefHelper.getUserToken()), WebServiceConstants.GET_SUBSCRIBE_PODCASTS, false);
             // bindPodcastList();
@@ -287,6 +299,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
             isFirstTime = true;
         } else {
             if (InternetHelper.CheckInternetConectivityandShowToast(getDockActivity())) {
+
                 progressDialog = new ProgressDialog(getDockActivity());
                 progressDialog.setMessage(getDockActivity().getResources().getString(R.string.com_facebook_loading));
                 progressDialog.setCancelable(false);
@@ -400,7 +413,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
 
     @OnClick(R.id.btn_subscription_seeall)
     public void onViewClicked() {
-        openSubscriptionFragment(getString(R.string.my_subscriptions));
+        openSubscriptionFragment(getDockActivity().getResources().getString(R.string.my_subscriptions));
     }
 
     private void getPagedPodcast() {
@@ -421,8 +434,8 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
 
     @Override
     public void onResumeFragment(Context context, BasePreferenceHelper preferenceHelper) {
-        initProgressDialog();
-        getFirstTimeData();
+        //initProgressDialog();
+        //getFirstTimeData();
     }
 
     @Override

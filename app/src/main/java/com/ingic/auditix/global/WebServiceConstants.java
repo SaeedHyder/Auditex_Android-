@@ -1,10 +1,10 @@
 package com.ingic.auditix.global;
 
 public class WebServiceConstants {
-    public static final String SERVICE_URL = "";
+    public static final String SERVICE_URL = "http://auditix.stagingic.com/API/";
     public static final String Local_SERVICE_URL = "http://10.100.20.21:100/";
     public static final int SUCCESS_RESPONSE_CODE = 200;
-    public static final String IMAGE_PATH = "http://10.100.20.21:200/Content/Uploads/Users/";
+    public static final String IMAGE_PATH = "http://auditix.stagingic.com/AuditixShared/Users/";
     public static final int GENDER_MALE = 0;
     public static final int GENDER_FEMALE = 1;
     public static final int REGISTER_TYPE_EMAIL = 0;
@@ -29,6 +29,9 @@ public class WebServiceConstants {
     public static final String GET_PAGED_PODCAST = "GET_PAGED_PODCAST";
     public static final String GET_PODCAST_FAVORITE = "GET_PODCAST_FAVORITE";
     public static final String ADD_FAVORITE = "ADD_FAVORITE";
-    public static final String REMOVE_FAVORITE = "REMOVE_FAVORITE";
+    public static final String REMOVE_FAVORITE_PODCAST = "REMOVE_FAVORITE_PODCAST";
     public static final String GET_ALL_FILTER = "GET_ALL_FILTER";
+    public static final String GET_ALL_WALKTHROUGH = "GET_ALL_WALKTHROUGH";
+    public static final java.lang.String REMOVE_FAVORITE_BOOK = "REMOVE_FAVORITE_BOOK";
+    public static final java.lang.String GET_BOOK_FAVORITE = "GET_BOOK_FAVORITE";
 }

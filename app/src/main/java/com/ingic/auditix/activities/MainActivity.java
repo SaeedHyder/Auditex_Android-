@@ -2,10 +2,12 @@ package com.ingic.auditix.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -14,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -27,9 +30,12 @@ import com.ingic.auditix.fragments.SideMenuFragment;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.SideMenuChooser;
 import com.ingic.auditix.global.SideMenuDirection;
+import com.ingic.auditix.helpers.Blur;
 import com.ingic.auditix.helpers.ScreenHelper;
 import com.ingic.auditix.helpers.UIHelper;
+import com.ingic.auditix.helpers.Utilities;
 import com.ingic.auditix.interfaces.ImageSetter;
+import com.ingic.auditix.media.PlaybackInfoListener;
 import com.ingic.auditix.residemenu.ResideMenu;
 import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -41,7 +47,6 @@ import butterknife.ButterKnife;
 import droidninja.filepicker.FilePickerBuilder;
 import droidninja.filepicker.FilePickerConst;
 import droidninja.filepicker.utils.Orientation;
-import jp.wasabeef.blurry.Blurry;
 
 
 public class MainActivity extends DockActivity implements OnClickListener {
@@ -62,6 +67,8 @@ public class MainActivity extends DockActivity implements OnClickListener {
     RelativeLayout contentView;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
+    @BindView(R.id.imageBlur)
+    ImageView imageBlur;
 
     private MainActivity mContext;
     private boolean loading;
@@ -70,6 +77,10 @@ public class MainActivity extends DockActivity implements OnClickListener {
     private String sideMenuType;
     private String sideMenuDirection;
     private ImageSetter imageSetter;
+    //For Blurred Background
+    private Bitmap mDownScaled;
+    private String mBackgroundFilename;
+    private Bitmap background;
 
     public View getDrawerView() {
         return getLayoutInflater().inflate(getSideMenuFrameLayoutId(), null);
@@ -84,6 +95,46 @@ public class MainActivity extends DockActivity implements OnClickListener {
                 .displayer(new RoundedBitmapDisplayer(raduis))
                 .bitmapConfig(Bitmap.Config.RGB_565).build();
 
+    }
+
+    public void setBlurBackground() {
+
+        if (mBackgroundFilename == null) {
+
+            this.mDownScaled = Utilities.drawViewToBitmap(this.getContentView(), Color.parseColor("#fff5f5f5"));
+
+            mBackgroundFilename = getBlurredBackgroundFilename();
+            if (!TextUtils.isEmpty(mBackgroundFilename)) {
+                //context.getMainContentFrame().setVisibility(View.VISIBLE);
+                background = Utilities.loadBitmapFromFile(mBackgroundFilename);
+                if (background != null) {
+                    getBlurImage().setVisibility(View.VISIBLE);
+                    getBlurImage().setImageBitmap(background);
+                    getBlurImage().animate().alpha(1);
+                }
+            }
+        } else {
+            getBlurImage().setVisibility(View.VISIBLE);
+            getBlurImage().setImageBitmap(background);
+            getBlurImage().animate().alpha(1);
+        }
+    }
+
+    private ImageView getBlurImage() {
+        return imageBlur;
+    }
+
+
+    public String getBlurredBackgroundFilename() {
+        Bitmap localBitmap = Blur.fastblur(this, this.mDownScaled, 20);
+        String str = Utilities.saveBitmapToFile(this, localBitmap);
+        this.mDownScaled.recycle();
+        localBitmap.recycle();
+        return str;
+    }
+
+    public void removeBlurImage() {
+        getBlurImage().setVisibility(View.GONE);
     }
 
     public void setFlagKeepScreenOn() {
@@ -181,14 +232,16 @@ public class MainActivity extends DockActivity implements OnClickListener {
                 if (!isNavigationGravityRight) {
                     if (newState == DrawerLayout.STATE_SETTLING) {
                         if (!drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                            Blurry.with(MainActivity.this)
+                            /*Blurry.with(MainActivity.this)
                                     .radius(15)
                                     .sampling(3)
                                     .async()
                                     .animate(500)
-                                    .onto(contentView);
+                                    .onto(contentView);*/
+                            setBlurBackground();
                         } else {
-                            Blurry.delete(contentView);
+                            // Blurry.delete(contentView);
+                            removeBlurImage();
                         }
                     }
                 }
@@ -447,12 +500,12 @@ public class MainActivity extends DockActivity implements OnClickListener {
 
     public void setImageSetter(ImageSetter imageSetter) {
         this.imageSetter = imageSetter;
-    }    @Override
+    }
+
+    @Override
     public void onClick(View view) {
 
     }
-
-
 
 
     //endregion

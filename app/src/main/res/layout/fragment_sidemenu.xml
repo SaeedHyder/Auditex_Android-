@@ -36,19 +36,25 @@
             android:src="@drawable/com_facebook_profile_picture_blank_square"
             android:scaleType="fitXY"
             />
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="#fff5f5f5"
+            android:alpha="0.4"
+            android:scaleType="fitXY"
+            />
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_background"
-            android:layout_width="@dimen/x82"
-            android:layout_height="@dimen/x82"
+            android:layout_width="@dimen/x102"
+            android:layout_height="@dimen/x102"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:src="@drawable/profile_background_circle"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_profile"
-            android:layout_width="@dimen/x80"
-            android:layout_height="@dimen/x80"
+            android:layout_width="@dimen/x100"
+            android:layout_height="@dimen/x100"
             android:layout_alignBottom="@+id/img_background"
             android:layout_alignEnd="@+id/img_background"
             android:layout_alignStart="@+id/img_background"
@@ -67,7 +73,7 @@
             android:layout_marginTop="@dimen/x5"
             android:gravity="center_horizontal"
             android:text="John Doe"
-            android:textColor="@color/font_home_color"
+            android:textColor="@color/black"
             android:textSize="@dimen/x14"
             app:typeface="@string/font_normal"/>
 

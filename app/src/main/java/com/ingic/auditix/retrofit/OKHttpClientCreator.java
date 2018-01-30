@@ -30,8 +30,8 @@ public class OKHttpClientCreator {
 
     public static OkHttpClient createCustomInterceptorClient(Context context) {
         OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
-        builder.readTimeout(30, TimeUnit.SECONDS);
-        builder.connectTimeout(30, TimeUnit.SECONDS);
+        builder.readTimeout(60, TimeUnit.SECONDS);
+        builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.addNetworkInterceptor(new CustomInterceptor(progressListener));
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

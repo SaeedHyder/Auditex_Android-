@@ -1,12 +1,13 @@
 package com.ingic.auditix.entities;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created on 1/12/2018.
  */
 
-public class SubscribePodcastEnt {
+public class SubscribePodcastEnt   {
 
     @SerializedName("PodcastSubscriptionId")
     private int PodcastSubscriptionId;
@@ -30,6 +31,17 @@ public class SubscribePodcastEnt {
     private boolean Liked;
     @SerializedName("PublishDate")
     private String PublishDate;
+    @SerializedName("ArtistName")
+    @Expose
+    private String artistName;
+
+    public String getArtistName() {
+        return artistName;
+    }
+
+    public void setArtistName(String artistName) {
+        this.artistName = artistName;
+    }
 
     public int getPodcastSubscriptionId() {
         return PodcastSubscriptionId;
@@ -118,4 +130,6 @@ public class SubscribePodcastEnt {
     public void setPublishDate(String PublishDate) {
         this.PublishDate = PublishDate;
     }
+
+
 }

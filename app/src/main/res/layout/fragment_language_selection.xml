@@ -36,7 +36,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/x60"
             android:text="@string/chose_language"
-            android:textColor="@color/black"
+            android:textColor="@color/language_font_gray"
             android:textSize="@dimen/x20"
             app:typeface="@string/font_normal"/>
 
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/ar"
-                android:textColor="@color/app_font_black"
+                android:textColor="@color/language_font_gray"
                 android:textSize="@dimen/x18"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/lan_seperator"

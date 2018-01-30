@@ -103,7 +103,7 @@ public class ForgotPasswordResetFragment extends BaseFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.toString().length() >= 6) {
+                if (s.toString().length() >= 5) {
                     btnLogin.setEnabled(true);
                 } else {
                     btnLogin.setEnabled(false);

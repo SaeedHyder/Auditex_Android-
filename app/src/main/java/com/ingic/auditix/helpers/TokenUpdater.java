@@ -35,7 +35,7 @@ public class TokenUpdater {
             Log.e("Token Updater", "Token is Empty");
         }
         webservice = WebServiceFactory.getWebServiceInstanceWithCustomInterceptor(context,
-                WebServiceConstants.Local_SERVICE_URL);
+                WebServiceConstants.SERVICE_URL);
         String android_id = UUID.randomUUID().toString();
         ;
         Call<ResponseWrapper> call = webservice.updateToken(AppConstants.ANDROID, android_id,

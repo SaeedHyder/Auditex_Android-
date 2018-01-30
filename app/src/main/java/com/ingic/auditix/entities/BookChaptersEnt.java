@@ -1,0 +1,79 @@
+package com.ingic.auditix.entities;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.ArrayList;
+
+/**
+ * Created on 1/30/2018.
+ */
+
+public class BookChaptersEnt {
+
+    @SerializedName("Chapter")
+    @Expose
+    private ArrayList<BooksChapterItemEnt> chapter = null;
+    @SerializedName("WowzaURL")
+    @Expose
+    private String wowzaURL;
+    @SerializedName("WowzaPort")
+    @Expose
+    private String wowzaPort;
+    @SerializedName("WowzaAppName")
+    @Expose
+    private String wowzaAppName;
+
+    public ArrayList<BooksChapterItemEnt> getChapter() {
+        return chapter;
+    }
+
+    public void setChapter(ArrayList<BooksChapterItemEnt> chapter) {
+        this.chapter = chapter;
+    }
+
+    public String getWowzaURL() {
+        return wowzaURL;
+    }
+
+    public void setWowzaURL(String wowzaURL) {
+        this.wowzaURL = wowzaURL;
+    }
+
+    public String getWowzaPort() {
+        return wowzaPort;
+    }
+
+    public void setWowzaPort(String wowzaPort) {
+        this.wowzaPort = wowzaPort;
+    }
+
+    public String getWowzaAppName() {
+        return wowzaAppName;
+    }
+
+    public void setWowzaAppName(String wowzaAppName) {
+        this.wowzaAppName = wowzaAppName;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(chapter).append(wowzaPort).append(wowzaURL).append(wowzaAppName).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof BookChaptersEnt)) {
+            return false;
+        }
+        BookChaptersEnt rhs = ((BookChaptersEnt) other);
+        return new EqualsBuilder().append(chapter, rhs.chapter).append(wowzaPort, rhs.wowzaPort).append(wowzaURL, rhs.wowzaURL).append(wowzaAppName, rhs.wowzaAppName).isEquals();
+    }
+
+}

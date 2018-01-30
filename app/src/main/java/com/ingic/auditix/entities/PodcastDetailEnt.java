@@ -44,6 +44,9 @@ public class PodcastDetailEnt {
     @SerializedName("Description")
     @Expose
     private String description;
+    @SerializedName("Genre")
+    @Expose
+    private String Genre;
     @SerializedName("Rating")
     @Expose
     private Integer Rating;
@@ -56,6 +59,14 @@ public class PodcastDetailEnt {
     @SerializedName("TrackList")
     @Expose
     private ArrayList<PodcastTrackEnt> trackList = null;
+
+    public String getGenre() {
+        return Genre;
+    }
+
+    public void setGenre(String genre) {
+        Genre = genre;
+    }
 
     public String getWowzaURL() {
         return WowzaURL;

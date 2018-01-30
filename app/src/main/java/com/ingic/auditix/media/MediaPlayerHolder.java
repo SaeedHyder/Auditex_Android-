@@ -18,9 +18,15 @@ package com.ingic.auditix.media;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 
+import com.devbrackets.android.exomedia.AudioPlayer;
+import com.devbrackets.android.exomedia.core.listener.InfoUpdateListener;
+import com.devbrackets.android.exomedia.listener.OnCompletionListener;
+import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 import com.ingic.auditix.R;
 
 import java.util.ArrayList;
@@ -30,13 +36,13 @@ import java.util.concurrent.TimeUnit;
  * Exposes the functionality of the {@link MediaPlayer} and implements the {@link PlayerAdapter}
  * so that {@link com.ingic.auditix.activities.MainActivity} can control music playback.
  */
-public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPreparedListener, MediaPlayer.OnInfoListener {
+public final class MediaPlayerHolder implements PlayerAdapter, OnPreparedListener, InfoUpdateListener {
 
     //region Global Variables
     public static final int PLAYBACK_POSITION_REFRESH_INTERVAL_MS = 1000;
 
     private final Context mContext;
-    private MediaPlayer mMediaPlayer;
+    private AudioPlayer mMediaPlayer;
     private String mResource;
     private String mResouceFilePath, mResourceURL;
     private boolean isFromPath;
@@ -62,11 +68,11 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
      */
     private void initializeMediaPlayer() {
         if (mMediaPlayer == null) {
-            mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
+            mMediaPlayer = new AudioPlayer(mContext);
 
+            mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+                @Override
+                public void onCompletion() {
                     logToUI("MediaPlayer playback completed");
                     if (mPlaybackInfoListener != null) {
                         mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.COMPLETED);
@@ -74,10 +80,9 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
                     } else {
                         playNext();
                     }
-
                 }
             });
-            mMediaPlayer.setOnInfoListener(this);
+            mMediaPlayer.setInfoUpdateListener(this);
             mMediaPlayer.setOnPreparedListener(this);
             logToUI("mMediaPlayer = new MediaPlayer()");
 
@@ -88,20 +93,21 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
         mPlaybackInfoListener = listener;
     }
 
-    @Override
+  /*  @Override
     public void onPrepared(MediaPlayer mp) {
         initializeProgressCallback();
         isReadyForPlay = true;
         if (mPlaybackInfoListener != null)
             mPlaybackInfoListener.isReadyToPlay(currentPlayingItem);
         logToUI("initializeProgressCallback()");
-    }
 
-    @Override
+    }
+*/
+  /*  @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
         onPlaybackInfo(what, extra);
         return false;
-    }
+    }*/
     //endregion
 
     //region Player Controls
@@ -117,7 +123,8 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
                     mContext.getResources().openRawResourceFd(R.raw.jazz_in_paris);
            /* mMediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(),
                     assetFileDescriptor.getLength());*/
-            mMediaPlayer.setDataSource(mResouceURI);
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mMediaPlayer.setDataSource(Uri.parse(mResouceURI));
         } catch (Exception e) {
             logToUI(e.toString());
         }
@@ -209,9 +216,9 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
             } else {
 //                release();
                 reset();
+                loadMedia(getResouceURI(nextIndex));
                 onPlaybackInfo(PlaybackInfoListener.State.NEXT, 0);
                 logToUI("playingNextWithIndex(" + currentPlayingItem + ")");
-                loadMedia(getResouceURI(nextIndex));
             }
         }
     }
@@ -221,9 +228,9 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
         if (mMediaPlayer != null) {
 //            release();
             reset();
-            onPlaybackInfo(PlaybackInfoListener.State.NEXT, 0);
-            logToUI("playingPreviousWithIndex(" + currentPlayingItem + ")");
             loadMedia(getResouceURI(getPreviousIndex()));
+            onPlaybackInfo(PlaybackInfoListener.State.PREVIOUS, 0);
+            logToUI("playingPreviousWithIndex(" + currentPlayingItem + ")");
         }
     }
 
@@ -236,6 +243,11 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
             currentPlayingItem = index;
             loadMedia(getResouceURI(currentPlayingItem));
         }
+    }
+
+    @Override
+    public int getCurrentItemIndex() {
+        return currentPlayingItem;
     }
 
     @Override
@@ -252,12 +264,10 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
         logToUI("LoadPlayList(" + this.mPlayList.size() + ")");
     }
 
-    //endregion
-
     //region Player Progress Updater
     @Override
     public void initializeProgressCallback() {
-        final int duration = mMediaPlayer.getDuration();
+        final int duration = ((Long) mMediaPlayer.getDuration()).intValue();
         if (mPlaybackInfoListener != null) {
             mPlaybackInfoListener.onDurationChanged(duration);
             long secondsInMilli = 1000;
@@ -265,7 +275,7 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
             long hoursInMilli = minutesInMilli * 60;
         /*Long elapsedHours = different / hoursInMilli;
         different = different % hoursInMilli;*/
-            long different = duration;
+            long different = mMediaPlayer.getDuration();
             Long elapsedMinutes = different / minutesInMilli;
             different = different % minutesInMilli;
 
@@ -279,6 +289,7 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
         }
     }
 
+    //endregion
 
     @Override
     public void seekTo(int position) {
@@ -295,6 +306,10 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
         }
     }
 
+    @Override
+    public boolean canPlayNext() {
+        return isNextAvailable();
+    }
 
     /**
      * Syncs the mMediaPlayer position with mPlaybackProgressCallback via recurring task.
@@ -338,8 +353,8 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
 
     private void updateProgressCallbackTask() {
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            int duration = mMediaPlayer.getDuration();
-            int currentPosition = mMediaPlayer.getCurrentPosition();
+            long duration = mMediaPlayer.getDuration();
+            long currentPosition = mMediaPlayer.getCurrentPosition();
             long different = (duration - currentPosition);
             long remainingMinute = TimeUnit.MILLISECONDS.toMinutes((duration - currentPosition));
             long remainingSecond = TimeUnit.MILLISECONDS.toSeconds((duration - currentPosition));
@@ -354,7 +369,7 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
 
             Long elapsedSeconds = different / secondsInMilli;
             if (mPlaybackInfoListener != null) {
-                mPlaybackInfoListener.onPositionChanged(currentPosition, elapsedMinutes, elapsedSeconds);
+                mPlaybackInfoListener.onPositionChanged(((Long) mMediaPlayer.getCurrentPosition()).intValue(), elapsedMinutes, elapsedSeconds);
                 startUpdatingCallbackWithPosition();
             }
         }
@@ -364,8 +379,12 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
 
     //region Player Resource Controls
     private String getResouceURI(int index) {
-        PlayListModel entity = mPlayList.get(index);
-        return entity.isFromPath() ? entity.getmResouceFilePath() : entity.getmResouceURL();
+        if (mPlayList.size() > index) {
+            PlayListModel entity = mPlayList.get(index);
+            return entity.isFromPath() ? entity.getmResouceFilePath() : entity.getmResouceURL();
+        } else {
+            return "";
+        }
     }
 
     private int getNextIndex() {
@@ -374,6 +393,10 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
             return currentPlayingItem;
         }
         return -1;
+    }
+
+    private boolean isNextAvailable() {
+        return mPlayList != null && mPlayList.size() > (currentPlayingItem + 1);
     }
 
     private int getPreviousIndex() {
@@ -391,6 +414,20 @@ public final class MediaPlayerHolder implements PlayerAdapter, MediaPlayer.OnPre
         if (mPlaybackInfoListener != null) {
             mPlaybackInfoListener.onLogUpdated(message);
         }
+    }
+
+    @Override
+    public void onInfoUpdate(int what, int extra) {
+        onPlaybackInfo(what, extra);
+    }
+
+    @Override
+    public void onPrepared() {
+        initializeProgressCallback();
+        isReadyForPlay = true;
+        if (mPlaybackInfoListener != null)
+            mPlaybackInfoListener.isReadyToPlay(currentPlayingItem);
+        logToUI("initializeProgressCallback()");
     }
 
     //endregion

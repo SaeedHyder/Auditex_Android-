@@ -89,6 +89,6 @@ public class LanguageSelectionFragment extends BaseFragment {
 
     private void setTextColor(AnyTextView selectedBtn, AnyTextView unSelectedBtn) {
         selectedBtn.setTextColor(getResources().getColor(R.color.app_orange));
-        unSelectedBtn.setTextColor(getResources().getColor(R.color.app_font_black));
+        unSelectedBtn.setTextColor(getResources().getColor(R.color.language_font_gray));
     }
 }

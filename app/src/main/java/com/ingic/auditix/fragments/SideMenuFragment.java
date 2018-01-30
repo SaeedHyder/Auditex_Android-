@@ -31,7 +31,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
-import jp.wasabeef.blurry.Blurry;
 
 public class SideMenuFragment extends BaseFragment {
 
@@ -129,12 +128,12 @@ public class SideMenuFragment extends BaseFragment {
     }
 
     private void loadBlurBitmap(Bitmap image) {
-        Blurry.with(getMainActivity())
+      /*  Blurry.with(getMainActivity())
                 .radius(10)
                 .sampling(10)
                 .async()
                 .from(image)
-                .into(imgUserBlur);
+                .into(imgUserBlur);*/
         imgUserBlur.setImageBitmap(image);
     }
 
@@ -147,7 +146,7 @@ public class SideMenuFragment extends BaseFragment {
         navigationEnts.add(new NavigationEnt(R.drawable.home_grey, getResources().getString(R.string.home), 0));
         navigationEnts.add(new NavigationEnt(R.drawable.dashboard_grey, getResources().getString(R.string.dashboard), 0));
         navigationEnts.add(new NavigationEnt(R.drawable.notifications_grey, getResources().getString(R.string.notification), prefHelper.getNotificationCount()));
-        navigationEnts.add(new NavigationEnt(R.drawable.search_grey, getResources().getString(R.string.settings), 0));
+        navigationEnts.add(new NavigationEnt(R.drawable.settings, getResources().getString(R.string.settings), 0));
         navigationEnts.add(new NavigationEnt(R.drawable.about, getResources().getString(R.string.about), 0));
         navigationEnts.add(new NavigationEnt(R.drawable.logout_grey, getResources().getString(R.string.logout), 0));
         bindview();
@@ -158,29 +157,19 @@ public class SideMenuFragment extends BaseFragment {
         sideoptions.setAdapter(adapter);
         adapter.addAll(navigationEnts);
         adapter.notifyDataSetChanged();
-        //setListViewHeightBasedOnChildren(sideoptions);
         sideoptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (navigationEnts.get(position).getTitle().equals(getString(R.string.home))) {
-                  /*  getMainActivity().getResideMenu().closeMenu();
-                    getDockActivity().popBackStackTillEntry(0);
-                    getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), HomeFragment.class.getSimpleName());*/
                     getMainActivity().closeDrawer();
-
                 } else if (navigationEnts.get(position).getTitle().equals(getString(R.string.dashboard))) {
-//                    getDockActivity().popBackStackTillEntry(0);
                     getDockActivity().replaceDockableFragment(DashboardFragment.newInstance(), "DashboardFragment");
                 } else if (navigationEnts.get(position).getTitle().equals(getString(R.string.notification))) {
-//                    getDockActivity().popBackStackTillEntry(0);
                     getDockActivity().replaceDockableFragment(NotificationsFragment.newInstance(), NotificationsFragment.class.getSimpleName());
-
                 } else if (navigationEnts.get(position).getTitle().equals(getResources().getString(R.string.settings))) {
-//                    getDockActivity().popBackStackTillEntry(0);
-                    willbeimplementedinfuture();
+                    getDockActivity().replaceDockableFragment(SettingsFragment.newInstance(), SettingsFragment.TAG);
                 } else if (navigationEnts.get(position).getTitle().equals(getResources().getString(R.string.about))) {
-//                    getDockActivity().popBackStackTillEntry(0);
-                    willbeimplementedinfuture();
+                    getDockActivity().replaceDockableFragment(AboutUsFragment.newInstance(), AboutUsFragment.TAG);
                 } else if (navigationEnts.get(position).getTitle().equals(getString(R.string.logout))) {
                     final DialogHelper logoutdialog = new DialogHelper(getDockActivity());
                     logoutdialog.initlogout(R.layout.dialog_logout, new View.OnClickListener() {
@@ -190,12 +179,10 @@ public class SideMenuFragment extends BaseFragment {
                             getDockActivity().popBackStackTillEntry(0);
                             getDockActivity().replaceDockableFragment(AccessSelectionFragment.newInstance(), "AccessSelectionFragment");
                             logoutdialog.hideDialog();
-
                         }
                     }, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
                             logoutdialog.hideDialog();
                         }
                     });

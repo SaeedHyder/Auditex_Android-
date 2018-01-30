@@ -4,11 +4,11 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-    <android.support.v4.view.ViewPager
+    <FrameLayout
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:layout_alignParentTop="true"
         android:layout_above="@+id/tab_layout"
         />
     <android.support.design.widget.TabLayout
@@ -17,7 +17,7 @@
         android:layout_height="@dimen/x65"
         android:layout_alignParentBottom="true"
         android:background="@color/transparent"
-        app:tabGravity="center"
+        app:tabGravity="fill"
         app:tabIndicatorColor="@color/transparent"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/transparent"

@@ -22,7 +22,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/x10"
         android:layout_marginTop="@dimen/x10"
-        app:piv_count="3"
         app:piv_padding="@dimen/x3"
         app:piv_radius="@dimen/x4"
         app:piv_selectedColor="@color/app_orange"

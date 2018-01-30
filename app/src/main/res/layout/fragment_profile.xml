@@ -14,6 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:tabGravity="fill"
+        app:layout_constraintTop_toTopOf="parent"
         app:tabIndicatorColor="@color/app_orange"
         app:tabIndicatorHeight="@dimen/x5"
         app:tabMode="fixed"
@@ -35,7 +36,7 @@
     <FrameLayout
         android:id="@+id/viewpager"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

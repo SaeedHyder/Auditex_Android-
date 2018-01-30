@@ -43,7 +43,7 @@ public class MySubscriptionsBinder extends RecyclerViewBinder<SubscribePodcastEn
         ViewHolder holder = (ViewHolder) viewHolder;
         imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, imageoptions);
         holder.txtTitle.setText(entity.getTitle() + "");
-        holder.txtNarratorText.setText("Add Narrator Name" + "");
+        holder.txtNarratorText.setText(entity.getArtistName() + "");
         holder.btnSubscribe.setTag(R.integer.key_recycler_object, entity);
         holder.btnSubscribe.setTag(R.integer.key_recycler_position, position);
         holder.btnSubscribe.setOnClickListener(this);

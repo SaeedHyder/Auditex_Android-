@@ -29,6 +29,7 @@ import butterknife.Unbinder;
  */
 
 public class NotificationsFragment extends BaseFragment {
+    public static final String TAG = "NotificationsFragment";
 
     @BindView(R.id.lv_notification)
     ListView lvNotification;

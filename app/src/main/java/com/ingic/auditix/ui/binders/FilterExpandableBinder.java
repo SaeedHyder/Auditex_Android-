@@ -81,7 +81,12 @@ public class FilterExpandableBinder extends ExpandableListViewBinder<String, Pod
             holderChild1.txtMaxTime.setText(String.format("%02d:%02d%s", 0, 0, activity.getString(R.string.hrs)));
         } else {*/
         ViewHolderChild2 holderChild2 = (ViewHolderChild2) view.getTag();
-        holderChild2.chkGenre.setChecked(false);
+
+        if (filterCheckIDs.contains(entity.getCategoryId())){
+
+        }else {
+            holderChild2.chkGenre.setChecked(false);
+        }
         holderChild2.chkGenre.setText(entity.getTitle() + "");
         holderChild2.chkGenre.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -98,6 +103,12 @@ public class FilterExpandableBinder extends ExpandableListViewBinder<String, Pod
             }
         });
         // }
+    }
+
+    public void clearFilterIDs() {
+        if (filterCheckIDs != null) {
+            filterCheckIDs.clear();
+        }
     }
 
     public String getFilterCheckIDs() {

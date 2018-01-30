@@ -46,6 +46,7 @@ import okhttp3.RequestBody;
  * Created on 1/5/2018.
  */
 public class EditProfileFragment extends BaseFragment implements View.OnFocusChangeListener, ImageSetter {
+    public static final String TAG = "EditProfileFragment";
     @BindView(R.id.user_image)
     CircleImageView userImage;
     @BindView(R.id.btn_image)
@@ -93,10 +94,11 @@ public class EditProfileFragment extends BaseFragment implements View.OnFocusCha
     public void ResponseSuccess(Object result, String Tag) {
         switch (Tag) {
             case WebServiceConstants.EDIT_PROFILE:
-                UserModel user = prefHelper.getUser();
-                user.setEmailAddress(edtEmailAddress.getText().toString());
+                UserModel user = (UserModel) result;
+
+                prefHelper.putUser(user);/*  user.setEmailAddress(edtEmailAddress.getText().toString());
                 user.setFullName(edtName.getText().toString());
-                user.setdOB(selectedDate);
+                user.setdOB(selectedDate);*/
                 UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.edit_profile_message));
                 getMainActivity().refreshSideMenu();
                 break;
@@ -136,10 +138,17 @@ public class EditProfileFragment extends BaseFragment implements View.OnFocusCha
 
     private void setViewsData() {
         UserModel user = prefHelper.getUser();
-        edtEmailAddress.setText(user.getEmailAddress());
-        edtName.setText(user.getFullName());
-        txtDate.setText(user.getdOB());
-        ImageLoader.getInstance().displayImage(WebServiceConstants.IMAGE_PATH + user.getImageName(), userImage);
+        if (user != null) {
+            if (Patterns.EMAIL_ADDRESS.matcher(user.getEmailAddress() + "").matches()) {
+                edtEmailAddress.setText(user.getEmailAddress() + "");
+            } else {
+                inputlayoutEmail.setVisibility(View.GONE);
+                lineemail.setVisibility(View.GONE);
+            }
+            edtName.setText(user.getFullName() + "");
+            txtDate.setText(user.getdOB() + "");
+            ImageLoader.getInstance().displayImage(WebServiceConstants.IMAGE_PATH + user.getImageName(), userImage);
+        }
     }
 
     @Override

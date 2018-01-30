@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/bg"
+              android:orientation="vertical"
+              android:padding="@dimen/x10">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x50">
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:maxLines="1"
+            android:text="@string/stream"
+            android:textColor="@color/app_font_gray"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            app:typeface="@string/font_normal"
+            />
+
+        <Switch
+            android:id="@+id/swt_stream"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:checked="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_gravity="bottom"
+            android:background="@color/app_gray"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x50">
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:maxLines="1"
+            android:text="@string/download_wifi"
+            android:textColor="@color/app_font_gray"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            app:typeface="@string/font_normal"
+            />
+
+        <Switch
+            android:id="@+id/swt_downloaded_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+           />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_gravity="bottom"
+            android:background="@color/app_gray"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x50">
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:maxLines="1"
+            android:text="@string/donload_wifi_cell"
+            android:textColor="@color/app_font_gray"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            app:typeface="@string/font_normal"
+            />
+
+        <Switch
+            android:id="@+id/swt_donload_wifi_cell"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:checked="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_gravity="bottom"
+            android:background="@color/app_gray"/>
+    </FrameLayout>
+</LinearLayout>

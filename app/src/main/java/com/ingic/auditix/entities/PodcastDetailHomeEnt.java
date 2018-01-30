@@ -228,4 +228,20 @@ public class PodcastDetailHomeEnt {
     public void setInActive(Boolean inActive) {
         this.inActive = inActive;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof PodcastDetailHomeEnt)) {
+            return false;
+        }
+        PodcastDetailHomeEnt other = (PodcastDetailHomeEnt) obj;
+        return trackId.intValue() == other.trackId.intValue();
+    }
 }

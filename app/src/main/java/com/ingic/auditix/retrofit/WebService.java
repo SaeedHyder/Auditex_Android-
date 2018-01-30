@@ -1,6 +1,7 @@
 package com.ingic.auditix.retrofit;
 
 
+import com.ingic.auditix.entities.BookFavoriteEnt;
 import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.entities.PodcastCategoryListEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
@@ -9,6 +10,7 @@ import com.ingic.auditix.entities.PodcastHomeEnt;
 import com.ingic.auditix.entities.ResponseWrapper;
 import com.ingic.auditix.entities.SubscribePodcastEnt;
 import com.ingic.auditix.entities.UserModel;
+import com.ingic.auditix.entities.WalkthroughEnt;
 import com.ingic.auditix.global.WebServiceConstants;
 
 import java.util.ArrayList;
@@ -56,10 +58,10 @@ public interface WebService {
 
     @Multipart
     @POST("EditProfile")
-    Call<ResponseWrapper> EditProfile(@Part("FullName") RequestBody fullName,
-                                      @Part("DOB") RequestBody dob,
-                                      @Part MultipartBody.Part userprofileImage,
-                                      @Header(WebServiceConstants.HEADER_KEY) String header);
+    Call<ResponseWrapper<UserModel>> EditProfile(@Part("FullName") RequestBody fullName,
+                                                 @Part("DOB") RequestBody dob,
+                                                 @Part MultipartBody.Part userprofileImage,
+                                                 @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("ResetPassword")
     Call<ResponseWrapper> ResetPassword(@Query("Email") String email);
@@ -129,5 +131,21 @@ public interface WebService {
 
     @GET("GetAllCategories")
     Call<ResponseWrapper<ArrayList<PodcastCategoriesEnt>>> getAllFilters(@Header(WebServiceConstants.HEADER_KEY) String header);
+    //endregion
+
+    //region Walkthrough Module
+    @GET("GetAllWalkThrough")
+    Call<ResponseWrapper<ArrayList<WalkthroughEnt>>> getAllWalkthrough();
+    //endregion
+
+    //region Book
+    @GET("GetFavoriteBooks")
+    Call<ResponseWrapper<ArrayList<BookFavoriteEnt>>> getBooksAllFavorite(@Query("culture") int culture, @Header(WebServiceConstants.HEADER_KEY) String header);
+
+    @GET("RemoveBookFromFavorite")
+    Call<ResponseWrapper> RemoveBookFromFavorite(@Query("bookId") Integer bookId, @Header(WebServiceConstants.HEADER_KEY) String header);
+
+    @GET("AddBookToFavorite")
+    Call<ResponseWrapper> AddBookToFavorite(@Query("bookId") Integer bookId, @Header(WebServiceConstants.HEADER_KEY) String header);
     //endregion
 }

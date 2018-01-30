@@ -1,6 +1,7 @@
 package com.ingic.auditix.fragments;
 
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.DialogHelper;
 import com.ingic.auditix.helpers.UIHelper;
+import com.ingic.auditix.helpers.Utils;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.PodcastEpisodeBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -28,6 +30,9 @@ import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,10 +87,15 @@ public class PodcastDetailFragment extends BaseFragment {
     Unbinder unbinder;
     @BindView(R.id.rv_episodes)
     CustomRecyclerView rvEpisodes;
+    @BindView(R.id.parent_scroll)
+    NestedScrollView nestedScrollView;
     private String podcastName = "";
     private TitleBar titleBar;
     private PodcastDetailEnt podcastDetailEnt;
     private Integer trackID;
+    private List<List<PodcastTrackEnt>> result;
+    private ArrayList<PodcastTrackEnt> podcastTrackEnts;
+    private Integer totalPagesCount, currentPageNumber = 0;
     private RecyclerViewItemListener episodeItemListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
@@ -100,6 +110,7 @@ public class PodcastDetailFragment extends BaseFragment {
         }
     };
     private DialogHelper helper;
+    private LinearLayoutManager layoutManager;
 
     public static PodcastDetailFragment newInstance(Integer trackID) {
         Bundle args = new Bundle();
@@ -132,7 +143,12 @@ public class PodcastDetailFragment extends BaseFragment {
                 }
                 break;
             case WebServiceConstants.ADD_FAVORITE:
-                UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.item_added_favorite));
+                podcastDetailEnt.setFavorite(btnAddFavorite.isChecked());
+                if (btnAddFavorite.isChecked()) {
+                    UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.item_added_favorite));
+                } else {
+                    UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.item_remove_favorite));
+                }
                 break;
         }
     }
@@ -152,7 +168,7 @@ public class PodcastDetailFragment extends BaseFragment {
             DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
             ImageLoader.getInstance().displayImage(podcastDetailEnt.getImage(), imgItemPic, options);
             txtTitle.setText(podcastDetailEnt.getTitle() + "");
-            txtNarratorText.setText(podcastDetailEnt.getAuthor());
+            txtNarratorText.setText(podcastDetailEnt.getAuthor() + "");
             txtDurationText.setText("");
             txtGenreText.setText("");
             txtLocationText.setText("");
@@ -162,12 +178,8 @@ public class PodcastDetailFragment extends BaseFragment {
                 rbRating.setScore((float) podcastDetailEnt.getRating());
             }
             btnAddFavorite.setChecked(podcastDetailEnt.isFavorite());
-            btnAddFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    serviceHelper.enqueueCall(webService.changeFavoriteStatus(trackID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
-                }
-            });
+
+            txtGenreText.setText(podcastDetailEnt.getGenre() + "");
             txtAboutText.setText(podcastDetailEnt.getDescription() + "");
             txtNarratorIntroText.setText("");
             podcastName = podcastDetailEnt.getTitle();
@@ -175,10 +187,53 @@ public class PodcastDetailFragment extends BaseFragment {
                 titleBar.setSubHeading(podcastName);
                 titleBar.invalidate();
             }
-            rvEpisodes.setNestedScrollingEnabled(false);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
-            rvEpisodes.BindRecyclerView(new PodcastEpisodeBinder(episodeItemListener), podcastDetailEnt.getTrackList(), layoutManager, new DefaultItemAnimator());
+            bindEpisodeList();
+            addListenersToViews();
+        }
+    }
 
+    private void addListenersToViews() {
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (v.getChildAt(v.getChildCount() - 1) != null) {
+                    if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight() - 500)) &&
+                            scrollY > oldScrollY) {
+                        if (result.size() > 0) {
+                            currentPageNumber = currentPageNumber + 1;
+                            getNextPageItems(currentPageNumber);
+                        }
+                        //code to fetch more data for endless scrolling
+                    }
+                }
+            }
+        });
+        btnAddFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                serviceHelper.enqueueCall(webService.changeFavoriteStatus(trackID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+            }
+        });
+    }
+
+    private void bindEpisodeList() {
+        result = new ArrayList<>();
+        podcastTrackEnts = new ArrayList<>();
+        result.addAll(Utils.getPages(podcastDetailEnt.getTrackList(), 10));
+        if (result.size() > currentPageNumber) {
+            podcastTrackEnts.addAll(result.get(currentPageNumber));
+        }
+        rvEpisodes.setNestedScrollingEnabled(false);
+        layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
+        rvEpisodes.BindRecyclerView(new PodcastEpisodeBinder(episodeItemListener), podcastTrackEnts, layoutManager, new DefaultItemAnimator());
+    }
+
+    private void getNextPageItems(Integer pageNumber) {
+        if (result != null && podcastTrackEnts != null && rvEpisodes != null && layoutManager != null) {
+            if (pageNumber < result.size()) {
+                podcastTrackEnts.addAll(result.get(pageNumber));
+                rvEpisodes.notifyItemRangeChanged(layoutManager.findLastVisibleItemPosition(), result.get(pageNumber).size());
+            }
         }
     }
 
@@ -221,7 +276,12 @@ public class PodcastDetailFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_play:
-                getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST), "PlayerFragment");
+                if (podcastDetailEnt != null && podcastDetailEnt.getTrackList() != null && podcastDetailEnt.getTrackList().size() > 0) {
+                    if (getMainActivity().filterFragment != null) {
+                        getMainActivity().filterFragment.clearFilters();
+                    }
+                    getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST), "PlayerFragment");
+                }
                 break;
             case R.id.btn_download:
 // TODO: 1/15/2018 Download Work
@@ -230,22 +290,24 @@ public class PodcastDetailFragment extends BaseFragment {
 
                 break;
             case R.id.btn_rate:
-                helper = new DialogHelper(getDockActivity());
-                helper.initRatingDialog(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        serviceHelper.enqueueCall(webService.ratePodcast(trackID, helper.getDialogRating(),
-                                prefHelper.getUserToken()), WebServiceConstants.RATE_PODCAST);
-                        helper.hideDialog();
-                    }
-                }, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        helper.hideDialog();
-                    }
-                });
-                helper.setCancelable(false);
-                helper.showDialog();
+                if (podcastDetailEnt != null) {
+                    helper = new DialogHelper(getDockActivity());
+                    helper.initRatingDialog(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            serviceHelper.enqueueCall(webService.ratePodcast(trackID, helper.getDialogRating(),
+                                    prefHelper.getUserToken()), WebServiceConstants.RATE_PODCAST);
+                            helper.hideDialog();
+                        }
+                    }, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            helper.hideDialog();
+                        }
+                    });
+                    helper.setCancelable(false);
+                    helper.showDialog();
+                }
                 break;
             case R.id.btn_player_play:
                 break;

@@ -176,7 +176,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_toStartOf="@+id/img_calender"
                         android:gravity="start"
-                        android:text="@string/select_date"
+                        android:hint="@string/select_date"
                         android:textColor="@color/app_font_gray"
                         android:textSize="@dimen/x16"
                         app:typeface="@string/font_normal"/>

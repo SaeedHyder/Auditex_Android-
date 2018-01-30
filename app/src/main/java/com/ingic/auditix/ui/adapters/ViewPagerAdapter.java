@@ -47,7 +47,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         WalkThroughItemFragment fragment = pagesArray.get(position);
-        fragment.setContent(position, pagesArray.size());
+       // fragment.setContent(position, pagesArray.size());
         return fragment;
     }
 

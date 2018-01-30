@@ -6,12 +6,14 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
-import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.ui.adapters.TitleViewpagerAdapter;
 import com.ingic.auditix.ui.views.TitleBar;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,12 +22,12 @@ import butterknife.Unbinder;
 /**
  * Created on 1/12/2018.
  */
-public class FavoriteTabFragment extends BaseFragment {
+public class FavoriteTabFragment extends BaseFragment implements TabLayout.OnTabSelectedListener {
     public static final String TAG = "FavoriteTabFragment";
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
     @BindView(R.id.viewpager)
-    ViewPager viewpager;
+    FrameLayout viewpager;
     Unbinder unbinder;
     private TitleViewpagerAdapter adapter;
 
@@ -71,6 +73,8 @@ public class FavoriteTabFragment extends BaseFragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+    private ArrayList<BaseFragment> fragmentList;
+    private int startingWithIndex = 0;
 
     private void setViewPager() {
         adapter = new TitleViewpagerAdapter(getChildFragmentManager());
@@ -78,12 +82,39 @@ public class FavoriteTabFragment extends BaseFragment {
         if (adapter.getCount() > 0) {
             adapter.clearList();
         }
+        fragmentList = new ArrayList<>(3);
+        fragmentList.add(BookFavoriteListFragment.newInstance());
+        fragmentList.add(PodcastFavoriteListFragment.newInstance());
+        fragmentList.add(NewsFavoriteListFragment.newInstance());
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.news), true);
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.podcast), false);
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.books), false);
+        replaceTab(startingWithIndex);
+        tabLayout.addOnTabSelectedListener(this);
 
-        adapter.addFragment(FavoriteListFragment.newInstance(AppConstants.TAB_NEWS), getString(R.string.news));
-        adapter.addFragment(FavoriteListFragment.newInstance(AppConstants.TAB_PODCAST), getString(R.string.podcast));
-        adapter.addFragment(FavoriteListFragment.newInstance(AppConstants.TAB_BOOKS), getString(R.string.books));
-        viewpager.setAdapter(adapter);
-        viewpager.getAdapter().notifyDataSetChanged();
-        tabLayout.setupWithViewPager(viewpager);
+    }
+    private void replaceTab(int position) {
+        android.support.v4.app.FragmentTransaction transaction = getChildFragmentManager()
+                .beginTransaction();
+        transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
+        transaction.replace(R.id.viewpager, fragmentList.get(position));
+        transaction.commit();
+
+
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        replaceTab(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
     }
 }

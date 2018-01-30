@@ -23,11 +23,6 @@ public class TabViewPagerAdapter extends FragmentStatePagerAdapter {
         super(manager);
     }
 
-    @Override
-    public Parcelable saveState() {
-        return null;
-    }
-
 
     @Override
     public Fragment getItem(int position) {
@@ -45,15 +40,10 @@ public class TabViewPagerAdapter extends FragmentStatePagerAdapter {
         mFragmentList.add(fragment);
     }
 
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        super.destroyItem(container, position, object);
-
-    }
 
     @Override
     public int getItemPosition(Object object) {
-        return POSITION_NONE;
+        return POSITION_UNCHANGED;
     }
 
     public void clearList() {

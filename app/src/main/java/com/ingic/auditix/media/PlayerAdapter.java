@@ -43,6 +43,8 @@ public interface PlayerAdapter {
 
     void playIndex(int index);
 
+    int getCurrentItemIndex();
+
     void loadPlayList(ArrayList<PlayListModel> mPlayList);
 
     void initializeProgressCallback();
@@ -50,4 +52,6 @@ public interface PlayerAdapter {
     void seekTo(int position);
 
     void onPlaybackInfo(int what, int extra);
+
+    boolean canPlayNext();
 }

@@ -35,7 +35,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.wasabeef.blurry.Blurry;
 
 /**
  * Created by khanubaid on 8/8/2017.
@@ -384,7 +383,7 @@ public class ResideMenu extends FrameLayout {
             scaleDown_activity.playTogether(alpha_menu);
             scaleDown_activity.start();
 
-           Blurry.with(context).radius(15).sampling(2).onto(context.getContentView());
+//           Blurry.with(context).radius(15).sampling(2).onto(context.getContentView());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -414,7 +413,7 @@ public class ResideMenu extends FrameLayout {
             scaleUp_activity.playTogether(scaleUp_shadow);
             scaleUp_activity.playTogether(alpha_menu);
             scaleUp_activity.start();
-            Blurry.delete(context.getContentView());
+//            Blurry.delete(context.getContentView());
 
         } catch (Exception e) {
             e.printStackTrace();

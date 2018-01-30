@@ -92,16 +92,11 @@ public class FilterFragment extends BaseFragment {
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
 
     private void bindListData(ArrayList<PodcastCategoriesEnt> result) {
         groupCollections = new ArrayList<>(4);
         // groupCollections.add(new FilterGroupEnt(getString(R.string.by_duration)));
-        groupCollections.add(getString(R.string.by_genre));
+        groupCollections.add(getDockActivity().getResources().getString(R.string.by_genre));
         child1Collection = new ArrayList<>();
         child1Collection.addAll(result);
         childCollections = new HashMap<>();
@@ -132,8 +127,6 @@ public class FilterFragment extends BaseFragment {
         btnClose.requestFocus();
         btnClose.setFocusable(true);
         btnClose.requestFocus();
-        /*setListViewHeight(expFilters, 0);
-        setListViewHeight(expFilters, 1);*/
 
     }
 
@@ -174,9 +167,14 @@ public class FilterFragment extends BaseFragment {
     }
 
     public void clearFilters() {
-        if (adapter != null) {
+        if (adapter != null && binder != null) {
+            binder.clearFilterIDs();
             adapter.notifyDataSetChanged();
         }
+    }
+
+    public String getFiltersList() {
+        return binder == null ? "" : binder.getFilterCheckIDs();
     }
 
     public void setListener(FilterDoneClickListener listener) {
@@ -187,6 +185,7 @@ public class FilterFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_clear:
+                binder.clearFilterIDs();
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.btn_done:

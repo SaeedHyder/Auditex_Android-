@@ -21,6 +21,7 @@ import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.DatePickerHelper;
 import com.ingic.auditix.helpers.TokenUpdater;
+import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.TitleBar;
 
@@ -100,10 +101,11 @@ public class SignUpFragment extends BaseFragment implements View.OnFocusChangeLi
                 UserModel user = (UserModel) result;
                 prefHelper.putUser(user);
                 prefHelper.setUserToken(user.getToken().getTokenType() + " " + user.getToken().getAccessToken());
+                prefHelper.setLoginStatus(true);
                 TokenUpdater.getInstance().UpdateToken(getDockActivity(), user.getAccountID(), FirebaseInstanceId.getInstance().getToken(),
                         prefHelper.getUserToken());
-                getDockActivity().popBackStackTillEntry(1);
-                getDockActivity().replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
+                getDockActivity().popBackStackTillEntry(0);
+                getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), "HomeFragmnet");
                 break;
         }
     }
@@ -251,6 +253,9 @@ public class SignUpFragment extends BaseFragment implements View.OnFocusChangeLi
             if (edtConfirmPassword.requestFocus()) {
                 setEditTextFocus(edtConfirmPassword);
             }
+            return false;
+        } else if (txtDate.getText() == null || (txtDate.getText().toString().isEmpty())) {
+            UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.dob_error_message));
             return false;
         } else {
             return true;

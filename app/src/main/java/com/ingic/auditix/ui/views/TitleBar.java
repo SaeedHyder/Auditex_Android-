@@ -97,7 +97,7 @@ public class TitleBar extends RelativeLayout {
     }
     public void showListingFragment(OnClickListener listener) {
         btnRight2.setVisibility(View.VISIBLE);
-        btnRight2.setImageResource(R.drawable.filter_icon);
+        btnRight2.setImageResource(R.drawable.list);
         btnRight2.setOnClickListener(listener);
     }
 

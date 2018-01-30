@@ -30,13 +30,17 @@ public class ArrayListExpandableAdapter<T, E> extends BaseExpandableListAdapter 
 
     @Override
     public int getChildType(int groupPosition, int childPosition) {
-        return groupPosition == 0 ? 0 : 1;
+        //return groupPosition == 0 ? 0 : 1;
+        return childPosition;
     }
 
     @Override
     public int getChildTypeCount() {
-        return 2;
+
+        return getChildrenCount(0);
     }
+
+
 
     @Override
     public int getGroupCount() {

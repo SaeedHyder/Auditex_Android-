@@ -3,7 +3,6 @@ package com.ingic.auditix.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +24,8 @@ import butterknife.Unbinder;
  * Created on 12/23/2017.
  */
 public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSelectedListener, ViewPagerFragmentLifecycleListener {
+    public static final String TAG = "ProfileFragment";
+
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
     @BindView(R.id.viewpager)
@@ -50,6 +51,18 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    public void setTitleBar(TitleBar titleBar) {
+        titleBar.hideButtons();
+        titleBar.setSubHeading(getString(R.string.profile));
+        titleBar.showBackButton();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -60,6 +73,7 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
+//        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
         bindTabs();
     }
 
@@ -77,13 +91,6 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
         transaction.commit();
 
 
-    }
-
-
-    public void setTitleBar(TitleBar titleBar) {
-        titleBar.hideButtons();
-        titleBar.setSubHeading(getString(R.string.profile));
-        titleBar.showBackButton();
     }
 
     private void bindTabs() {

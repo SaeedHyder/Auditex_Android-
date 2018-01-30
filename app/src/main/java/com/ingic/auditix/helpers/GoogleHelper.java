@@ -238,31 +238,34 @@ public class GoogleHelper implements GoogleApiClient.OnConnectionFailedListener 
             personEmail = params[0];
             Person userProfile = null;
             Collection<String> scopes = new ArrayList<>(Collections.singletonList(Scopes.PROFILE));
+            if (context != null) {
 
-            GoogleAccountCredential credential =
-                    GoogleAccountCredential.usingOAuth2(context.getContext(), scopes);
-            credential.setSelectedAccount(new Account(personEmail, "com.google"));
 
-            People service = new People.Builder(httpTransport, jsonFactory, credential)
-                    .setApplicationName(context.getContext().getString(R.string.app_name))// your app name
-                    .build();
-            final String SCOPES = "https://www.googleapis.com/auth/plus.login ";
-            String token = null;
-            // Get info. on user
-            try {
-                token = credential.getToken();/* GoogleAuthUtil.getToken(
+                GoogleAccountCredential credential =
+                        GoogleAccountCredential.usingOAuth2(context.getContext(), scopes);
+                credential.setSelectedAccount(new Account(personEmail, "com.google"));
+
+                People service = new People.Builder(httpTransport, jsonFactory, credential)
+                        .setApplicationName(context.getContext().getString(R.string.app_name))// your app name
+                        .build();
+                final String SCOPES = "https://www.googleapis.com/auth/plus.login ";
+                String token = null;
+                // Get info. on user
+                try {
+                    token = credential.getToken();/* GoogleAuthUtil.getToken(
                         context.getContext(),
                         Plus.AccountApi.getAccountName(mGoogleApiClient),
                         "oauth2:" + SCOPES);*/
-                userProfile = service.people().get("people/me").setRequestMaskIncludeField("person.addresses,person.age_ranges,person.biographies,person.birthdays,person.bragging_rights,person.cover_photos,person.email_addresses,person.events,person.genders,person.im_clients,person.interests,person.locales,person.memberships,person.metadata,person.names,person.nicknames,person.occupations,person.organizations,person.phone_numbers,person.photos,person.relations,person.relationship_interests,person.relationship_statuses,person.residences,person.skills,person.taglines,person.urls").execute();
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage(), e);
-            } catch (GoogleAuthException e) {
-                e.printStackTrace();
-            }
+                    userProfile = service.people().get("people/me").setRequestMaskIncludeField("person.addresses,person.age_ranges,person.biographies,person.birthdays,person.bragging_rights,person.cover_photos,person.email_addresses,person.events,person.genders,person.im_clients,person.interests,person.locales,person.memberships,person.metadata,person.names,person.nicknames,person.occupations,person.organizations,person.phone_numbers,person.photos,person.relations,person.relationship_interests,person.relationship_statuses,person.residences,person.skills,person.taglines,person.urls").execute();
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage(), e);
+                } catch (GoogleAuthException e) {
+                    e.printStackTrace();
+                }
 
-            if (token!=null){
-                googleLoginEnt.setGoogleToken(token);
+                if (token != null) {
+                    googleLoginEnt.setGoogleToken(token);
+                }
             }
             // Get whatever you want
             if (userProfile != null) {

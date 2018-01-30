@@ -62,6 +62,10 @@ public class HomeFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getMainActivity().refreshSideMenu();
+        getMainActivity().settingFilterMenu();
+        if (getMainActivity().filterFragment != null) {
+            getMainActivity().filterFragment.clearFilters();
+        }
     }
 
     @OnClick({R.id.btn_poscast, R.id.btn_books, R.id.btn_news})

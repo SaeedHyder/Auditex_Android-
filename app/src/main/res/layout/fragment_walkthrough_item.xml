@@ -21,6 +21,7 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="@dimen/x170"
             android:layout_height="@dimen/x170"
+            android:id="@+id/img_walk"
             android:layout_alignBottom="@+id/img_background"
             android:layout_alignEnd="@+id/img_background"
             android:layout_alignStart="@+id/img_background"
@@ -43,7 +44,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/x10"
-            android:maxLines="1"
             android:text="@string/short_lorem_ipsum"
             android:textColor="@color/app_font_gray"
             android:textSize="@dimen/x18"
@@ -57,6 +57,7 @@
             android:layout_marginTop="@dimen/x5"
             android:maxLines="1"
             android:text="CONSECTETUR"
+            android:visibility="gone"
             android:textColor="@color/app_font_gray"
             android:textSize="@dimen/x18"
             app:typeface="@string/font_bold"/>
@@ -71,6 +72,7 @@
             android:text="@string/short_lorem_ipsum"
             android:textColor="@color/app_font_gray"
             android:textSize="@dimen/x22"
+            android:visibility="gone"
             app:typeface="@string/font_normal"/>
 
         <com.ingic.auditix.ui.views.AnyTextView

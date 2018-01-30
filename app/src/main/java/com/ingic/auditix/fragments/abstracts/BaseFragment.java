@@ -92,11 +92,11 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
     private BroadcastReceiver broadcastReceiver;
 
     protected void willbeimplementedinBeta() {
-        UIHelper.showShortToastInCenter(getDockActivity(), "will be implemented in Beta Version");
+        UIHelper.showShortToastInCenter(getDockActivity(), "Will be implemented in Beta Version");
     }
 
     protected void willbeimplementedinfuture() {
-        UIHelper.showShortToastInCenter(getDockActivity(), "will be implemented in Next Module");
+        UIHelper.showShortToastInCenter(getDockActivity(), "Will be implemented in Next Module");
     }
 
     public void fragmentResume() {
@@ -186,7 +186,8 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
         mGpsTracker = new GPSTracker(getDockActivity());
 
         if (webService == null) {
-            webService = WebServiceFactory.getWebServiceInstanceWithCustomInterceptor(getDockActivity(), WebServiceConstants.Local_SERVICE_URL);
+            webService = WebServiceFactory.getWebServiceInstanceWithCustomInterceptor(getDockActivity(),
+                    WebServiceConstants.SERVICE_URL);
         }
         if (serviceHelper == null) {
             serviceHelper = new ServiceHelper(this, getDockActivity(), webService);
@@ -218,6 +219,9 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
 
     }
 
+   public String getResString(int stringResouseID) {
+        return getDockActivity().getResources().getString(stringResouseID);
+    }
     @Override
     public void ResponseSuccess(Object result, String Tag) {
 

@@ -4,6 +4,7 @@ import com.ingic.auditix.R;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
 import com.ingic.auditix.interfaces.ViewPagerFragmentLifecycleListener;
+import com.ingic.auditix.ui.views.TitleBar;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -40,16 +41,26 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+//        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
 
     }
+    public void setTitleBar(TitleBar titleBar) {
+        titleBar.hideButtons();
+        titleBar.setSubHeading(getString(R.string.news));
+        titleBar.showBackButton();
 
+    }
     @Override
     public void onPauseFragment() {
 
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
+    }
 
     @Override
     public void onResumeFragment(Context context, BasePreferenceHelper preferenceHelper) {
-
     }
 }

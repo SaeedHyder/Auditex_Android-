@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
+import com.google.android.exoplayer2.Player;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.entities.PodcastTrackEnt;
@@ -175,7 +176,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         //setupMediaPlayer(musicList);
         getDetails(playerType);
 
-
+        getMainActivity().setFlagKeepScreenOn();
     }
     //endregion
 
@@ -189,6 +190,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        getMainActivity().clearFlagKeepScreenOn();
         mPlayerAdapter.release();
         unbinder.unbind();
     }
@@ -214,6 +216,9 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         } else {
             rbRating.setScore((float) podcastDetailEnt.getRating());
         }
+        txtTitle.setText(podcastDetailEnt.getTitle() + "");
+        txtGenreText.setText(podcastDetailEnt.getGenre() + "");
+        txtNarratorText.setText(podcastDetailEnt.getAuthor() + "");
         sbProgress.setPadding(0, 0, 0, 0);
         bindPlaylist(ent.getTrackList());
 
@@ -227,17 +232,14 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         for (PodcastTrackEnt tracks : trackList
                 ) {
             if (podcastDetailEnt.isEpisodeAdded()) {
-                mUserPlaylist.add(new PlayListModel("", String.format("%s:%s/%s/%s", podcastDetailEnt.WowzaURL, podcastDetailEnt.getWowzaPort(),
+                mUserPlaylist.add(new PlayListModel("", String.format("%s:%s/%s/mp3:%s/playlist.m3u8", podcastDetailEnt.WowzaURL, podcastDetailEnt.getWowzaPort(),
                         podcastDetailEnt.getWowzaAppName(), tracks.getFileUrl()), false));
             } else {
                 mUserPlaylist.add(new PlayListModel("", tracks.getFileUrl(), false));
             }
         }
         mPlayerAdapter.loadPlayList(mUserPlaylist);
-        if (startingIndex < mUserPlaylist.size()) {
-            txtPlayingItemName.setText(podcastDetailEnt.getTrackList().get(startingIndex).getName());
-            txtPlayingItemAlbum.setText(podcastDetailEnt.getTrackList().get(startingIndex).getDescription());
-        }
+        setItemName(startingIndex);
 
     }
 
@@ -252,17 +254,22 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 //openTracklist();
                 break;
             case R.id.btn_backward:
+                hasPlaylistComplete = false;
                 mPlayerAdapter.playPrevious();
                 break;
             case R.id.btn_play:
                 if (mPlayerAdapter.isReadyForPlay()) {
-                    if (!mPlayerAdapter.isPlaying()) {
+                    if (!mPlayerAdapter.isPlaying() && !hasPlaylistComplete) {
                         performPlayClick();
                     } else {
                         performPauseClick();
                     }
                 } else {
-                    UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.buffering_text));
+                    if (hasPlaylistComplete) {
+
+                    } else {
+                        UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.buffering_text));
+                    }
                 }
                 break;
             case R.id.btn_forward:
@@ -348,24 +355,29 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         pbBuffering.setVisibility(View.GONE);
         btnPlay.setVisibility(View.VISIBLE);
         btnPlay.setImageResource(R.drawable.pause_icon_big);
-        getMainActivity().setFlagKeepScreenOn();
+
     }
 
     private void performPauseClick() {
         mPlayerAdapter.pause();
         btnPlay.setImageResource(R.drawable.play_icon_white);
-        getMainActivity().clearFlagKeepScreenOn();
+
     }
 
     @Override
     public void onTrackSelected(int index) {
         if (mPlayerAdapter != null) {
+            hasPlaylistComplete = false;
             mPlayerAdapter.playIndex(index);
             getMainActivity().closeDrawer();
-            if (index < mUserPlaylist.size()) {
-                txtPlayingItemName.setText(podcastDetailEnt.getTrackList().get(index).getName());
-                txtPlayingItemAlbum.setText(podcastDetailEnt.getTrackList().get(index).getDescription());
-            }
+            setItemName(index);
+        }
+    }
+
+    private void setItemName(int index) {
+        if (index < mUserPlaylist.size()) {
+            txtPlayingItemName.setText(podcastDetailEnt.getTrackList().get(index).getName());
+            txtPlayingItemAlbum.setText(podcastDetailEnt.getTitle());
         }
     }
 
@@ -414,17 +426,19 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             pbBuffering.setVisibility(View.GONE);
             btnPlay.setVisibility(View.VISIBLE);
             btnPlay.setImageResource(R.drawable.play_icon_white);
+            mPlayerAdapter.playNext();
         }
 
         @Override
         public void onPlayListCompleted() {
-            mPlayerAdapter.release();
+            UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.playlist_complete));
+            mPlayerAdapter.reset();
             sbProgress.setProgress(0);
             hasPlaylistComplete = true;
             pbBuffering.setVisibility(View.GONE);
             btnPlay.setVisibility(View.VISIBLE);
             btnPlay.setImageResource(R.drawable.play_icon_white);
-            getMainActivity().clearFlagKeepScreenOn();
+//            getMainActivity().clearFlagKeepScreenOn();
         }
 
         @Override
@@ -439,6 +453,14 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         @Override
         public void onPlaybackInfo(int what, int extra) {
             switch (what) {
+                case Player.STATE_BUFFERING:
+                    pbBuffering.setVisibility(View.VISIBLE);
+                    btnPlay.setVisibility(View.GONE);
+                    break;
+                case Player.STATE_READY:
+                    pbBuffering.setVisibility(View.GONE);
+                    btnPlay.setVisibility(View.VISIBLE);
+                    break;
                 case MediaPlayer.MEDIA_INFO_BUFFERING_START:
                     pbBuffering.setVisibility(View.VISIBLE);
                     btnPlay.setVisibility(View.GONE);
@@ -450,11 +472,13 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 case State.NEXT:
                     pbBuffering.setVisibility(View.VISIBLE);
                     btnPlay.setVisibility(View.GONE);
+                    setItemName(mPlayerAdapter.getCurrentItemIndex());
                     //  onPositionChanged(0,0,0);
                     break;
                 case State.PREVIOUS:
                     pbBuffering.setVisibility(View.VISIBLE);
                     btnPlay.setVisibility(View.GONE);
+                    setItemName(mPlayerAdapter.getCurrentItemIndex());
                     //onPositionChanged(0,0,0);
                     break;
             }

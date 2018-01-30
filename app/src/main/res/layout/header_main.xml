@@ -15,8 +15,9 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/x10"
         android:scaleType="centerInside"
+        android:padding="@dimen/x10"
         android:src="@drawable/nav"
-        android:visibility="invisible"/>
+        android:visibility="visible"/>
 
 
     <com.ingic.auditix.ui.views.AnyTextView

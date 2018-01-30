@@ -4,6 +4,7 @@ import com.ingic.auditix.R;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
 import com.ingic.auditix.interfaces.ViewPagerFragmentLifecycleListener;
+import com.ingic.auditix.ui.views.TitleBar;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -40,9 +41,19 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+//        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
+    } @Override
+    public void onResume() {
+        super.onResume();
+        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
     }
 
+    public void setTitleBar(TitleBar titleBar) {
+        titleBar.hideButtons();
+        titleBar.setSubHeading(getString(R.string.search));
+        titleBar.showBackButton();
+
+    }
     @Override
     public void onPauseFragment() {
 

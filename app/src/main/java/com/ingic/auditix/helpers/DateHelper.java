@@ -902,7 +902,7 @@ public class DateHelper {
 
 			//Log.d("OurDate", OurDate);
 		} catch (Exception e) {
-			OurDate = "00-00-0000 00:00";
+			OurDate = "";
 		}
 		return OurDate;
 	}

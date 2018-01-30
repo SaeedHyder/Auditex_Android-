@@ -43,6 +43,7 @@
     <color name="default_text">#212121</color>
     <color name="default_hint_text">#757575</color>
     <color name="app_font_gray">#747271</color>
+    <color name="language_font_gray">#999797</color>
     <color name="app_font_black">#464646</color>
     <color name="app_gray">#C4C4C4</color>
     <color name="app_orange">#FF7E5B</color>
