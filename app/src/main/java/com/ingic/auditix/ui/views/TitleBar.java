@@ -77,8 +77,8 @@ public class TitleBar extends RelativeLayout {
         txtTitle.setVisibility(View.INVISIBLE);
         btnLeft.setVisibility(View.INVISIBLE);
         btnRight.setVisibility(View.INVISIBLE);
-        btnRight2.setVisibility(View.INVISIBLE);
-        btnFavorite.setVisibility(View.INVISIBLE);
+        btnRight2.setVisibility(View.GONE);
+        btnFavorite.setVisibility(View.GONE);
         txtBadge.setVisibility(View.GONE);
 
     }

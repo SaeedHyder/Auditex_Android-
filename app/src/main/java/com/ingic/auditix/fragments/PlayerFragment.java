@@ -5,7 +5,6 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,6 +18,9 @@ import android.widget.SeekBar;
 
 import com.google.android.exoplayer2.Player;
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.BookChaptersEnt;
+import com.ingic.auditix.entities.BookDetailEnt;
+import com.ingic.auditix.entities.BooksChapterItemEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.entities.PodcastTrackEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
@@ -79,6 +81,8 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     CustomRatingBar rbRating;
     @BindView(R.id.txt_genre_text)
     AnyTextView txtGenreText;
+    @BindView(R.id.txt_duration)
+    AnyTextView txtDuration;
     @BindView(R.id.txt_duration_text)
     AnyTextView txtDurationText;
     @BindView(R.id.txt_location_text)
@@ -93,18 +97,19 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     private boolean hasPlaylistComplete = false;
     private ArrayList<PlayListModel> mUserPlaylist;
     private PodcastDetailEnt podcastDetailEnt;
-    private Integer trackID;
+    private BookDetailEnt bookDetailEnt;
+    private Integer ID;
     private String playerType = "";
     private int startingIndex = 0;
     //endregion
 
     //region Fragment Lifecycles
-    public static PlayerFragment newInstance(PodcastDetailEnt podcastDetail, Integer trackID, String playerType) {
+    public static PlayerFragment newInstance(PodcastDetailEnt podcastDetail, Integer ID, String playerType, BookDetailEnt bookDetailEnt) {
         Bundle args = new Bundle();
 
         PlayerFragment fragment = new PlayerFragment();
         fragment.setArguments(args);
-        fragment.setContent(podcastDetail, trackID, playerType);
+        fragment.setContent(podcastDetail, ID, playerType, bookDetailEnt);
         return fragment;
     }
 
@@ -116,51 +121,62 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     }
 
     @Override
-    public void ResponseSuccess(Object result, String Tag) {
-        switch (Tag) {
-            case WebServiceConstants.GET_PODCAST_DETAIL:
-                PodcastDetailEnt ent = (PodcastDetailEnt) result;
-                setupUIViews(ent);
-                break;
-        }
-    }
-
-    @Override
     public void setTitleBar(TitleBar titleBar) {
         super.setTitleBar(titleBar);
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.playing_now));
         titleBar.showBackButton();
         titleBar.addBackground();
-        EpisodeListingFragment fragment = new EpisodeListingFragment();
-        fragment.setListItemListener(this);
-        fragment.setTrackList(podcastDetailEnt.getTrackList());
-        getMainActivity().setRightSideFragment(fragment);
-        titleBar.showListingFragment(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getMainActivity().isNavigationGravityRight = true;
-                getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
+        if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
+            getMainActivity().titleBar.showFavoriteButton(podcastDetailEnt.isFavorite(), new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    serviceHelper.enqueueCall(webService.changeFavoriteStatus(ID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                }
+            });
+            EpisodeListingFragment fragment = new EpisodeListingFragment();
+            fragment.setListItemListener(this);
+            fragment.setTrackList(podcastDetailEnt.getTrackList());
+            getMainActivity().setRightSideFragment(fragment);
+            titleBar.showListingFragment(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getMainActivity().isNavigationGravityRight = true;
+                    getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
+                }
+            });
+        } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
+            if (bookDetailEnt.getIsPurchased()) {
+                BookChaptersListingFragment fragment = new BookChaptersListingFragment();
+                fragment.setListItemListener(this);
+                fragment.setTrackList(new ArrayList<>(bookDetailEnt.getChapters().getChapter().subList(0,bookDetailEnt.getChapters().getChapter().size())));
+                getMainActivity().setRightSideFragment(fragment);
+                titleBar.showListingFragment(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getMainActivity().isNavigationGravityRight = true;
+                        getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
+                    }
+                });
             }
-        });
-        getMainActivity().titleBar.showFavoriteButton(podcastDetailEnt.isFavorite(), new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                serviceHelper.enqueueCall(webService.changeFavoriteStatus(trackID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
-            }
-        });
-      /*  titleBar.showFavoriteButton(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                serviceHelper.enqueueCall(webService.changeFavoriteStatus(trackID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
-            }
-        });*/
+            getMainActivity().titleBar.showFavoriteButton(bookDetailEnt.getIsFavorite(), new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        serviceHelper.enqueueCall(webService.AddBookToFavorite(ID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                    } else {
+                        serviceHelper.enqueueCall(webService.RemoveBookFromFavorite(ID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                    }
+                }
+            });
+        }
     }
 
-    private void setContent(PodcastDetailEnt podcastDetail, Integer trackID, String playerType) {
+    private void setContent(PodcastDetailEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt) {
         this.podcastDetailEnt = podcastDetail;
-        this.trackID = trackID;
+        this.ID = trackID;
         this.playerType = playerType;
+        this.bookDetailEnt = bookDetailEnt;
     }
 
     @Override
@@ -173,7 +189,6 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //setupMediaPlayer(musicList);
         getDetails(playerType);
 
         getMainActivity().setFlagKeepScreenOn();
@@ -197,15 +212,14 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
 
     private void getDetails(String type) {
         if (type.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
-//            serviceHelper.enqueueCall(webService.getPodcastDetailByTrack(trackID, prefHelper.getUserToken()), WebServiceConstants.GET_PODCAST_DETAIL);
-            setupUIViews(podcastDetailEnt);
+            setupUIViewsPodcast(podcastDetailEnt);
         } else if (type.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
-
+            setupUIViewsBook(bookDetailEnt);
         }
 
     }
 
-    private void setupUIViews(PodcastDetailEnt ent) {
+    private void setupUIViewsPodcast(PodcastDetailEnt ent) {
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
         ImageLoader.getInstance().displayImage(ent.getImage(), imgItemCover, options);
         ImageLoader.getInstance().displayImage(ent.getImage(), imgItemPic, options);
@@ -220,12 +234,47 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         txtGenreText.setText(podcastDetailEnt.getGenre() + "");
         txtNarratorText.setText(podcastDetailEnt.getAuthor() + "");
         sbProgress.setPadding(0, 0, 0, 0);
-        bindPlaylist(ent.getTrackList());
-
-        // sbProgress.setOnTouchListener(this);
+        bindPodcastPlaylist(ent.getTrackList());
     }
 
-    private void bindPlaylist(ArrayList<PodcastTrackEnt> trackList) {
+    private void setupUIViewsBook(BookDetailEnt ent) {
+        DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
+        ImageLoader.getInstance().displayImage(ent.getImageUrl(), imgItemCover, options);
+        ImageLoader.getInstance().displayImage(ent.getImageUrl(), imgItemPic, options);
+        txtPlayingItemAlbum.setSelected(true);
+        txtPlayingItemName.setSelected(true);
+        if (ent.getRating() == -1) {
+            rbRating.setScore(0);
+        } else {
+            rbRating.setScore((float) ent.getRating());
+        }
+        txtTitle.setText(ent.getBookName() + "");
+        txtGenreText.setText(ent.getGenre() + "");
+        txtNarratorText.setText(ent.getAuthorName() + "");
+        sbProgress.setPadding(0, 0, 0, 0);
+        txtDuration.setVisibility(View.VISIBLE);
+        txtDurationText.setVisibility(View.VISIBLE);
+        txtDurationText.setText(getBookDurationText(ent.getDuration()));
+        bindBookPlaylist(ent.getChapters());
+    }
+
+    private void bindBookPlaylist(BookChaptersEnt chapters) {
+        initializePlaybackController();
+        initializeSeekbar();
+        mUserPlaylist = new ArrayList<>();
+        if (bookDetailEnt.getIsPurchased() && chapters.getChapter().size() > 1) {
+            chapters.getChapter().remove(0);
+        }
+        for (BooksChapterItemEnt tracks : chapters.getChapter()
+                ) {
+            mUserPlaylist.add(new PlayListModel("", String.format("%s:%s/%s/mp3:%s/playlist.m3u8", chapters.getWowzaURL(), chapters.getWowzaPort(),
+                    chapters.getWowzaAppName(), tracks.getAudioUrl()), false));
+        }
+        mPlayerAdapter.loadPlayList(mUserPlaylist);
+        setItemName(startingIndex);
+    }
+
+    private void bindPodcastPlaylist(ArrayList<PodcastTrackEnt> trackList) {
         initializePlaybackController();
         initializeSeekbar();
         mUserPlaylist = new ArrayList<>();
@@ -251,7 +300,6 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 if (audioManager != null) {
                     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_SHOW_UI);
                 }
-                //openTracklist();
                 break;
             case R.id.btn_backward:
                 hasPlaylistComplete = false;
@@ -278,17 +326,6 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         }
     }
 
-    private void openTracklist() {
-        FragmentTransaction transaction = getChildFragmentManager()
-                .beginTransaction();
-        transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
-        transaction.replace(R.id.episode_fragment, EpisodeListingFragment.newInstance(podcastDetailEnt.getTrackList()));
-        transaction.addToBackStack("EpisodeListingFragment");
-        transaction.commit();
-
-
-    }
-
     private String getTotalDuaration(long duration) {
         long secondsInMilli = 1000;
         long minutesInMilli = secondsInMilli * 60;
@@ -299,20 +336,16 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         return elapsedMinutes == 0 ? elapsedSeconds.intValue() + "s" : elapsedMinutes.intValue() + "m";
     }
 
-    private String getReamainingDuration(long totalDuration, long currentTime) {
-        long different = currentTime - totalDuration;
-        long secondsInMilli = 1000;
-        long minutesInMilli = secondsInMilli * 60;
-        long hoursInMilli = minutesInMilli * 60;
-        /*Long elapsedHours = different / hoursInMilli;
-        different = different % hoursInMilli;*/
-
-        Long elapsedMinutes = different / minutesInMilli;
-        different = different % minutesInMilli;
-
-        Long elapsedSeconds = different / secondsInMilli;
-
-        return elapsedMinutes == 0 && elapsedSeconds == 0 ? "00:00" : "-" + elapsedMinutes.intValue() + ":" + elapsedSeconds.intValue();
+    public String getBookDurationText(Integer secound) {
+        int minutes = (secound % 3600) / 60;
+        int hours = secound / 3600;
+        if (minutes > 0) {
+            return (minutes) + " mins";
+        } else if (secound > 0) {
+            return (secound) + " sec";
+        } else {
+            return "-";
+        }
 
     }
 
@@ -375,9 +408,20 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     }
 
     private void setItemName(int index) {
-        if (index < mUserPlaylist.size()) {
-            txtPlayingItemName.setText(podcastDetailEnt.getTrackList().get(index).getName());
-            txtPlayingItemAlbum.setText(podcastDetailEnt.getTitle());
+        if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
+            if (index < mUserPlaylist.size()) {
+                txtPlayingItemName.setText(podcastDetailEnt.getTrackList().get(index).getName());
+                txtPlayingItemAlbum.setText(podcastDetailEnt.getTitle());
+            }
+        } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
+            if (index < mUserPlaylist.size()) {
+                if (!bookDetailEnt.getIsPurchased()) {
+                    txtPlayingItemName.setText(R.string.preview);
+                } else {
+                    txtPlayingItemName.setText(getDockActivity().getResources().getString(R.string.chapters) + " " + (index + 1));
+                }
+                txtPlayingItemAlbum.setText(bookDetailEnt.getBookName());
+            }
         }
     }
 
@@ -390,7 +434,11 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         @Override
         public void onDurationChanged(int duration) {
             sbProgress.setMax(duration);
-            txtTimeTotal.setText(getTotalDuaration(duration));
+            if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
+                txtTimeTotal.setText(getTotalDuaration(duration));
+            } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
+                txtTimeTotal.setText(getTotalDuaration(duration));
+            }
             Log.d(TAG, String.format("setPlaybackDuration: setMax(%d)", duration));
         }
 
@@ -413,6 +461,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 }
                 Log.d(TAG, String.format("setPlaybackPosition: setProgress(%d)", position));
             }
+
         }
 
         @Override

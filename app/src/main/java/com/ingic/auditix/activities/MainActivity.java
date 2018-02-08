@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 
 import com.facebook.FacebookSdk;
 import com.ingic.auditix.R;
+import com.ingic.auditix.fragments.BooksFilterFragment;
 import com.ingic.auditix.fragments.FilterFragment;
 import com.ingic.auditix.fragments.HomeFragment;
 import com.ingic.auditix.fragments.LanguageSelectionFragment;
@@ -35,7 +36,6 @@ import com.ingic.auditix.helpers.ScreenHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.helpers.Utilities;
 import com.ingic.auditix.interfaces.ImageSetter;
-import com.ingic.auditix.media.PlaybackInfoListener;
 import com.ingic.auditix.residemenu.ResideMenu;
 import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -47,12 +47,14 @@ import butterknife.ButterKnife;
 import droidninja.filepicker.FilePickerBuilder;
 import droidninja.filepicker.FilePickerConst;
 import droidninja.filepicker.utils.Orientation;
+import io.realm.Realm;
 
 
 public class MainActivity extends DockActivity implements OnClickListener {
     private static final String TAG = "MainActivity";
     //region User Image Picker
     private static final int MAX_IMAGE_PICK_COUNT = 1;
+    public Realm realm;
     public TitleBar titleBar;
     @BindView(R.id.sideMneuFragmentContainer)
     public FrameLayout sideMneuFragmentContainer;
@@ -69,7 +71,6 @@ public class MainActivity extends DockActivity implements OnClickListener {
     ProgressBar progressBar;
     @BindView(R.id.imageBlur)
     ImageView imageBlur;
-
     private MainActivity mContext;
     private boolean loading;
     private ResideMenu resideMenu;
@@ -154,12 +155,6 @@ public class MainActivity extends DockActivity implements OnClickListener {
         params.gravity = Gravity.RIGHT;
         filterFragmentContainer.setLayoutParams(params);
         drawerLayout.setScrimColor(getResources().getColor(R.color.semi_tranparent));
-    }
-
-    public void settingFilterMenu() {
-
-        filterFragment = FilterFragment.newInstance();
-        setRightSideFragment(filterFragment);
     }
 
     public void setRightSideFragment(BaseFragment fragment) {
@@ -354,6 +349,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        realm = Realm.getDefaultInstance();
         setContentView(R.layout.activity_dock);
         ButterKnife.bind(this);
         titleBar = header_main;
@@ -367,6 +363,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
 
         settingSideMenu(sideMenuType, sideMenuDirection);
         setRightSideDrawer();
+        initFiltersFragment();
         titleBar.setMenuButtonListener(new OnClickListener() {
 
             @Override
@@ -445,6 +442,20 @@ public class MainActivity extends DockActivity implements OnClickListener {
 
     @Override
     public void hideHeaderButtons(boolean leftBtn, boolean rightBtn) {
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (realm != null) { // guard against weird low-budget phones
+            realm.close();
+            realm = null;
+        }
+    }
+
+    private void initFiltersFragment() {
+        filterFragment = FilterFragment.newInstance();
+        booksFilterFragment = BooksFilterFragment.newInstance();
     }
 
     public RelativeLayout getContentView() {

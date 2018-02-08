@@ -3,6 +3,7 @@ package com.ingic.auditix.fragments;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -180,12 +181,29 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
         tabLayout.addOnTabSelectedListener(this);
         selectTabBasedOnTag(tag);
     }
-
+    private View viewParent;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tabs_home, container, false);
+      /*  View view = inflater.inflate(R.layout.fragment_tabs_home, container, false);
         unbinder = ButterKnife.bind(this, view);
-        return view;
+*/
+        if (viewParent != null) {
+            ViewGroup parent = (ViewGroup) viewParent.getParent();
+            if (parent != null)
+                parent.removeView(viewParent);
+        }
+        try {
+            viewParent =  inflater.inflate(R.layout.fragment_tabs_home, container, false);
+
+        } catch (InflateException e) {
+            e.printStackTrace();
+        }
+        if (viewParent != null)
+            ButterKnife.bind(this, viewParent);
+
+        // ButterKnife.bind(this, viewParent);
+        return viewParent;
+       // return view;
     }
 
     @Override
@@ -194,16 +212,7 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
 
     private void selectTabBasedOnTag(String tag) {
         TabLayout.Tab tab;

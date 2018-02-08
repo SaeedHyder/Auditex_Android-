@@ -7,6 +7,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.FilterEnt;
 import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.ui.viewbinders.abstracts.ExpandableListViewBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -23,7 +24,7 @@ import butterknife.ButterKnife;
  * Created on 12/28/2017.
  */
 
-public class FilterExpandableBinder extends ExpandableListViewBinder<String, PodcastCategoriesEnt> {
+public class FilterExpandableBinder extends ExpandableListViewBinder<String, FilterEnt> {
     private ArrayList<Integer> filterCheckIDs;
 
     public FilterExpandableBinder() {
@@ -59,7 +60,7 @@ public class FilterExpandableBinder extends ExpandableListViewBinder<String, Pod
     }
 
     @Override
-    public void bindChildView(final PodcastCategoriesEnt entity, int position, int grpPosition, View view, final Activity activity) {
+    public void bindChildView(final FilterEnt entity, int position, int grpPosition, View view, final Activity activity) {
        /* String type = (String) view.getTag(R.integer.key_view_type);
         if (type.equals(AppConstants.FILTER_VIEW_1)) {
             final ViewHolderChild1 holderChild1 = (ViewHolderChild1) view.getTag();
@@ -82,22 +83,22 @@ public class FilterExpandableBinder extends ExpandableListViewBinder<String, Pod
         } else {*/
         ViewHolderChild2 holderChild2 = (ViewHolderChild2) view.getTag();
 
-        if (filterCheckIDs.contains(entity.getCategoryId())){
+        if (filterCheckIDs.contains(entity.getGenreID())){
 
         }else {
             holderChild2.chkGenre.setChecked(false);
         }
-        holderChild2.chkGenre.setText(entity.getTitle() + "");
+        holderChild2.chkGenre.setText(entity.getGenreName() + "");
         holderChild2.chkGenre.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if (!filterCheckIDs.contains(entity.getCategoryId())) {
-                        filterCheckIDs.add(entity.getCategoryId());
+                    if (!filterCheckIDs.contains(entity.getGenreID())) {
+                        filterCheckIDs.add(entity.getGenreID());
                     }
                 } else {
-                    if (filterCheckIDs.contains(entity.getCategoryId())) {
-                        filterCheckIDs.remove(entity.getCategoryId());
+                    if (filterCheckIDs.contains(entity.getGenreID())) {
+                        filterCheckIDs.remove(entity.getGenreID());
                     }
                 }
             }

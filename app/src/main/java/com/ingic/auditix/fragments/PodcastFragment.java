@@ -83,7 +83,7 @@ public class PodcastFragment extends BaseFragment implements RecyclerViewItemLis
     }
 
     public void setTitleBar(TitleBar titleBar) {
-        getMainActivity().settingFilterMenu();
+//        getMainActivity().settingFilterMenu();
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.podcast));
         titleBar.showBackButton();

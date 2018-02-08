@@ -62,9 +62,11 @@ public class HomeFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getMainActivity().refreshSideMenu();
-        getMainActivity().settingFilterMenu();
         if (getMainActivity().filterFragment != null) {
             getMainActivity().filterFragment.clearFilters();
+        }
+        if (getMainActivity().booksFilterFragment != null) {
+            getMainActivity().booksFilterFragment.clearFilters();
         }
     }
 
@@ -76,14 +78,12 @@ public class HomeFragment extends BaseFragment {
                 getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
                 break;
             case R.id.btn_books:
-               /* tabFragment.setTag(AppConstants.TAB_BOOKS);
-                getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");*/
-                willbeimplementedinfuture();
-                break;
+                tabFragment.setTag(AppConstants.TAB_BOOKS);
+                getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
             case R.id.btn_news:
               /*  tabFragment.setTag(AppConstants.TAB_NEWS);
                 getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");*/
-                willbeimplementedinfuture();
+                //willbeimplementedinfuture();
                 break;
         }
     }

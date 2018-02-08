@@ -7,16 +7,20 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
 
 /**
  * Created on 1/30/2018.
  */
 
-public class BookChaptersEnt {
+public class BookChaptersEnt extends RealmObject {
 
     @SerializedName("Chapter")
     @Expose
-    private ArrayList<BooksChapterItemEnt> chapter = null;
+    private RealmList<BooksChapterItemEnt> chapter = null;
     @SerializedName("WowzaURL")
     @Expose
     private String wowzaURL;
@@ -27,11 +31,12 @@ public class BookChaptersEnt {
     @Expose
     private String wowzaAppName;
 
-    public ArrayList<BooksChapterItemEnt> getChapter() {
-        return chapter;
+    public RealmList<BooksChapterItemEnt> getChapter() {
+        //return new ArrayList<>(chapter.subList(0,chapter.size()));
+    return chapter;
     }
 
-    public void setChapter(ArrayList<BooksChapterItemEnt> chapter) {
+    public void setChapter(RealmList<BooksChapterItemEnt> chapter) {
         this.chapter = chapter;
     }
 

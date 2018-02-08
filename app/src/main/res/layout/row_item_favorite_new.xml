@@ -63,12 +63,12 @@
                         android:singleLine="true"
                         android:text="Just Courage"
                         android:textAllCaps="true"
-                        android:textColor="@color/app_font_black"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/x15"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:typeface="@string/font_bold"/>
+                        app:typeface="@string/font_normal"/>
 
                     <com.ingic.auditix.ui.views.AnyTextView
                         android:id="@+id/txt_narrator"

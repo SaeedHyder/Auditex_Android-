@@ -95,7 +95,8 @@ public class BookFavoriteListFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        serviceHelper.enqueueCall(webService.getBooksAllFavorite(0, prefHelper.getUserToken()), WebServiceConstants.GET_BOOK_FAVORITE);
+
+        serviceHelper.enqueueCall(webService.getBooksAllFavorite(null, prefHelper.getUserToken()), WebServiceConstants.GET_BOOK_FAVORITE);
     }
 
     @Override
@@ -116,6 +117,7 @@ public class BookFavoriteListFragment extends BaseFragment {
         }
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
         layoutManager.setAutoMeasureEnabled(true);
+        rvFavorite.setNestedScrollingEnabled(false);
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
         rvFavorite.BindRecyclerView(new BookFavoriteBinder(options, listener), bookFavoriteCollections, layoutManager, new DefaultItemAnimator());
     }

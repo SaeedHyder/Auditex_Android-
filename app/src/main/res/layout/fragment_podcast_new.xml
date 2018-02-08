@@ -29,7 +29,7 @@
                 android:textColor="@color/app_font_black"
                 android:textSize="@dimen/x16"
                 android:textStyle="bold"
-                app:typeface="@string/font_normal"/>
+                app:typeface="@string/font_bold"/>
 
             <com.ingic.auditix.ui.views.AnyTextView
                 android:id="@+id/btn_subscription_seeall"
@@ -76,7 +76,7 @@
             android:textAllCaps="true"
             android:textColor="@color/app_font_black"
             android:textSize="@dimen/x16"
-            app:typeface="@string/font_normal"/>
+            app:typeface="@string/font_bold"/>
 
 
         <com.ingic.auditix.ui.views.CustomRecyclerView

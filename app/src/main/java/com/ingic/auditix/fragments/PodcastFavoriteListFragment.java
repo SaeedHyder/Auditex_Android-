@@ -100,11 +100,6 @@ public class PodcastFavoriteListFragment extends BaseFragment {
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
 
     private void BindPodcastFovoriteData(ArrayList<PodcastFavoriteEnt> result) {
         podcastFavoriteCollections = new ArrayList<>();
@@ -118,6 +113,7 @@ public class PodcastFavoriteListFragment extends BaseFragment {
         }
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
         layoutManager.setAutoMeasureEnabled(true);
+        rvFavorite.setNestedScrollingEnabled(false);
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
         rvFavorite.BindRecyclerView(new FavoriteItemBinder(options, listener), podcastFavoriteCollections, layoutManager, new DefaultItemAnimator());
     }

@@ -14,15 +14,15 @@
 
         <ImageView
             android:id="@+id/txt_item_image"
-            android:layout_width="@dimen/x160"
-            android:layout_height="@dimen/x160"
+            android:layout_width="@dimen/x140"
+            android:layout_height="@dimen/x140"
             android:scaleType="fitXY"
             android:src="@drawable/dummyalbum"
             />
 
         <com.ingic.auditix.ui.views.AnyTextView
             android:id="@+id/txt_item_text"
-            android:layout_width="@dimen/x160"
+            android:layout_width="@dimen/x140"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginTop="@dimen/x5"
@@ -31,7 +31,7 @@
             android:singleLine="true"
             android:maxLines="1"
             android:text="Barbaras"
-            android:textColor="@color/app_font_black"
+            android:textColor="@color/black"
             android:textSize="@dimen/x16"
             app:typeface="@string/font_normal"/>
         <Button

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.ingic.auditix.BaseApplication;
 import com.ingic.auditix.R;
+import com.ingic.auditix.fragments.BooksFilterFragment;
 import com.ingic.auditix.fragments.FilterFragment;
 import com.ingic.auditix.fragments.HomeFragment;
 import com.ingic.auditix.fragments.SideMenuFragment;
@@ -34,6 +35,7 @@ public abstract class DockActivity extends AppCompatActivity implements
     public static final String KEY_FRAG_FIRST = "firstFrag";
     public SideMenuFragment sideMenuFragment;
     public FilterFragment filterFragment;
+    public BooksFilterFragment booksFilterFragment;
     protected BasePreferenceHelper prefHelper;
     //For side menu
     protected DrawerLayout drawerLayout;

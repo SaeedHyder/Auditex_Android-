@@ -1,7 +1,11 @@
 package com.ingic.auditix.retrofit;
 
 
+import com.ingic.auditix.entities.BookCategoryDetailEnt;
+import com.ingic.auditix.entities.BookCategoryEnt;
+import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.BookFavoriteEnt;
+import com.ingic.auditix.entities.BookGenreEnt;
 import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.entities.PodcastCategoryListEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
@@ -139,13 +143,40 @@ public interface WebService {
     //endregion
 
     //region Book
+
+    @GET("DefaultCategoryBooks")
+    Call<ResponseWrapper<ArrayList<BookCategoryEnt>>> getDefaultBooks(@Query("pageNumber") Integer pageNumber,
+                                                                      @Query("totalCount") Integer totalCount,
+                                                                      @Query("genreIdList") String genreIdList,
+                                                                      @Query("culture") String culture,
+                                                                      @Header(WebServiceConstants.HEADER_KEY) String header);
+    @GET("BooksByCategoryId")
+    Call<ResponseWrapper<BookCategoryDetailEnt>> getAllCategoryBooks(@Query("categoryId") Integer categoryId,
+                                                                    @Query("PageNo") Integer PageNo,
+                                                                    @Query("PageSize") Integer PageSize,
+                                                                    @Query("culture") String culture,
+                                                                    @Header(WebServiceConstants.HEADER_KEY) String header);
     @GET("GetFavoriteBooks")
-    Call<ResponseWrapper<ArrayList<BookFavoriteEnt>>> getBooksAllFavorite(@Query("culture") int culture, @Header(WebServiceConstants.HEADER_KEY) String header);
+    Call<ResponseWrapper<ArrayList<BookFavoriteEnt>>> getBooksAllFavorite(@Query("culture") String culture, @Header(WebServiceConstants.HEADER_KEY) String header);
+
+    @GET("BookDetail")
+    Call<ResponseWrapper<BookDetailEnt>> getBookDetails(@Query("BookID") Integer BookID, @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("RemoveBookFromFavorite")
     Call<ResponseWrapper> RemoveBookFromFavorite(@Query("bookId") Integer bookId, @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("AddBookToFavorite")
     Call<ResponseWrapper> AddBookToFavorite(@Query("bookId") Integer bookId, @Header(WebServiceConstants.HEADER_KEY) String header);
+
+    @GET("AddBooksToLibrary")
+    Call<ResponseWrapper> AddBookToLibrary(@Query("BookIds") Integer bookId, @Header(WebServiceConstants.HEADER_KEY) String header);
+    @GET("GetAllGenre")
+    Call<ResponseWrapper<ArrayList<BookGenreEnt>>> getAllBooksFilters(@Query("culture") String culture,@Header(WebServiceConstants.HEADER_KEY) String header);
+
+    @GET("MyLibraryBooks")
+    Call<ResponseWrapper<ArrayList<BookDetailEnt>>> getLibraryBooks(@Query("PageNo") Integer pageNumber,
+                                           @Query("PageSize") Integer pageSize,
+                                           @Query("culture") String culture,
+                                           @Header(WebServiceConstants.HEADER_KEY) String header);
     //endregion
 }

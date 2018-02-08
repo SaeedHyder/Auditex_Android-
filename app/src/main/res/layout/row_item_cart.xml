@@ -33,12 +33,12 @@
                 android:singleLine="true"
                 android:text="Just Courage"
                 android:textAllCaps="true"
-                android:textColor="@color/app_font_black"
+                android:textColor="@color/black"
                 android:textSize="@dimen/x15"
                 app:layout_constraintEnd_toStartOf="@+id/btn_delete"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typeface="@string/font_bold"/>
+                app:typeface="@string/font_normal"/>
 
             <ImageView
                 android:id="@+id/btn_delete"
@@ -151,11 +151,11 @@
                 android:singleLine="true"
                 android:text="$99"
                 android:textColor="@color/app_font_green"
-                android:textSize="@dimen/x11"
+                android:textSize="@dimen/x13"
                 app:layout_constraintBottom_toBottomOf="@+id/txt_genre_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/txt_genre_text"
-                app:typeface="@string/font_normal"/>
+                app:typeface="@string/font_bold"/>
         </android.support.constraint.ConstraintLayout>
 
     </LinearLayout>

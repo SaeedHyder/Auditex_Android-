@@ -5,10 +5,14 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.CartEnt;
 import com.ingic.auditix.interfaces.CartDeleteButtonListener;
+import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.viewbinders.abstracts.RecyclerViewBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,12 +21,15 @@ import butterknife.ButterKnife;
  * Created on 12/21/2017.
  */
 
-public class CartBinder extends RecyclerViewBinder<CartEnt> {
-    private CartDeleteButtonListener listener;
-
-    public CartBinder(CartDeleteButtonListener listener) {
+public class CartBinder extends RecyclerViewBinder<BookDetailEnt> {
+    private ImageLoader imageLoader;
+    private DisplayImageOptions options;
+    private RecyclerViewItemListener listener;
+    public CartBinder(DisplayImageOptions options,RecyclerViewItemListener listener) {
         super(R.layout.row_item_cart);
         this.listener = listener;
+        this.options = options;
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -31,19 +38,19 @@ public class CartBinder extends RecyclerViewBinder<CartEnt> {
     }
 
     @Override
-    public void bindView(final CartEnt entity, final int position, Object viewHolder, Context context) {
+    public void bindView(final BookDetailEnt entity, final int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
-        holder.imgItemPic.setImageResource(entity.getItemImage());
-        holder.txtTitle.setText(entity.getTitle());
-        holder.txtAuthorText.setText(entity.getAuthor());
-        holder.txtNarratorText.setText(entity.getNarrator());
-        holder.txtPrice.setText(entity.getPrice());
-        holder.txtGenreText.setText(entity.getGenre());
+        imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, options);
+        holder.txtTitle.setText(entity.getBookName() + "");
+        holder.txtAuthorText.setText(entity.getAuthorName() + "");
+        holder.txtNarratorText.setText(entity.getNarratorName() + "");
+        holder.txtGenreText.setText(entity.getGenre() + "");
+        holder.txtPrice.setText(entity.getPrice()+"");
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onDeletePressed(entity, position);
+                    listener.onRecyclerItemButtonClicked(entity, position);
                 }
             }
         });

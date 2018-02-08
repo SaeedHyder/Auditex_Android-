@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
     <com.ingic.auditix.ui.views.CustomRecyclerView
         android:id="@+id/rv_favorite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/x50"
         android:layout_marginTop="@dimen/x10"
         android:divider="@null"
         android:scrollbars="none"/>
+
     <com.ingic.auditix.ui.views.AnyTextView
         android:id="@+id/txt_no_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/no_data_available"
         android:textColor="@color/dark_grey"
-        android:layout_gravity="center"
-        app:typeface="Roboto-Regular.ttf"
         android:textSize="@dimen/x15"
+        android:visibility="gone"
+        app:typeface="Roboto-Regular.ttf"
 
         />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
 import com.ingic.auditix.interfaces.ViewPagerFragmentLifecycleListener;
 import com.ingic.auditix.ui.views.TitleBar;
@@ -40,6 +41,27 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
         ProfileFragment fragment = new ProfileFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setStartingWithIndex(String tag) {
+        switch (tag) {
+            case AppConstants.TAB_NEWS:
+                this.startingWithIndex = 0;
+
+                break;
+            case AppConstants.TAB_PODCAST:
+                this.startingWithIndex = 1;
+
+                break;
+            case AppConstants.TAB_BOOKS:
+                this.startingWithIndex = 2;
+
+                break;
+            default:
+                this.startingWithIndex = 0;
+                break;
+        }
+
     }
 
     @Override
@@ -75,12 +97,6 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
         setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
 //        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
         bindTabs();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
     private void replaceTab(int position) {

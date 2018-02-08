@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:scrollbars="none"
     android:weightSum="1">
@@ -40,14 +41,46 @@
         android:layout_weight="0.7"
         android:orientation="vertical">
 
-        <ExpandableListView
-            android:id="@+id/exp_filters"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_above="@+id/btn_clear"
             android:layout_alignParentTop="true"
-            android:groupIndicator="@null"
-            android:scrollbars="none"/>
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x60"
+                android:background="@color/app_filter_gray">
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/txt_title"
+                    app:typeface="@string/font_normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginStart="@dimen/x10"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text="@string/by_genre"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/x16"/>
+
+                <ImageView
+                    android:id="@+id/img_group_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="@dimen/x15"
+                    android:src="@drawable/down_arrow"/>
+            </FrameLayout>
+
+            <com.ingic.auditix.ui.views.CustomRecyclerView
+                android:id="@+id/rvfilters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
 
         <Button
             android:id="@+id/btn_clear"

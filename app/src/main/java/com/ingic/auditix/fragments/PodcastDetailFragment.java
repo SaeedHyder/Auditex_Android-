@@ -137,7 +137,7 @@ public class PodcastDetailFragment extends BaseFragment {
                 bindDataToViews();
                 break;
             case WebServiceConstants.RATE_PODCAST:
-                UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.rating_submit_message));
+                UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.rating_submit_message));
                 if (helper != null) {
                     rbRating.setScore(helper.getDialogRating());
                 }
@@ -145,9 +145,9 @@ public class PodcastDetailFragment extends BaseFragment {
             case WebServiceConstants.ADD_FAVORITE:
                 podcastDetailEnt.setFavorite(btnAddFavorite.isChecked());
                 if (btnAddFavorite.isChecked()) {
-                    UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.item_added_favorite));
+                    UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.item_added_favorite));
                 } else {
-                    UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.item_remove_favorite));
+                    UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.item_remove_favorite));
                 }
                 break;
         }
@@ -280,7 +280,7 @@ public class PodcastDetailFragment extends BaseFragment {
                     if (getMainActivity().filterFragment != null) {
                         getMainActivity().filterFragment.clearFilters();
                     }
-                    getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST), "PlayerFragment");
+                    getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST,null), "PlayerFragment");
                 }
                 break;
             case R.id.btn_download:

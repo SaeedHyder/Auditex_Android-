@@ -32,6 +32,13 @@ public class WebServiceConstants {
     public static final String REMOVE_FAVORITE_PODCAST = "REMOVE_FAVORITE_PODCAST";
     public static final String GET_ALL_FILTER = "GET_ALL_FILTER";
     public static final String GET_ALL_WALKTHROUGH = "GET_ALL_WALKTHROUGH";
-    public static final java.lang.String REMOVE_FAVORITE_BOOK = "REMOVE_FAVORITE_BOOK";
-    public static final java.lang.String GET_BOOK_FAVORITE = "GET_BOOK_FAVORITE";
+    public static final String REMOVE_FAVORITE_BOOK = "REMOVE_FAVORITE_BOOK";
+    public static final String GET_BOOK_FAVORITE = "GET_BOOK_FAVORITE";
+    public static final String GET_DEFAULT_BOOKS = "GET_DEFAULT_BOOKS";
+    public static final String GET_ALL_CATEGORY_BOOK = "GET_ALL_CATEGORY_BOOK";
+    public static final String GET_ALL_BOOKS_FILTER = "GET_ALL_BOOKS_FILTER";
+    public static final String GET_PAGED_BOOKS = "GET_PAGED_BOOKS";
+    public static final String GET_BOOK_DETAIL = "GET_BOOK_DETAIL";
+    public static final String ADD_LIBRARY = "ADD_LIBRARY";
+    public static final String GET_ALL_LIBRARY_BOOK = "GET_ALL_LIBRARY_BOOK";
 }

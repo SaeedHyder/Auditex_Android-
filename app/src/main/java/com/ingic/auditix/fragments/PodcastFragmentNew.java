@@ -45,6 +45,8 @@ import butterknife.Unbinder;
  * Created on 1/10/2018.
  */
 public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmentLifecycleListener, FilterDoneClickListener {
+
+    //region Global Variables
     public static final String TAG = "PodcastFragmentNew";
     @BindView(R.id.txt_subscription)
     AnyTextView txtSubscription;
@@ -141,17 +143,15 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
     private boolean isOnCall = false;
     private ProgressDialog progressDialog;
     private boolean isFirstTime = false;
+    //endregion
 
+    //region Lifecycle Methods
     public static PodcastFragmentNew newInstance() {
         Bundle args = new Bundle();
 
         PodcastFragmentNew fragment = new PodcastFragmentNew();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    private void openPodcastDetail(Integer trackid) {
-        getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(trackid), "PodcastDetailFragment");
     }
 
     @Override
@@ -168,6 +168,67 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
     }
 
+    public void setTitleBar(TitleBar titleBar) {
+
+        if (getMainActivity().filterFragment != null) {
+            getMainActivity().setRightSideFragment(getMainActivity().filterFragment);
+            getMainActivity().filterFragment.setListener(this);
+        }
+        titleBar.hideButtons();
+        titleBar.setSubHeading(getDockActivity().getResources().getString(R.string.podcast));
+        titleBar.showBackButton();
+        titleBar.showFilterButton(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getMainActivity().isNavigationGravityRight = true;
+                getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
+            }
+        });
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_podcast_new, container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
+        initProgressDialog();
+        getFirstTimeData();
+
+//        getFirstTimeData();
+    }
+
+    private void clearFragmentResources() {
+        currentPageNumber = 1;
+        if (rvRecommended != null && rvPodcastDefault != null && rvSubscribe != null) {
+            rvRecommended.clearList();
+            rvPodcastDefault.clearList();
+            rvSubscribe.clearList();
+        }
+        canCallForMore = true;
+        isOnCall = false;
+        categoriesIds = "";
+        hideProgressDialog();
+    }
+
+    @Override
+    public void onPauseFragment() {
+        clearFragmentResources();
+    }
+
+    @Override
+    public void onResumeFragment(Context context, BasePreferenceHelper preferenceHelper) {
+        //initProgressDialog();
+        //getFirstTimeData();
+    }
+    //endregion
+
+    //region Service Response Helpers
     @Override
     public void ResponseSuccess(Object result, String Tag) {
         switch (Tag) {
@@ -197,33 +258,38 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         hideProgressDialog();
     }
 
-    public void setTitleBar(TitleBar titleBar) {
+    //endregion
 
-        if (getMainActivity().filterFragment != null) {
-            getMainActivity().setRightSideFragment(getMainActivity().filterFragment);
-            getMainActivity().filterFragment.setListener(this);
-        } else {
-            getMainActivity().settingFilterMenu();
-            getMainActivity().filterFragment.setListener(this);
-        }
-        titleBar.hideButtons();
-        titleBar.setSubHeading(getDockActivity().getResources().getString(R.string.podcast));
-        titleBar.showBackButton();
-        titleBar.showFilterButton(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getMainActivity().isNavigationGravityRight = true;
-                getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
-            }
-        });
-    }
-
+    //region Progress Dialog
     private void showProgressDialog() {
         if (progressDialog != null && !progressDialog.isShowing()) {
             progressDialog.show();
         }
     }
 
+    private void initProgressDialog() {
+        if (getDockActivity() == null) {
+            isFirstTime = true;
+        } else {
+            if (InternetHelper.CheckInternetConectivityandShowToast(getDockActivity())) {
+
+                progressDialog = new ProgressDialog(getDockActivity());
+                progressDialog.setMessage(getDockActivity().getResources().getString(R.string.com_facebook_loading));
+                progressDialog.setCancelable(false);
+                progressDialog.setCanceledOnTouchOutside(false);
+                isFirstTime = false;
+            }
+        }
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+    //endregion
+
+    //region Data Bindings
     private void bindPagedPodcastList(PodcastHomeEnt result) {
         if (result.getDefaultCategories().size() <= 0 && result.getFeaturedCategories().size() <= 0) {
             canCallForMore = false;
@@ -248,38 +314,6 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_podcast_new, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
-
-        initProgressDialog();
-        getFirstTimeData();
-
-//        getFirstTimeData();
-    }
-
-
-    private void clearFragmentResources() {
-        currentPageNumber = 1;
-        if (rvRecommended != null && rvPodcastDefault != null && rvSubscribe != null) {
-            rvRecommended.clearList();
-            rvPodcastDefault.clearList();
-            rvSubscribe.clearList();
-        }
-        canCallForMore = true;
-        isOnCall = false;
-        categoriesIds = "";
-        hideProgressDialog();
-    }
-
     private void getFirstTimeData() {
         if (prefHelper == null) {
             isFirstTime = true;
@@ -291,21 +325,6 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
             serviceHelper.enqueueCall(webService.getDefaultPodcast(currentPageNumber, totalCount, categoriesIds, prefHelper.getUserToken()),
                     WebServiceConstants.GET_DEFAULT_PODCASTS, false);
             isFirstTime = false;
-        }
-    }
-
-    private void initProgressDialog() {
-        if (getDockActivity() == null) {
-            isFirstTime = true;
-        } else {
-            if (InternetHelper.CheckInternetConectivityandShowToast(getDockActivity())) {
-
-                progressDialog = new ProgressDialog(getDockActivity());
-                progressDialog.setMessage(getDockActivity().getResources().getString(R.string.com_facebook_loading));
-                progressDialog.setCancelable(false);
-                progressDialog.setCanceledOnTouchOutside(false);
-                isFirstTime = false;
-            }
         }
     }
 
@@ -399,23 +418,6 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         }
     }
 
-    private void hideProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
-
-    private void openSubscriptionFragment(String titleHeading) {
-        SubscriptionsFragment fragment = new SubscriptionsFragment();
-        fragment.setTitleHeading(titleHeading);
-        getDockActivity().replaceDockableFragment(fragment, "SubscriptionsFragment");
-    }
-
-    @OnClick(R.id.btn_subscription_seeall)
-    public void onViewClicked() {
-        openSubscriptionFragment(getDockActivity().getResources().getString(R.string.my_subscriptions));
-    }
-
     private void getPagedPodcast() {
         if (canCallForMore) {
             if (!isOnCall) {
@@ -427,15 +429,22 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         }
     }
 
-    @Override
-    public void onPauseFragment() {
-        clearFragmentResources();
+    //endregion
+
+    //region Action Events
+    private void openSubscriptionFragment(String titleHeading) {
+        SubscriptionsFragment fragment = new SubscriptionsFragment();
+        fragment.setTitleHeading(titleHeading);
+        getDockActivity().replaceDockableFragment(fragment, "SubscriptionsFragment");
     }
 
-    @Override
-    public void onResumeFragment(Context context, BasePreferenceHelper preferenceHelper) {
-        //initProgressDialog();
-        //getFirstTimeData();
+    @OnClick(R.id.btn_subscription_seeall)
+    public void onViewClicked() {
+        openSubscriptionFragment(getDockActivity().getResources().getString(R.string.my_subscriptions));
+    }
+
+    private void openPodcastDetail(Integer trackid) {
+        getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(trackid), "PodcastDetailFragment");
     }
 
     @Override
@@ -444,6 +453,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         serviceHelper.enqueueCall(webService.getDefaultPodcast(currentPageNumber, totalCount, categoriesIds, prefHelper.getUserToken()),
                 WebServiceConstants.GET_DEFAULT_PODCASTS);
     }
+    //endregion
 
     class PageScrollListener extends RecyclerView.OnScrollListener {
         @Override

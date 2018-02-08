@@ -48,6 +48,11 @@ public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerViewBin
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
     public int getItemCount() {
         return this.collections.size();
     }

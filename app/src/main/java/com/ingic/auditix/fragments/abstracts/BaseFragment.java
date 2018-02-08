@@ -248,7 +248,7 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
     }
 
     protected MainActivity getMainActivity() {
-        return (MainActivity) getActivity();
+        return (MainActivity) myDockActivity;
     }
 
     protected TitleBar getTitleBar() {

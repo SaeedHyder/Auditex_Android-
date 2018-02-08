@@ -83,9 +83,9 @@ public class FavoriteTabFragment extends BaseFragment implements TabLayout.OnTab
             adapter.clearList();
         }
         fragmentList = new ArrayList<>(3);
-        fragmentList.add(BookFavoriteListFragment.newInstance());
-        fragmentList.add(PodcastFavoriteListFragment.newInstance());
         fragmentList.add(NewsFavoriteListFragment.newInstance());
+        fragmentList.add(PodcastFavoriteListFragment.newInstance());
+        fragmentList.add(BookFavoriteListFragment.newInstance());
         tabLayout.addTab(tabLayout.newTab().setText(R.string.news), true);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.podcast), false);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.books), false);

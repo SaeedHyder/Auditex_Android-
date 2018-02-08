@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="?android:windowBackground"
+              android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x50"
+        android:background="@color/app_title_orange">
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|start"
+            android:layout_marginStart="@dimen/x5"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="@string/chapters_heading"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x20"
+            app:typeface="@string/font_bold"/>
+    </FrameLayout>
+
+    <com.ingic.auditix.ui.views.CustomRecyclerView
+        android:id="@+id/rv_episode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x5"
+        android:layout_marginTop="@dimen/x10"/>
+</LinearLayout>

@@ -6,11 +6,13 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import io.realm.RealmObject;
+
 /**
  * Created on 1/30/2018.
  */
 
-public class BooksChapterItemEnt {
+public class BooksChapterItemEnt extends RealmObject {
 
     @SerializedName("ChapterID")
     @Expose
@@ -24,6 +26,15 @@ public class BooksChapterItemEnt {
     @SerializedName("FileDuration")
     @Expose
     private Integer fileDuration;
+    private boolean isSelected;
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 
     public Integer getChapterID() {
         return chapterID;

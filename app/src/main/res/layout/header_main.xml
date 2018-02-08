@@ -14,8 +14,8 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/x10"
-        android:scaleType="centerInside"
         android:padding="@dimen/x10"
+        android:scaleType="centerInside"
         android:src="@drawable/nav"
         android:visibility="visible"/>
 
@@ -25,13 +25,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-       android:layout_toEndOf="@+id/btnLeft"
-        android:layout_toStartOf="@id/btnRight2"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginStart="@dimen/x10"
+        android:layout_toEndOf="@+id/btnLeft"
+        android:layout_toStartOf="@id/btn_container"
         android:ellipsize="end"
         android:gravity="center"
         android:singleLine="true"
-        android:layout_marginStart="@dimen/x10"
-        android:layout_marginEnd="@dimen/x10"
         android:text=""
         android:textColor="@color/white"
         android:textSize="@dimen/x20"
@@ -43,41 +43,52 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/x10"
-        android:layout_toStartOf="@+id/btnRight2"
+        android:layout_toStartOf="@+id/btn_container"
         android:scaleType="centerInside"
         android:src="@drawable/ic_launcher"
         android:visibility="gone"/>
 
-    <ImageView
-        android:id="@+id/btnRight2"
+    <LinearLayout
+        android:id="@+id/btn_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/x10"
-        android:scaleType="centerInside"
-        android:src="@drawable/notification_icon_white"
-        android:visibility="invisible"/>
+        android:orientation="horizontal"
+        >
+        <CheckBox
+            android:id="@+id/btn_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/x10"
+            android:layout_toStartOf="@id/btnRight2"
+            android:button="@drawable/checkbox_favorite"
+            android:paddingBottom="@dimen/x5"
+            android:paddingTop="@dimen/x5"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/btnRight2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/x10"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerInside"
+            android:src="@drawable/notification_icon_white"
+            android:visibility="visible"/>
 
-    <CheckBox
-        android:id="@+id/btn_favorite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/btnRight2"
-        android:layout_marginEnd="@dimen/x10"
-        android:button="@drawable/checkbox_favorite"
-        android:paddingBottom="@dimen/x5"
-        android:paddingTop="@dimen/x5"
-        android:visibility="invisible"/>
+
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/btnRight2"
-        android:layout_alignEnd="@+id/btnRight2"
-        android:layout_alignStart="@+id/btnRight2"
-        android:layout_alignTop="@+id/btnRight2"
+        android:layout_alignBottom="@+id/btn_container"
+        android:layout_alignEnd="@+id/btn_container"
+        android:layout_alignStart="@+id/btn_container"
+        android:layout_alignTop="@+id/btn_container"
         android:visibility="gone">
 
         <com.ingic.auditix.ui.views.AnyTextView

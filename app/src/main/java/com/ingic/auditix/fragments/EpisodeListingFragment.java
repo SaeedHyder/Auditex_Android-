@@ -31,6 +31,7 @@ public class EpisodeListingFragment extends BaseFragment {
     Unbinder unbinder;
     private TrackListItemListener listItemListener;
     private ArrayList<PodcastTrackEnt> trackList;
+    private int previousSelected = 0;
     private RecyclerViewItemListener episodeItemListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
@@ -40,8 +41,13 @@ public class EpisodeListingFragment extends BaseFragment {
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            PodcastTrackEnt ent = (PodcastTrackEnt) Ent;
             if (listItemListener != null) {
+                trackList.get(previousSelected).setSelected(false);
+                rvEpisode.notifyItemChanged(previousSelected);
+                PodcastTrackEnt ent= (PodcastTrackEnt)Ent;
+                ent.setSelected(true);
+                rvEpisode.notifyItemChanged(position);
+                previousSelected = position;
                 listItemListener.onTrackSelected(position);
             }
         }
@@ -86,6 +92,7 @@ public class EpisodeListingFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        trackList.get(previousSelected).setSelected(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
         rvEpisode.BindRecyclerView(new PodcastEpisodeListingBinder(episodeItemListener), trackList, layoutManager, new DefaultItemAnimator());
 

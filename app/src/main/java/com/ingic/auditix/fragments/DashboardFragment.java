@@ -106,8 +106,7 @@ public class DashboardFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_cart:
-                willbeimplementedinfuture();
-                //getDockActivity().replaceDockableFragment(MyDownloadsFragment.newInstance(), "CartListFragment");
+                getDockActivity().replaceDockableFragment(CartListFragment.newInstance(), "CartListFragment");
                 break;
             case R.id.btn_cc:
                 willbeimplementedinfuture();

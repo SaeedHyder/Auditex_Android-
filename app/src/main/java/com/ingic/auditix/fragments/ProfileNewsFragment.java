@@ -2,6 +2,7 @@ package com.ingic.auditix.fragments;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.ui.views.TitleBar;
 
 import android.os.Bundle;
@@ -45,6 +46,5 @@ public class ProfileNewsFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 }

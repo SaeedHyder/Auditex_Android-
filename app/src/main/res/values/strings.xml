@@ -136,7 +136,6 @@
     <string name="home">Home</string>
     <string name="podcast">Podcast</string>
     <string name="news">News</string>
-    <string name="books">Books</string>
     <string name="dashboard">My Dashboard</string>
     <string name="logout">Log Out</string>
     <string name="about">About</string>
@@ -232,4 +231,19 @@
     <string name="cclenght">Short credit card number lenght</string>
     <string name="ccv_error">Enter correct CCV</string>
     <string name="expire_error_message">Expiration date cannot be Empty</string>
+    <string name="all_books">All Books</string>
+    <string name="books">Books</string>
+    <string name="chapter">Chapters: </string>
+    <string name="addtocart">Add to Cart</string>
+    <string name="addtolibrary">Add to Library</string>
+    <string name="listenpreview">Listen Preview</string>
+    <string name="about_book">About the book</string>
+    <string name="free">Free</string>
+    <string name="book_item_added_favorite">Book has been selected as favorite</string>
+    <string name="book_item_remove_favorite">Podcast has been removed as favorite</string>
+    <string name="listenbook">Listen Book</string>
+    <string name="book_item_added_Book">Book has been added to Library</string>
+    <string name="preview">Preview</string>
+    <string name="chapters">Chapter </string>
+    <string name="chapters_heading">Chapters</string>
 </resources>

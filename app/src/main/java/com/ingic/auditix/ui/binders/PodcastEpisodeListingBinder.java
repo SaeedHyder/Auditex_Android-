@@ -1,6 +1,7 @@
 package com.ingic.auditix.ui.binders;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.ingic.auditix.R;
@@ -32,8 +33,15 @@ public class PodcastEpisodeListingBinder extends RecyclerViewBinder<PodcastTrack
     @Override
     public void bindView(PodcastTrackEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
-        holder.txtname.setText(String.format("%s %d", context.getResources().getString(R.string.episode), position));
+        holder.txtname.setText(String.format("%s %d", context.getResources().getString(R.string.episode), position+1));
         holder.txtdescription.setText(entity.getName() + "");
+        if (entity.isSelected()){
+            holder.txtname.setTextColor(context.getResources().getColor(R.color.app_title_orange));
+            holder.txtdescription.setTextColor(context.getResources().getColor(R.color.app_title_orange));
+        }else {
+            holder.txtname.setTextColor(context.getResources().getColor(R.color.app_font_black));
+            holder.txtdescription.setTextColor(context.getResources().getColor(R.color.app_font_black));
+        }
         holder.itemView.setTag(R.integer.key_recycler_object, entity);
         holder.itemView.setTag(R.integer.key_recycler_position, position);
         holder.itemView.setOnClickListener(this);

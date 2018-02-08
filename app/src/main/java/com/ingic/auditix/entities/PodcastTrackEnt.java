@@ -30,6 +30,15 @@ public class PodcastTrackEnt {
     @SerializedName("FileUrl")
     @Expose
     private String fileUrl;
+    private boolean isSelected;
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 
     public String getName() {
         return name;
