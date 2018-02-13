@@ -2,6 +2,9 @@ package com.ingic.auditix.fragments;
 
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +15,28 @@ import android.widget.ToggleButton;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BookDetailEnt;
+import com.ingic.auditix.entities.BooksChapterItemEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.UIHelper;
+import com.ingic.auditix.interfaces.DownloadListenerFragment;
+import com.ingic.auditix.interfaces.RecyclerViewItemListener;
+import com.ingic.auditix.ui.binders.BookChapterBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRatingBar;
+import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.ingic.auditix.ui.views.TitleBar;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadConnectListener;
+import com.liulishuo.filedownloader.FileDownloader;
+import com.liulishuo.filedownloader.event.DownloadServiceConnectChangedEvent;
+import com.liulishuo.filedownloader.event.IDownloadEvent;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,9 +80,99 @@ public class BookDetailFragment extends BaseFragment {
     Unbinder unbinder;
     @BindView(R.id.parent_scroll)
     NestedScrollView nestedScrollView;
+    @BindView(R.id.rv_chapters)
+    CustomRecyclerView rvChapters;
     private int bookID;
     private BookDetailEnt detailEnt;
     private TitleBar titleBar;
+    private BooksChapterItemEnt patsyObject = new BooksChapterItemEnt();
+    private ArrayList<BooksChapterItemEnt> chapterCollections;
+    private DownloadListenerFragment fileDownloadListener = new DownloadListenerFragment() {
+        @Override
+        public void pending(final BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            if (chapterCollections != null && rvChapters != null) {
+                patsyObject.setChapterID((Integer) task.getTag());
+                if (chapterCollections.contains(patsyObject)){
+                    int index = chapterCollections.indexOf(patsyObject);
+                    chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.PENDING);
+                    rvChapters.notifyItemChanged(index);
+                }
+
+            }
+        }
+
+        @Override
+        public void started(BaseDownloadTask task) {
+
+        }
+
+        @Override
+        public void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {
+        }
+
+        @Override
+        public void progress(final BaseDownloadTask task,int progress) {
+            if (chapterCollections != null && rvChapters != null) {
+                patsyObject.setChapterID((Integer) task.getTag());
+                if (chapterCollections.contains(patsyObject)){
+                    int index = chapterCollections.indexOf(patsyObject);
+                    chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.DOWNLOADING);
+                    chapterCollections.get(index).setDownloadProgress(progress);
+                    rvChapters.notifyItemChanged(index);
+                }
+            }
+        }
+        @Override
+        public void completed(final BaseDownloadTask task) {
+            if (chapterCollections != null && rvChapters != null) {
+                patsyObject.setChapterID((Integer) task.getTag());
+                if (chapterCollections.contains(patsyObject)){
+                    int index = chapterCollections.indexOf(patsyObject);
+                    chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.COMPLETE);
+                    rvChapters.notifyItemChanged(index);
+                }
+            }
+
+        }
+
+        @Override
+        public void error(final BaseDownloadTask task, Throwable e) {
+            if (chapterCollections != null && rvChapters != null) {
+                patsyObject.setChapterID((Integer) task.getTag());
+                if (chapterCollections.contains(patsyObject)){
+                    int index = chapterCollections.indexOf(patsyObject);
+                    chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.ERROR);
+                    rvChapters.notifyItemChanged(index);
+                    UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.download_error) + " "
+                            + getDockActivity().getResources().getString(R.string.chapters) + " " + chapterCollections.get(index).getChapterNumber());
+                }
+
+            }
+        }
+
+        @Override
+        public void warn(BaseDownloadTask task) {
+            task.getAutoRetryTimes();
+        }
+    };
+    private RecyclerViewItemListener chapterItemListener = new RecyclerViewItemListener() {
+        @Override
+        public void onRecyclerItemButtonClicked(Object Ent, int position) {
+            if (Ent == null){
+                //Case For Play Button Clicked
+                openPlayer(position);
+            }else {
+                //Case For Download Button Clicked
+                BooksChapterItemEnt ent = (BooksChapterItemEnt) Ent;
+                getDockActivity().addDownload(detailEnt.getChapters().getAudioUrl(), ent.getAudioUrl(), ent.getChapterID());
+            }
+        }
+
+        @Override
+        public void onRecyclerItemClicked(Object Ent, int position) {
+
+        }
+    };
 
     public static BookDetailFragment newInstance(int bookId) {
         Bundle args = new Bundle();
@@ -86,7 +192,6 @@ public class BookDetailFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
-
     }
 
     @Override
@@ -131,6 +236,7 @@ public class BookDetailFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         serviceHelper.enqueueCall(webService.getBookDetails(this.bookID, prefHelper.getUserToken()), WebServiceConstants.GET_BOOK_DETAIL);
+        getDockActivity().setFileDownloadListener(fileDownloadListener);
     }
 
     @Override
@@ -193,6 +299,13 @@ public class BookDetailFragment extends BaseFragment {
             txtChaptersText.setText((result.getTotalChapters() - 1) + "");
             btnListen.setText(R.string.listenbook);
             btnAddCart.setVisibility(View.GONE);
+            if (detailEnt.getIsPurchased() && detailEnt.getChapters().getChapter().size() > 1) {
+                //    detailEnt.getChapters().getChapter().remove(0);
+            }
+            chapterCollections = new ArrayList<>(detailEnt.getChapters().getChapter().subList(0, detailEnt.getChapters().getChapter().size()));
+            rvChapters.setNestedScrollingEnabled(false);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
+            rvChapters.BindRecyclerView(new BookChapterBinder(chapterItemListener,getMainActivity().realm), chapterCollections, layoutManager, new DefaultItemAnimator());
         } else {
             txtChaptersText.setText((result.getTotalChapters()) + "");
         }
@@ -211,29 +324,35 @@ public class BookDetailFragment extends BaseFragment {
                 }
             }
         });
+
     }
 
     @OnClick({R.id.btn_listen, R.id.btn_add_cart})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_listen:
-                if (detailEnt != null && detailEnt.getChapters() != null && detailEnt.getChapters().getChapter().size() > 0) {
-                    if (getMainActivity().booksFilterFragment != null) {
-                        getMainActivity().booksFilterFragment.clearFilters();
-                    }
-                    getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, bookID, AppConstants.TAB_BOOKS, detailEnt), "PlayerFragment");
-                }
+                openPlayer(0);
                 break;
             case R.id.btn_add_cart:
+                serviceHelper.enqueueCall(webService.AddBookToLibrary(bookID, prefHelper.getUserToken()), WebServiceConstants.ADD_LIBRARY);
                 if (detailEnt.getIsPaid()) {
                     getMainActivity().realm.beginTransaction();
                     getMainActivity().realm.copyToRealm(detailEnt);
                     getMainActivity().realm.commitTransaction();
                     btnAddCart.setVisibility(View.GONE);
                 } else {
-                    serviceHelper.enqueueCall(webService.AddBookToLibrary(bookID, prefHelper.getUserToken()), WebServiceConstants.ADD_LIBRARY);
+
                 }
                 break;
+        }
+    }
+
+    private void openPlayer(int startingIndex) {
+        if (detailEnt != null && detailEnt.getChapters() != null && detailEnt.getChapters().getChapter().size() > 0) {
+            if (getMainActivity().booksFilterFragment != null) {
+                getMainActivity().booksFilterFragment.clearFilters();
+            }
+            getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, bookID, AppConstants.TAB_BOOKS, detailEnt,startingIndex), "PlayerFragment");
         }
     }
 }

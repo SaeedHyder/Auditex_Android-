@@ -69,7 +69,6 @@ public final class MediaPlayerHolder implements PlayerAdapter, OnPreparedListene
     private void initializeMediaPlayer() {
         if (mMediaPlayer == null) {
             mMediaPlayer = new AudioPlayer(mContext);
-
             mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
                 @Override
                 public void onCompletion() {
@@ -251,7 +250,7 @@ public final class MediaPlayerHolder implements PlayerAdapter, OnPreparedListene
     }
 
     @Override
-    public void loadPlayList(ArrayList<PlayListModel> mPlayList) {
+    public void loadPlayList(ArrayList<PlayListModel> mPlayList,int currentPlayingItem) {
         if (this.mPlayList == null) {
             this.mPlayList = new ArrayList<>();
             this.mPlayList.addAll(mPlayList);
@@ -259,7 +258,7 @@ public final class MediaPlayerHolder implements PlayerAdapter, OnPreparedListene
             this.mPlayList.addAll(mPlayList);
         }
         initializeMediaPlayer();
-        currentPlayingItem = 0;
+       this. currentPlayingItem = currentPlayingItem;
         loadMedia(getResouceURI(currentPlayingItem));
         logToUI("LoadPlayList(" + this.mPlayList.size() + ")");
     }

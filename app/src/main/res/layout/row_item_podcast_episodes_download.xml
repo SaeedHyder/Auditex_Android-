@@ -3,6 +3,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                xmlns:dpv="http://schemas.android.com/apk/res-auto"
                 android:orientation="horizontal">
 
     <com.ingic.auditix.ui.views.AnyTextView
@@ -28,16 +29,40 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_position"
         android:layout_gravity="start"
+        android:layout_toStartOf="@+id/btn_download_progress"
         android:layout_marginStart="@dimen/x5"
         android:layout_marginTop="@dimen/x5"
+        android:layout_marginEnd="@dimen/x5"
         android:ellipsize="end"
         android:singleLine="true"
+        android:layout_alignParentStart="true"
         android:text=""
         android:textAllCaps="true"
         android:textColor="@color/app_font_black"
         android:textSize="@dimen/x15"
         app:typeface="@string/font_normal"/>
 
+    <com.dinuscxj.progressbar.CircleProgressBar
+        android:id="@+id/btn_download_progress"
+        android:layout_width="@dimen/x40"
+        android:layout_height="@dimen/x40"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginTop="@dimen/x10"
+        android:visibility="invisible"
+        app:line_count="30"
+        app:line_width="4dp"
+        app:progress_background_color="@color/white"
+        app:progress_end_color="@color/app_title_orange"
+        app:progress_shader="sweep"
+        app:progress_start_color="@color/app_title_orange"
+        app:progress_stroke_cap="round"
+        app:progress_stroke_width="4dp"
+        app:progress_text_color="@color/app_title_orange"
+        app:style="solid_line"
+        />
 
     <ImageView
         android:id="@+id/btn_download"
@@ -51,6 +76,40 @@
         android:src="@drawable/download_circle"
         />
 
+    <ImageView
+        android:id="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginTop="@dimen/x10"
+        android:src="@drawable/play_circle_orange"
+        android:visibility="gone"
+        />
+
+
+   <!-- <com.panwrona.downloadprogressbar.library.DownloadProgressBar
+        android:id="@+id/btn_download"
+        android:layout_width="@dimen/x35"
+        android:layout_height="@dimen/x35"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginTop="@dimen/x10"
+        dpv:circleBackgroundColor="@color/app_title_orange"
+        dpv:circleRadius="@dimen/x15"
+        dpv:drawingColor="@color/app_title_orange"
+        dpv:lineWidth="3dp"
+        dpv:overshootValue="2.5"
+        dpv:progressBackgroundColor="@color/app_title_orange"
+        dpv:progressColor="@color/white"
+        dpv:progressDuration="2000"
+        dpv:resultDuration="5000"
+        dpv:strokeWidth="2dp"
+        />-->
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"

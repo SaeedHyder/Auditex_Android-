@@ -13,7 +13,7 @@ import com.ingic.auditix.activities.DockActivity;
 
 public class InternetHelper {
 
-    public static boolean CheckInternetConectivityandShowToast(DockActivity activity) {
+    public static boolean CheckInternetConectivityandShowToast(final DockActivity activity) {
 
         ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -21,8 +21,13 @@ public class InternetHelper {
             return true;
         } else {
             // text.setText("Look your not online");
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    UIHelper.showLongToastInCenter(activity, activity.getString(R.string.connection_lost));
+                }
+            });
 
-            UIHelper.showLongToastInCenter(activity, activity.getString(R.string.connection_lost));
             return false;
         }
 

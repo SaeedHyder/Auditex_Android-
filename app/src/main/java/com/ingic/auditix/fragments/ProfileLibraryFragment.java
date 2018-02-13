@@ -56,7 +56,7 @@ public class ProfileLibraryFragment extends BaseFragment {
             if (detailEnt != null && detailEnt.getChapters() != null && detailEnt.getChapters().getChapter().size() > 0) {
                 detailEnt.setIsPurchased(true);
                 detailEnt.setIsFavorite(false);
-                getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt), "PlayerFragment");
+                getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt,0), "PlayerFragment");
             }
         }
     };

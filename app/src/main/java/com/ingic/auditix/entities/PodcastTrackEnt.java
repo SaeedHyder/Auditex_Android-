@@ -12,6 +12,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class PodcastTrackEnt {
 
+    @SerializedName("Id")
+    @Expose
+    private Integer Id;
     @SerializedName("Name")
     @Expose
     private String name;
@@ -31,6 +34,32 @@ public class PodcastTrackEnt {
     @Expose
     private String fileUrl;
     private boolean isSelected;
+    private int statusState;
+    private int downloadProgress = 0;
+
+    public Integer getId() {
+        return Id;
+    }
+
+    public void setId(Integer id) {
+        Id = id;
+    }
+
+    public int getStatusState() {
+        return statusState;
+    }
+
+    public void setStatusState(int statusState) {
+        this.statusState = statusState;
+    }
+
+    public int getDownloadProgress() {
+        return downloadProgress;
+    }
+
+    public void setDownloadProgress(int downloadProgress) {
+        this.downloadProgress = downloadProgress;
+    }
 
     public boolean isSelected() {
         return isSelected;
@@ -102,6 +131,6 @@ public class PodcastTrackEnt {
             return false;
         }
         PodcastTrackEnt rhs = ((PodcastTrackEnt) other);
-        return new EqualsBuilder().append(duration, rhs.duration).append(imageUrl, rhs.imageUrl).append(description, rhs.description).append(name, rhs.name).append(dateAdded, rhs.dateAdded).append(fileUrl, rhs.fileUrl).isEquals();
+        return new EqualsBuilder().append(Id, rhs.Id).isEquals();
     }
 }

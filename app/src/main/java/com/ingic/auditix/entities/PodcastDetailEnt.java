@@ -15,8 +15,10 @@ import java.util.ArrayList;
 public class PodcastDetailEnt {
     @SerializedName("WowzaURL")
     @Expose
-
     public String WowzaURL;
+    @SerializedName("AudioUrl")
+    @Expose
+    public String AudioUrl;
     @SerializedName("WowzaPort")
     @Expose
     public String WowzaPort;
@@ -59,6 +61,14 @@ public class PodcastDetailEnt {
     @SerializedName("TrackList")
     @Expose
     private ArrayList<PodcastTrackEnt> trackList = null;
+
+    public String getAudioUrl() {
+        return AudioUrl;
+    }
+
+    public void setAudioUrl(String audioUrl) {
+        AudioUrl = audioUrl;
+    }
 
     public String getGenre() {
         return Genre;

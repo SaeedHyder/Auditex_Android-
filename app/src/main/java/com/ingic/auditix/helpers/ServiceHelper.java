@@ -23,12 +23,10 @@ public class ServiceHelper<T> {
     private final ProgressDialog progressDialog;
     private webServiceResponseLisener serviceResponseLisener;
     private DockActivity context;
-    private WebService webService;
 
-    public ServiceHelper(webServiceResponseLisener serviceResponseLisener, DockActivity conttext, WebService webService) {
+    public ServiceHelper(webServiceResponseLisener serviceResponseLisener, DockActivity conttext) {
         this.serviceResponseLisener = serviceResponseLisener;
         this.context = conttext;
-        this.webService = webService;
         progressDialog = new ProgressDialog(conttext);
         progressDialog.setMessage(conttext.getString(R.string.com_facebook_loading));
         progressDialog.setCancelable(false);

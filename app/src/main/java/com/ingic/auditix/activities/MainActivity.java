@@ -54,7 +54,6 @@ public class MainActivity extends DockActivity implements OnClickListener {
     private static final String TAG = "MainActivity";
     //region User Image Picker
     private static final int MAX_IMAGE_PICK_COUNT = 1;
-    public Realm realm;
     public TitleBar titleBar;
     @BindView(R.id.sideMneuFragmentContainer)
     public FrameLayout sideMneuFragmentContainer;
@@ -349,7 +348,6 @@ public class MainActivity extends DockActivity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        realm = Realm.getDefaultInstance();
         setContentView(R.layout.activity_dock);
         ButterKnife.bind(this);
         titleBar = header_main;

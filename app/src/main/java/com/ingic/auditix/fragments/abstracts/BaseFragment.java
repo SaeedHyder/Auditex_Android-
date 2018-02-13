@@ -190,7 +190,7 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
                     WebServiceConstants.SERVICE_URL);
         }
         if (serviceHelper == null) {
-            serviceHelper = new ServiceHelper(this, getDockActivity(), webService);
+            serviceHelper = new ServiceHelper(this, getDockActivity());
         }
 
         myDockActivity = getDockActivity();

@@ -2,6 +2,7 @@ package com.ingic.auditix.entities;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.ingic.auditix.global.AppConstants;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -27,6 +28,24 @@ public class BooksChapterItemEnt extends RealmObject {
     @Expose
     private Integer fileDuration;
     private boolean isSelected;
+    private int statusState ;
+    private int downloadProgress = 0;
+
+    public int getStatusState() {
+        return statusState;
+    }
+
+    public void setStatusState(int statusState) {
+        this.statusState = statusState;
+    }
+
+    public int getDownloadProgress() {
+        return downloadProgress;
+    }
+
+    public void setDownloadProgress(int downloadProgress) {
+        this.downloadProgress = downloadProgress;
+    }
 
     public boolean isSelected() {
         return isSelected;
@@ -82,6 +101,6 @@ public class BooksChapterItemEnt extends RealmObject {
             return false;
         }
         BooksChapterItemEnt rhs = ((BooksChapterItemEnt) other);
-        return new EqualsBuilder().append(audioUrl, rhs.audioUrl).append(chapterNumber, rhs.chapterNumber).append(chapterID, rhs.chapterID).append(fileDuration, rhs.fileDuration).isEquals();
+        return new EqualsBuilder().append(chapterID, rhs.chapterID).isEquals();
     }
 }

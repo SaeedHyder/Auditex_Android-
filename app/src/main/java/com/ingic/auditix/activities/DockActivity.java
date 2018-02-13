@@ -2,6 +2,7 @@ package com.ingic.auditix.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,16 +13,30 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.ingic.auditix.BaseApplication;
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.DownloadItemModel;
 import com.ingic.auditix.fragments.BooksFilterFragment;
 import com.ingic.auditix.fragments.FilterFragment;
 import com.ingic.auditix.fragments.HomeFragment;
 import com.ingic.auditix.fragments.SideMenuFragment;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
+import com.ingic.auditix.interfaces.DownloadListener;
+import com.ingic.auditix.interfaces.DownloadListenerFragment;
 import com.ingic.auditix.interfaces.LoadingListener;
-import com.ingic.auditix.media.MediaPlayerHolder;
 import com.ingic.auditix.residemenu.ResideMenu;
 import com.ingic.auditix.ui.dialogs.DialogFactory;
+import com.liulishuo.filedownloader.FileDownloadConnectListener;
+import com.liulishuo.filedownloader.FileDownloader;
+import com.liulishuo.filedownloader.event.DownloadServiceConnectChangedEvent;
+import com.liulishuo.filedownloader.event.IDownloadEvent;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 /**
@@ -31,8 +46,8 @@ import com.ingic.auditix.ui.dialogs.DialogFactory;
  */
 public abstract class DockActivity extends AppCompatActivity implements
         LoadingListener {
-
     public static final String KEY_FRAG_FIRST = "firstFrag";
+    public Realm realm;
     public SideMenuFragment sideMenuFragment;
     public FilterFragment filterFragment;
     public BooksFilterFragment booksFilterFragment;
@@ -51,6 +66,7 @@ public abstract class DockActivity extends AppCompatActivity implements
 
         }
     };
+    private DownloadListener fileDownloadListener;
 
     public abstract int getDockFrameLayoutId();
 
@@ -58,7 +74,50 @@ public abstract class DockActivity extends AppCompatActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        realm = Realm.getDefaultInstance();
         prefHelper = new BasePreferenceHelper(this);
+        fileDownloadListener = new DownloadListener(realm);
+        FileDownloader.getImpl().bindService();
+        FileDownloader.getImpl().addServiceConnectListener(new FileDownloadConnectListener() {
+            @Override
+            public boolean callback(IDownloadEvent event) {
+                return super.callback(event);
+            }
+
+            @Override
+            public void connected() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        RealmResults<DownloadItemModel> object = realm
+                                .where(DownloadItemModel.class).findAll();
+                        for (DownloadItemModel items : object
+                                ) {
+                            int status = FileDownloader.getImpl().replaceListener(items.getDownloadID(), fileDownloadListener);
+                            if (status == 0) {
+                                if (!realm.isInTransaction()) {
+                                    realm.beginTransaction();
+                                    items.deleteFromRealm();
+                                    realm.commitTransaction();
+                                }
+                            }
+                        }
+                        realm.close();
+                    }
+                });
+            }
+
+            @Override
+            public void disconnected() {
+
+            }
+
+            @Override
+            public DownloadServiceConnectChangedEvent.ConnectStatus getConnectStatus() {
+                return super.getConnectStatus();
+            }
+        });
+
     }
 
     public void replaceDockableFragment(BaseFragment frag) {
@@ -244,4 +303,53 @@ public abstract class DockActivity extends AppCompatActivity implements
         return menuListener;
     }
 
+    public void setFileDownloadListener(DownloadListenerFragment listener) {
+        if (fileDownloadListener != null) {
+            fileDownloadListener.setListenerFragment(listener);
+        }
+    }
+
+    public void addDownload(String downloadUrl, String fileName, String fileFormat, int tag) {
+        FileDownloader.getImpl().create(getDownloadUrl(downloadUrl, ""))
+                .setPath(getDownloadPath(fileName, fileFormat))
+                .setListener(fileDownloadListener)
+                .setTag(tag)
+                .setCallbackProgressTimes(100)
+                .setAutoRetryTimes(5)
+                .start();
+//        FileDownloader.getImpl().start(fileDownloadListener, false);
+
+    }
+
+    public void addDownload(String serverPath, String audioUrl, int tag) {
+        FileDownloader.getImpl().create(getDownloadUrl(serverPath, audioUrl))
+                .setPath(getDownloadPath(audioUrl, ""))
+                .setListener(fileDownloadListener)
+                .setTag(tag)
+                .setCallbackProgressTimes(100)
+                .setAutoRetryTimes(5)
+                .start();
+//        FileDownloader.getImpl().start(fileDownloadListener, false);
+    }
+
+    @NonNull
+    private String getDownloadPath(String fileName, String fileFormat) {
+        return AppConstants.DOWNLOAD_PATH + File.separator + fileName
+                .replaceAll("\\s+", "")
+                .replaceAll("\\\\", "")
+                .replaceAll("/", "")
+                + fileFormat;
+    }
+
+    private String getDownloadUrl(String serverPath, String audioUrl) {
+        String temp = serverPath + audioUrl;
+        temp = temp.replaceAll(" ", "%20");
+        try {
+            URL sourceUrl = new URL(temp);
+            temp = sourceUrl.toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return temp;
+    }
 }

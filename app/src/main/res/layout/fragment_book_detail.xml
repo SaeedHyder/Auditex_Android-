@@ -423,6 +423,17 @@
                     android:layout_height="@dimen/x15"
                     android:src="@drawable/forward_icon"/>
             </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="@dimen/x10"
+            android:background="@color/app_gray"/>
 
+        <com.ingic.auditix.ui.views.CustomRecyclerView
+            android:id="@+id/rv_chapters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/x20"
+            android:divider="@null"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

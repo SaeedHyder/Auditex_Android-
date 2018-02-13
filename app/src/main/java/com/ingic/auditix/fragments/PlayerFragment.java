@@ -38,6 +38,7 @@ import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -104,12 +105,12 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     //endregion
 
     //region Fragment Lifecycles
-    public static PlayerFragment newInstance(PodcastDetailEnt podcastDetail, Integer ID, String playerType, BookDetailEnt bookDetailEnt) {
+    public static PlayerFragment newInstance(PodcastDetailEnt podcastDetail, Integer ID, String playerType, BookDetailEnt bookDetailEnt, int startingIndex) {
         Bundle args = new Bundle();
 
         PlayerFragment fragment = new PlayerFragment();
         fragment.setArguments(args);
-        fragment.setContent(podcastDetail, ID, playerType, bookDetailEnt);
+        fragment.setContent(podcastDetail, ID, playerType, bookDetailEnt, startingIndex);
         return fragment;
     }
 
@@ -149,7 +150,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             if (bookDetailEnt.getIsPurchased()) {
                 BookChaptersListingFragment fragment = new BookChaptersListingFragment();
                 fragment.setListItemListener(this);
-                fragment.setTrackList(new ArrayList<>(bookDetailEnt.getChapters().getChapter().subList(0,bookDetailEnt.getChapters().getChapter().size())));
+                fragment.setTrackList(new ArrayList<>(bookDetailEnt.getChapters().getChapter().subList(0, bookDetailEnt.getChapters().getChapter().size())));
                 getMainActivity().setRightSideFragment(fragment);
                 titleBar.showListingFragment(new View.OnClickListener() {
                     @Override
@@ -172,11 +173,12 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         }
     }
 
-    private void setContent(PodcastDetailEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt) {
+    private void setContent(PodcastDetailEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt, int startingIndex) {
         this.podcastDetailEnt = podcastDetail;
         this.ID = trackID;
         this.playerType = playerType;
         this.bookDetailEnt = bookDetailEnt;
+        this.startingIndex = startingIndex;
     }
 
     @Override
@@ -267,10 +269,17 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         }
         for (BooksChapterItemEnt tracks : chapters.getChapter()
                 ) {
-            mUserPlaylist.add(new PlayListModel("", String.format("%s:%s/%s/mp3:%s/playlist.m3u8", chapters.getWowzaURL(), chapters.getWowzaPort(),
-                    chapters.getWowzaAppName(), tracks.getAudioUrl()), false));
+            String path = AppConstants.DOWNLOAD_PATH + File.separator + tracks.getAudioUrl().replaceAll("\\s+", "");
+            if (new File(path).exists()) {
+                mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path, false));
+
+            } else {
+                mUserPlaylist.add(new PlayListModel("", String.format("%s:%s/%s/mp3:%s/playlist.m3u8", chapters.getWowzaURL(), chapters.getWowzaPort(),
+                        chapters.getWowzaAppName(), tracks.getAudioUrl()), false));
+            }
+
         }
-        mPlayerAdapter.loadPlayList(mUserPlaylist);
+        mPlayerAdapter.loadPlayList(mUserPlaylist,startingIndex);
         setItemName(startingIndex);
     }
 
@@ -280,14 +289,19 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         mUserPlaylist = new ArrayList<>();
         for (PodcastTrackEnt tracks : trackList
                 ) {
-            if (podcastDetailEnt.isEpisodeAdded()) {
-                mUserPlaylist.add(new PlayListModel("", String.format("%s:%s/%s/mp3:%s/playlist.m3u8", podcastDetailEnt.WowzaURL, podcastDetailEnt.getWowzaPort(),
-                        podcastDetailEnt.getWowzaAppName(), tracks.getFileUrl()), false));
+            String path = AppConstants.DOWNLOAD_PATH + File.separator + tracks.getName().replaceAll("\\s+", "") + ".mp3";
+            if (new File(path).exists()) {
+                mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path, false));
             } else {
-                mUserPlaylist.add(new PlayListModel("", tracks.getFileUrl(), false));
+                if (podcastDetailEnt.isEpisodeAdded()) {
+                    mUserPlaylist.add(new PlayListModel("", String.format("%s:%s/%s/mp3:%s/playlist.m3u8", podcastDetailEnt.WowzaURL, podcastDetailEnt.getWowzaPort(),
+                            podcastDetailEnt.getWowzaAppName(), tracks.getFileUrl()), false));
+                } else {
+                    mUserPlaylist.add(new PlayListModel("", tracks.getFileUrl(), false));
+                }
             }
         }
-        mPlayerAdapter.loadPlayList(mUserPlaylist);
+        mPlayerAdapter.loadPlayList(mUserPlaylist,startingIndex);
         setItemName(startingIndex);
 
     }

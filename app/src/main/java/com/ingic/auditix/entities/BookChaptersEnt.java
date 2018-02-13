@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
@@ -30,10 +27,21 @@ public class BookChaptersEnt extends RealmObject {
     @SerializedName("WowzaAppName")
     @Expose
     private String wowzaAppName;
+    @SerializedName("AudioUrl")
+    @Expose
+    private String AudioUrl;
+
+    public String getAudioUrl() {
+        return AudioUrl;
+    }
+
+    public void setAudioUrl(String audioUrl) {
+        AudioUrl = audioUrl;
+    }
 
     public RealmList<BooksChapterItemEnt> getChapter() {
         //return new ArrayList<>(chapter.subList(0,chapter.size()));
-    return chapter;
+        return chapter;
     }
 
     public void setChapter(RealmList<BooksChapterItemEnt> chapter) {

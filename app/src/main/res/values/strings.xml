@@ -88,6 +88,7 @@
     <string name="connection_lost">No Internet Found</string>
     <integer name="key_recycler_position">101</integer>
     <integer name="key_recycler_object">102</integer>
+    <integer name="key_view_ID">105</integer>
     <integer name="key_view_type">103</integer>
 
     <!--FONTS-->
@@ -246,4 +247,5 @@
     <string name="preview">Preview</string>
     <string name="chapters">Chapter </string>
     <string name="chapters_heading">Chapters</string>
+    <string name="download_error">Cannot download </string>
 </resources>
