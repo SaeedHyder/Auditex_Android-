@@ -1,9 +1,10 @@
 package com.ingic.auditix.interfaces;
 
-import android.support.annotation.NonNull;
-
+import com.ingic.auditix.R;
+import com.ingic.auditix.activities.DockActivity;
 import com.ingic.auditix.entities.DownloadItemModel;
 import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.helpers.UIHelper;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 
@@ -16,9 +17,11 @@ import io.realm.Realm;
 public class DownloadListener extends FileDownloadListener {
     private DownloadListenerFragment listenerFragment;
     private Realm realm;
+    private DockActivity context;
 
-    public DownloadListener(Realm realm) {
+    public DownloadListener(Realm realm, DockActivity context) {
         this.realm = realm;
+        this.context = context;
     }
 
     public Realm getRealm() {
@@ -32,7 +35,7 @@ public class DownloadListener extends FileDownloadListener {
         this.listenerFragment = listenerFragment;
     }
 
-    private void addTaskToRealm(final BaseDownloadTask task,final int state) {
+    private void addTaskToRealm(final BaseDownloadTask task, final int state) {
         if (!getRealm().isInTransaction()) {
             DownloadItemModel object = getRealm()
                     .where(DownloadItemModel.class)
@@ -144,6 +147,7 @@ public class DownloadListener extends FileDownloadListener {
         if (listenerFragment != null) {
             removeTaskToRealm(task);
             listenerFragment.error(task, e);
+            UIHelper.showShortToastInCenter(context, String.format("%s %s", context.getResources().getString(R.string.download_error), task.getTag(context.getResources().getInteger(R.integer.key_item_name))));
         }
     }
 

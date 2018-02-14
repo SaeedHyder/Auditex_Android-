@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.PodcastTrackEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.interfaces.PlayerItemChangeListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.interfaces.TrackListItemListener;
 import com.ingic.auditix.ui.binders.PodcastEpisodeListingBinder;
@@ -24,7 +25,7 @@ import butterknife.Unbinder;
 /**
  * Created on 1/17/2018.
  */
-public class EpisodeListingFragment extends BaseFragment {
+public class EpisodeListingFragment extends BaseFragment implements PlayerItemChangeListener{
     public static final String TAG = "EpisodeListingFragment";
     @BindView(R.id.rv_episode)
     CustomRecyclerView rvEpisode;
@@ -102,5 +103,14 @@ public class EpisodeListingFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onItemChanged(int position) {
+        trackList.get(previousSelected).setSelected(false);
+        rvEpisode.notifyItemChanged(previousSelected);
+        trackList.get(position).setSelected(true);
+        rvEpisode.notifyItemChanged(position);
+        previousSelected = position;
     }
 }

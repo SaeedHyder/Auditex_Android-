@@ -95,7 +95,6 @@
             android:paddingEnd="@dimen/x10"
             android:paddingStart="@dimen/x10"
             android:text="@string/clear"
-            android:textAllCaps="false"
             android:textColor="@color/white"/>
 
         <Button
@@ -111,7 +110,6 @@
             android:paddingEnd="@dimen/x10"
             android:paddingStart="@dimen/x10"
             android:text="@string/done"
-            android:textAllCaps="false"
             android:textColor="@color/white"/>
     </RelativeLayout>
 </LinearLayout>

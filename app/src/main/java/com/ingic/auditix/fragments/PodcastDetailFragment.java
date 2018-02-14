@@ -157,8 +157,8 @@ public class PodcastDetailFragment extends BaseFragment {
                     int index = podcastTrackEnts.indexOf(patsyObject);
                     podcastTrackEnts.get(index).setStatusState(AppConstants.DownloadStates.ERROR);
                     rvEpisodes.notifyItemChanged(index);
-                    UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.download_error)
-                            + podcastTrackEnts.get(index).getName());
+                   /* UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.download_error)
+                            + podcastTrackEnts.get(index).getName());*/
                 }
 
             }
@@ -179,9 +179,9 @@ public class PodcastDetailFragment extends BaseFragment {
                 //Case For Download Button Clicked
                 PodcastTrackEnt ent = (PodcastTrackEnt) Ent;
                 if (podcastDetailEnt.isEpisodeAdded()) {
-                    getDockActivity().addDownload(podcastDetailEnt.AudioUrl, ent.getFileUrl(), ent.getId());
+                    getDockActivity().addDownload(podcastDetailEnt.AudioUrl, ent.getFileUrl(), ent.getId(),ent.getName());
                 } else {
-                    getDockActivity().addDownload(ent.getFileUrl(), ent.getName(), ".mp3", ent.getId());
+                    getDockActivity().addDownload(ent.getFileUrl(), ent.getName(), ".mp3", ent.getId(),ent.getName());
                 }
             }
 

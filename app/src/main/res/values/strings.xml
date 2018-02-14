@@ -248,4 +248,6 @@
     <string name="chapters">Chapter </string>
     <string name="chapters_heading">Chapters</string>
     <string name="download_error">Cannot download </string>
+    <string name="add_cart_toast">Book has been added to Cart</string>
+    <string name="proceed_checkout">Proceed to Checkout</string>
 </resources>

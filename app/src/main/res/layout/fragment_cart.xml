@@ -1,32 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@drawable/bg"
-              android:orientation="vertical">
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:fillViewport="true"
+                                            android:orientation="vertical"
+                                            android:scrollbars="none">
 
-    <com.ingic.auditix.ui.views.AnyTextView
-        android:id="@+id/txt_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/no_data_available"
-        android:textColor="@color/dark_grey"
-        android:textSize="@dimen/x15"
-        android:visibility="gone"
-        app:typeface="@string/font_normal"
-
-        />
-
-    <com.ingic.auditix.ui.views.CustomRecyclerView
-        android:id="@+id/rv_cart"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@null"
-        android:visibility="visible"
-        />
+       android:background="@drawable/bg"
+        android:orientation="vertical">
 
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/no_data_available"
+            android:textColor="@color/dark_grey"
+            android:textSize="@dimen/x15"
+            android:visibility="gone"
+            app:typeface="@string/font_normal"
 
-</LinearLayout>
+            />
+
+        <com.ingic.auditix.ui.views.CustomRecyclerView
+            android:id="@+id/rv_cart"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x200"
+            android:layout_above="@+id/btn_checkout"
+            android:layout_alignParentTop="true"
+            android:divider="@null"
+            android:visibility="visible"/>
+
+        <Button
+            android:id="@+id/btn_checkout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x40"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/x20"
+            android:layout_marginEnd="@dimen/x40"
+            android:layout_marginStart="@dimen/x40"
+            android:layout_marginTop="@dimen/x20"
+            android:background="@drawable/button_orange"
+            android:text="@string/proceed_checkout"
+            android:textAllCaps="false"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>

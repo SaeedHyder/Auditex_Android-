@@ -169,7 +169,7 @@ public interface WebService {
     Call<ResponseWrapper> AddBookToFavorite(@Query("bookId") Integer bookId, @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("AddBooksToLibrary")
-    Call<ResponseWrapper> AddBookToLibrary(@Query("BookIds") Integer bookId, @Header(WebServiceConstants.HEADER_KEY) String header);
+    Call<ResponseWrapper> AddBookToLibrary(@Query("BookIds") String bookId, @Header(WebServiceConstants.HEADER_KEY) String header);
     @GET("GetAllGenre")
     Call<ResponseWrapper<ArrayList<BookGenreEnt>>> getAllBooksFilters(@Query("culture") String culture,@Header(WebServiceConstants.HEADER_KEY) String header);
 

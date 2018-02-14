@@ -16,14 +16,12 @@ import com.ingic.auditix.R;
 import com.ingic.auditix.entities.CartEnt;
 import com.ingic.auditix.entities.SubscribePodcastEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
-import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.DownloadBinder;
 import com.ingic.auditix.ui.binders.PodcastSubscriptionBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
-import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import java.util.ArrayList;
@@ -65,6 +63,8 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
     CustomRecyclerView rvDownloads;
     @BindView(R.id.rv_subscribe)
     CustomRecyclerView rvSubscribe;
+    @BindView(R.id.txt_subscription_no_data)
+    AnyTextView txtSubscriptionNoData;
     private ArrayList<CartEnt> todayDownloadsCollections;
     private ArrayList<CartEnt> monthDownloadsCollections;
     private ArrayList<CartEnt> olderDownloadsCollections;
@@ -128,9 +128,19 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
             subscribePodcastcollection.add(result.get(i));
         }
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
-        if (rvSubscribe!=null) {
+        if (rvSubscribe != null) {
             rvSubscribe.BindRecyclerView(new PodcastSubscriptionBinder(options, subscriptionItemLister), subscribePodcastcollection
                     , new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false), new DefaultItemAnimator());
+            if (subscribePodcastcollection.size() <= 0) {
+                txtSubscriptionNoData.setVisibility(View.VISIBLE);
+                rvSubscribe.setVisibility(View.GONE);
+                btnSubscriptionSeeall.setVisibility(View.INVISIBLE);
+            } else {
+                txtSubscriptionNoData.setVisibility(View.GONE);
+                rvSubscribe.setVisibility(View.VISIBLE);
+                btnSubscriptionSeeall.setVisibility(View.VISIBLE);
+
+            }
         }
     }
 

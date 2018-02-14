@@ -344,8 +344,10 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         if (podcastSubscribeCollections.size() <= 0) {
             txtSubscriptionNoData.setVisibility(View.VISIBLE);
             rvSubscribe.setVisibility(View.GONE);
+            btnSubscriptionSeeall.setVisibility(View.INVISIBLE);
         } else {
             txtSubscriptionNoData.setVisibility(View.GONE);
+            btnSubscriptionSeeall.setVisibility(View.VISIBLE);
             rvSubscribe.setVisibility(View.VISIBLE);
         }
     }

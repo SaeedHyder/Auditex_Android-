@@ -54,6 +54,9 @@ public class ProfileLibraryFragment extends BaseFragment {
         public void onRecyclerItemClicked(Object Ent, int position) {
             BookDetailEnt detailEnt = (BookDetailEnt) Ent;
             if (detailEnt != null && detailEnt.getChapters() != null && detailEnt.getChapters().getChapter().size() > 0) {
+                if (getMainActivity().booksFilterFragment != null) {
+                    getMainActivity().booksFilterFragment.clearFilters();
+                }
                 detailEnt.setIsPurchased(true);
                 detailEnt.setIsFavorite(false);
                 getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt,0), "PlayerFragment");

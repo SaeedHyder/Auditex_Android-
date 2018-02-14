@@ -151,6 +151,18 @@
                 android:layout_marginTop="@dimen/x10"
                 android:divider="@null"
                 android:scrollbars="none"/>
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_subscription_no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/x10"
+                android:maxLines="1"
+                android:text="@string/no_data_available"
+                android:textColor="@color/app_font_black"
+                android:textSize="@dimen/x16"
+                android:visibility="gone"
+                app:typeface="@string/font_normal"/>
 
             <View
                 android:layout_width="match_parent"

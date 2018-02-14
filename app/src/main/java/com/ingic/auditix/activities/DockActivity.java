@@ -27,6 +27,7 @@ import com.ingic.auditix.interfaces.LoadingListener;
 import com.ingic.auditix.residemenu.ResideMenu;
 import com.ingic.auditix.ui.dialogs.DialogFactory;
 import com.liulishuo.filedownloader.FileDownloadConnectListener;
+import com.liulishuo.filedownloader.FileDownloadList;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.event.DownloadServiceConnectChangedEvent;
 import com.liulishuo.filedownloader.event.IDownloadEvent;
@@ -76,7 +77,8 @@ public abstract class DockActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         realm = Realm.getDefaultInstance();
         prefHelper = new BasePreferenceHelper(this);
-        fileDownloadListener = new DownloadListener(realm);
+        fileDownloadListener = new DownloadListener(realm, this);
+
         FileDownloader.getImpl().bindService();
         FileDownloader.getImpl().addServiceConnectListener(new FileDownloadConnectListener() {
             @Override
@@ -86,25 +88,22 @@ public abstract class DockActivity extends AppCompatActivity implements
 
             @Override
             public void connected() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        RealmResults<DownloadItemModel> object = realm
-                                .where(DownloadItemModel.class).findAll();
-                        for (DownloadItemModel items : object
-                                ) {
-                            int status = FileDownloader.getImpl().replaceListener(items.getDownloadID(), fileDownloadListener);
-                            if (status == 0) {
-                                if (!realm.isInTransaction()) {
-                                    realm.beginTransaction();
-                                    items.deleteFromRealm();
-                                    realm.commitTransaction();
-                                }
-                            }
+                Realm realm = Realm.getDefaultInstance();
+                RealmResults<DownloadItemModel> object = realm
+                        .where(DownloadItemModel.class).findAll();
+                for (DownloadItemModel items : object
+                        ) {
+                    int status = FileDownloader.getImpl().replaceListener(items.getDownloadID(), fileDownloadListener);
+                    if (status == 0) {
+                        if (!realm.isInTransaction()) {
+                            realm.beginTransaction();
+                            items.deleteFromRealm();
+                            realm.commitTransaction();
                         }
-                        realm.close();
                     }
-                });
+                }
+                realm.close();
+                realm = null;
             }
 
             @Override
@@ -309,23 +308,25 @@ public abstract class DockActivity extends AppCompatActivity implements
         }
     }
 
-    public void addDownload(String downloadUrl, String fileName, String fileFormat, int tag) {
+    public void addDownload(String downloadUrl, String fileName, String fileFormat, int tag, String name) {
         FileDownloader.getImpl().create(getDownloadUrl(downloadUrl, ""))
                 .setPath(getDownloadPath(fileName, fileFormat))
                 .setListener(fileDownloadListener)
                 .setTag(tag)
+                .setTag(getResources().getInteger(R.integer.key_item_name), name)
                 .setCallbackProgressTimes(100)
-                .setAutoRetryTimes(5)
+                .setAutoRetryTimes(50)
                 .start();
 //        FileDownloader.getImpl().start(fileDownloadListener, false);
 
     }
 
-    public void addDownload(String serverPath, String audioUrl, int tag) {
+    public void addDownload(String serverPath, String audioUrl, int tag, String name) {
         FileDownloader.getImpl().create(getDownloadUrl(serverPath, audioUrl))
                 .setPath(getDownloadPath(audioUrl, ""))
                 .setListener(fileDownloadListener)
                 .setTag(tag)
+                .setTag(getResources().getInteger(R.integer.key_item_name), name)
                 .setCallbackProgressTimes(100)
                 .setAutoRetryTimes(5)
                 .start();

@@ -30,8 +30,8 @@ import butterknife.Unbinder;
 public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSelectedListener {
     private final int INDEX_NEWS = 0;
     private final int INDEX_PODCAST = 1;
-    private final int INDEX_BOOKS = 2;
-    private final int INDEX_SEARCH = 3;
+    private final int INDEX_SEARCH = 2;
+    private final int INDEX_BOOKS = 3;
     private final int INDEX_PROFILE = 4;
     @BindView(R.id.pager)
     FrameLayout pager;
@@ -165,8 +165,8 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
         }
         bindTabsResources(new NewsFragment(), R.drawable.news_orange_small, R.drawable.news_grey, R.string.news);
         bindTabsResources(new PodcastFragmentNew(), R.drawable.podcast_orange_small, R.drawable.podcast_icon_grey, R.string.podcast);
-        bindTabsResources(new BooksFragment(), R.drawable.books_orange, R.drawable.books_grey, R.string.books);
         bindTabsResources(new SearchFragment(), R.drawable.search_orange, R.drawable.search_grey, R.string.search);
+        bindTabsResources(new BooksFragment(), R.drawable.books_orange, R.drawable.books_grey, R.string.books);
         bindTabsResources(new ProfileFragment(), R.drawable.profile_icon_orange, R.drawable.profile_icon_grey, R.string.profile);
        /* pager.setAdapter(adapter);
         pager.getAdapter().notifyDataSetChanged();*/

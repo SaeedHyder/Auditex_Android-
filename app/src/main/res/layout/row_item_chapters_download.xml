@@ -36,7 +36,7 @@
             android:visibility="gone"
             app:line_count="30"
             app:line_width="4dp"
-            app:progress_background_color="@color/white"
+            app:progress_background_color="@color/transparent"
             app:progress_end_color="@color/app_title_orange"
             app:progress_shader="sweep"
             app:progress_start_color="@color/app_title_orange"

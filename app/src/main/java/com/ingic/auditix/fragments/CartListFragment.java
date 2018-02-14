@@ -3,13 +3,16 @@ package com.ingic.auditix.fragments;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.CartBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -21,8 +24,11 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.RealmResults;
+
+import static com.ingic.auditix.global.WebServiceConstants.ADD_LIBRARY;
 
 /**
  * Created on 12/21/2017.
@@ -33,6 +39,8 @@ public class CartListFragment extends BaseFragment implements RecyclerViewItemLi
     @BindView(R.id.rv_cart)
     CustomRecyclerView rvCart;
     Unbinder unbinder;
+    @BindView(R.id.btn_checkout)
+    Button btnCheckout;
     private ArrayList<BookDetailEnt> cartCollections;
 
     public static CartListFragment newInstance() {
@@ -49,6 +57,22 @@ public class CartListFragment extends BaseFragment implements RecyclerViewItemLi
         if (getArguments() != null) {
         }
 
+    }
+
+    @Override
+    public void ResponseSuccess(Object result, String Tag) {
+        switch (Tag) {
+            case ADD_LIBRARY:
+                RealmResults<BookDetailEnt> results = getMainActivity().realm.where(BookDetailEnt.class).findAll();
+                if (!getMainActivity().realm.isInTransaction()) {
+                    getMainActivity().realm.beginTransaction();
+                    results.deleteAllFromRealm();
+                    getMainActivity().realm.commitTransaction();
+                }
+                UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.book_item_added_Book));
+
+                break;
+        }
     }
 
     @Override
@@ -117,7 +141,21 @@ public class CartListFragment extends BaseFragment implements RecyclerViewItemLi
     }
 
     @Override
-    public void onRecyclerItemClicked(Object Ent, int position) {
+    public void onRecyclerItemClicked(Object Ent, int position)   {
 
+    }
+
+    @OnClick(R.id.btn_checkout)
+    public void onViewClicked() {
+        serviceHelper.enqueueCall(webService.AddBookToLibrary(getCartBooksIds(), prefHelper.getUserToken()), ADD_LIBRARY);
+    }
+
+    private String getCartBooksIds() {
+        ArrayList<String> ids = new ArrayList<>();
+        for (BookDetailEnt items : cartCollections
+                ) {
+            ids.add(items.getBookID() + "");
+        }
+        return TextUtils.join(",", ids);
     }
 }

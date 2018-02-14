@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BooksChapterItemEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.interfaces.PlayerItemChangeListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.interfaces.TrackListItemListener;
 import com.ingic.auditix.ui.binders.ChapterListBinder;
@@ -25,7 +26,7 @@ import butterknife.Unbinder;
 /**
  * Created on 2/3/2018.
  */
-public class BookChaptersListingFragment extends BaseFragment {
+public class BookChaptersListingFragment extends BaseFragment implements PlayerItemChangeListener {
     public static final String TAG = "BookChaptersListingFragment";
     @BindView(R.id.rv_episode)
     CustomRecyclerView rvEpisode;
@@ -95,5 +96,14 @@ public class BookChaptersListingFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onItemChanged(int position) {
+        trackList.get(previousSelected).setSelected(false);
+        rvEpisode.notifyItemChanged(previousSelected);
+        trackList.get(position).setSelected(true);
+        rvEpisode.notifyItemChanged(position);
+        previousSelected = position;
     }
 }

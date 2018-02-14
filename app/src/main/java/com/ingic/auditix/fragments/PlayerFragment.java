@@ -5,6 +5,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.UIHelper;
+import com.ingic.auditix.interfaces.PlayerItemChangeListener;
 import com.ingic.auditix.interfaces.TrackListItemListener;
 import com.ingic.auditix.media.MediaPlayerHolder;
 import com.ingic.auditix.media.PlayListModel;
@@ -121,6 +123,11 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         }
     }
 
+    public void setItemChangeListener(PlayerItemChangeListener itemChangeListener) {
+        this.itemChangeListener = itemChangeListener;
+    }
+
+    private PlayerItemChangeListener itemChangeListener;
     @Override
     public void setTitleBar(TitleBar titleBar) {
         super.setTitleBar(titleBar);
@@ -137,6 +144,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             });
             EpisodeListingFragment fragment = new EpisodeListingFragment();
             fragment.setListItemListener(this);
+            setItemChangeListener(fragment);
             fragment.setTrackList(podcastDetailEnt.getTrackList());
             getMainActivity().setRightSideFragment(fragment);
             titleBar.showListingFragment(new View.OnClickListener() {
@@ -146,10 +154,20 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                     getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
                 }
             });
+            if (itemChangeListener!=null){
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        itemChangeListener.onItemChanged(startingIndex);
+                    }
+                },1000);
+            }
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
             if (bookDetailEnt.getIsPurchased()) {
                 BookChaptersListingFragment fragment = new BookChaptersListingFragment();
                 fragment.setListItemListener(this);
+                setItemChangeListener(fragment);
                 fragment.setTrackList(new ArrayList<>(bookDetailEnt.getChapters().getChapter().subList(0, bookDetailEnt.getChapters().getChapter().size())));
                 getMainActivity().setRightSideFragment(fragment);
                 titleBar.showListingFragment(new View.OnClickListener() {
@@ -159,6 +177,15 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                         getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
                     }
                 });
+                if (itemChangeListener!=null){
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            itemChangeListener.onItemChanged(startingIndex);
+                        }
+                    },1000);
+                }
             }
             getMainActivity().titleBar.showFavoriteButton(bookDetailEnt.getIsFavorite(), new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -265,7 +292,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         initializeSeekbar();
         mUserPlaylist = new ArrayList<>();
         if (bookDetailEnt.getIsPurchased() && chapters.getChapter().size() > 1) {
-            chapters.getChapter().remove(0);
+           // chapters.getChapter().remove(0);
         }
         for (BooksChapterItemEnt tracks : chapters.getChapter()
                 ) {
@@ -426,6 +453,9 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             if (index < mUserPlaylist.size()) {
                 txtPlayingItemName.setText(podcastDetailEnt.getTrackList().get(index).getName());
                 txtPlayingItemAlbum.setText(podcastDetailEnt.getTitle());
+                if (itemChangeListener!=null){
+                    itemChangeListener.onItemChanged(index);
+                }
             }
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
             if (index < mUserPlaylist.size()) {
@@ -435,6 +465,9 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                     txtPlayingItemName.setText(getDockActivity().getResources().getString(R.string.chapters) + " " + (index + 1));
                 }
                 txtPlayingItemAlbum.setText(bookDetailEnt.getBookName());
+                if (itemChangeListener!=null){
+                    itemChangeListener.onItemChanged(index);
+                }
             }
         }
     }
