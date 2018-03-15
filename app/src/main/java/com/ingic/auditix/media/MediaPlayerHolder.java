@@ -28,6 +28,7 @@ import com.devbrackets.android.exomedia.core.listener.InfoUpdateListener;
 import com.devbrackets.android.exomedia.listener.OnCompletionListener;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 import com.ingic.auditix.R;
+import com.ingic.auditix.helpers.BasePreferenceHelper;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -52,11 +53,13 @@ public final class MediaPlayerHolder implements PlayerAdapter, OnPreparedListene
     private ArrayList<PlayListModel> mPlayList;
     private int currentPlayingItem;
     private boolean isReadyForPlay = false;
+    private BasePreferenceHelper prefhelper;
     //endregion
 
     //region Player Initializing
     public MediaPlayerHolder(Context context) {
         mContext = context.getApplicationContext();
+        prefhelper = new BasePreferenceHelper(context);
     }
 
     /**
@@ -77,7 +80,9 @@ public final class MediaPlayerHolder implements PlayerAdapter, OnPreparedListene
                         mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.COMPLETED);
                         mPlaybackInfoListener.onPlaybackCompleted();
                     } else {
-                        playNext();
+                        if (prefhelper.isContinous()) {
+                            playNext();
+                        }
                     }
                 }
             });
@@ -174,6 +179,14 @@ public final class MediaPlayerHolder implements PlayerAdapter, OnPreparedListene
             }
             startUpdatingCallbackWithPosition();
         }
+    }
+
+    @Override
+    public void replay() {
+        reset();
+        onPlaybackInfo(PlaybackInfoListener.State.NEXT, 0);
+        logToUI("playingNextWithIndex(" + currentPlayingItem + ")");
+        loadMedia(getResouceURI(currentPlayingItem));
     }
 
     @Override

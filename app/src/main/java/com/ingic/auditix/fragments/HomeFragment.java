@@ -2,6 +2,7 @@ package com.ingic.auditix.fragments;
 
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +14,14 @@ import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.ui.views.TitleBar;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class HomeFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
 
     @BindView(R.id.btn_poscast)
@@ -68,9 +71,31 @@ public class HomeFragment extends BaseFragment {
         if (getMainActivity().booksFilterFragment != null) {
             getMainActivity().booksFilterFragment.clearFilters();
         }
+        setListeners();
+        getDownloadFilePath(prefHelper.getUser().getAccountID()+"");
     }
 
-    @OnClick({R.id.btn_poscast, R.id.btn_books, R.id.btn_news})
+    private void setListeners() {
+        btnBooks.setOnClickListener(this);
+        btnNews.setOnClickListener(this);
+        btnPoscast.setOnClickListener(this);
+    }
+
+    private void getDownloadFilePath(String userID) {
+        File direct = new File(Environment.getExternalStorageDirectory() + File.separator
+                + "audtix" + File.separator
+                + userID);
+
+        if (!direct.exists()) {
+            if (direct.mkdirs()) {
+                AppConstants.DOWNLOAD_PATH = direct.getPath();
+            }
+        } else {
+            AppConstants.DOWNLOAD_PATH = direct.getPath();
+        }
+    }
+
+  /*  @OnClick({R.id.btn_poscast, R.id.btn_books, R.id.btn_news})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_poscast:
@@ -81,8 +106,27 @@ public class HomeFragment extends BaseFragment {
                 tabFragment.setTag(AppConstants.TAB_BOOKS);
                 getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
             case R.id.btn_news:
-              /*  tabFragment.setTag(AppConstants.TAB_NEWS);
-                getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");*/
+               tabFragment.setTag(AppConstants.TAB_NEWS);
+                getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
+                //willbeimplementedinfuture();
+                break;
+        }
+    }*/
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_poscast:
+                tabFragment.setTag(AppConstants.TAB_PODCAST);
+                getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
+                break;
+            case R.id.btn_books:
+                tabFragment.setTag(AppConstants.TAB_BOOKS);
+                getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
+                break;
+            case R.id.btn_news:
+                tabFragment.setTag(AppConstants.TAB_NEWS);
+                getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
                 //willbeimplementedinfuture();
                 break;
         }

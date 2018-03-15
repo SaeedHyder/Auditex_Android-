@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BooksChapterItemEnt;
@@ -14,13 +15,13 @@ import com.ingic.auditix.interfaces.PlayerItemChangeListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.interfaces.TrackListItemListener;
 import com.ingic.auditix.ui.binders.ChapterListBinder;
-import com.ingic.auditix.ui.binders.PodcastEpisodeListingBinder;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -31,6 +32,8 @@ public class BookChaptersListingFragment extends BaseFragment implements PlayerI
     @BindView(R.id.rv_episode)
     CustomRecyclerView rvEpisode;
     Unbinder unbinder;
+    @BindView(R.id.container)
+    LinearLayout container;
     private TrackListItemListener listItemListener;
     private ArrayList<BooksChapterItemEnt> trackList;
     private int previousSelected = 0;
@@ -45,7 +48,7 @@ public class BookChaptersListingFragment extends BaseFragment implements PlayerI
             if (listItemListener != null) {
                 trackList.get(previousSelected).setSelected(false);
                 rvEpisode.notifyItemChanged(previousSelected);
-                BooksChapterItemEnt ent= (BooksChapterItemEnt)Ent;
+                BooksChapterItemEnt ent = (BooksChapterItemEnt) Ent;
                 ent.setSelected(true);
                 rvEpisode.notifyItemChanged(position);
                 previousSelected = position;
@@ -53,6 +56,7 @@ public class BookChaptersListingFragment extends BaseFragment implements PlayerI
             }
         }
     };
+
     public static BookChaptersListingFragment newInstance() {
         Bundle args = new Bundle();
 
@@ -75,6 +79,7 @@ public class BookChaptersListingFragment extends BaseFragment implements PlayerI
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
+
     public void setListItemListener(TrackListItemListener listItemListener) {
         this.listItemListener = listItemListener;
     }
@@ -105,5 +110,9 @@ public class BookChaptersListingFragment extends BaseFragment implements PlayerI
         trackList.get(position).setSelected(true);
         rvEpisode.notifyItemChanged(position);
         previousSelected = position;
+    }
+
+    @OnClick(R.id.container)
+    public void onViewClicked() {
     }
 }

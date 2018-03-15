@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.PodcastTrackEnt;
@@ -20,16 +21,19 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
  * Created on 1/17/2018.
  */
-public class EpisodeListingFragment extends BaseFragment implements PlayerItemChangeListener{
+public class EpisodeListingFragment extends BaseFragment implements PlayerItemChangeListener {
     public static final String TAG = "EpisodeListingFragment";
     @BindView(R.id.rv_episode)
     CustomRecyclerView rvEpisode;
     Unbinder unbinder;
+    @BindView(R.id.container)
+    LinearLayout container;
     private TrackListItemListener listItemListener;
     private ArrayList<PodcastTrackEnt> trackList;
     private int previousSelected = 0;
@@ -45,7 +49,7 @@ public class EpisodeListingFragment extends BaseFragment implements PlayerItemCh
             if (listItemListener != null) {
                 trackList.get(previousSelected).setSelected(false);
                 rvEpisode.notifyItemChanged(previousSelected);
-                PodcastTrackEnt ent= (PodcastTrackEnt)Ent;
+                PodcastTrackEnt ent = (PodcastTrackEnt) Ent;
                 ent.setSelected(true);
                 rvEpisode.notifyItemChanged(position);
                 previousSelected = position;
@@ -112,5 +116,9 @@ public class EpisodeListingFragment extends BaseFragment implements PlayerItemCh
         trackList.get(position).setSelected(true);
         rvEpisode.notifyItemChanged(position);
         previousSelected = position;
+    }
+
+    @OnClick(R.id.container)
+    public void onViewClicked() {
     }
 }

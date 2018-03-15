@@ -75,6 +75,7 @@ public class PlayedEpisodesFragment extends BaseFragment implements CompoundButt
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        willbeimplementedinfuture();
         switch (compoundButton.getId()) {
             case R.id.rb_delete:
                 rbKeep.setChecked(!b);

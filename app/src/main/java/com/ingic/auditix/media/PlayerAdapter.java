@@ -41,6 +41,8 @@ public interface PlayerAdapter {
 
     void playPrevious();
 
+    void replay();
+
     void playIndex(int index);
 
     int getCurrentItemIndex();

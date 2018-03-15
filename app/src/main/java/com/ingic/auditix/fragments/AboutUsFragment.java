@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.CMSEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.ui.views.TitleBar;
 
 import butterknife.BindView;
@@ -41,6 +44,15 @@ public class AboutUsFragment extends BaseFragment {
     }
 
     @Override
+    public void setTitleBar(TitleBar titleBar) {
+        super.setTitleBar(titleBar);
+        titleBar.hideButtons();
+        titleBar.addBackground();
+        titleBar.showBackButton();
+        titleBar.setSubHeading(getDockActivity().getResources().getString(R.string.about_us));
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_about_us, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -48,20 +60,15 @@ public class AboutUsFragment extends BaseFragment {
     }
 
     @Override
-    public void setTitleBar(TitleBar titleBar) {
-        super.setTitleBar(titleBar);
-        titleBar.addBackground();
-        titleBar.showBackButton();
-        titleBar.setSubHeading(getDockActivity().getResources().getString(R.string.about_us));
-    }
-
-    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        txtAboutUs.setText(getDockActivity().getResources().getString(R.string.lorem_ipsum)
-                + getDockActivity().getResources().getString(R.string.lorem_ipsum)
-                + getDockActivity().getResources().getString(R.string.lorem_ipsum));
-        txtAboutUs.setMovementMethod(new ScrollingMovementMethod());
+        CMSEnt results = getMainActivity().realm.where(CMSEnt.class).equalTo(AppConstants.KEY_CMS_TYPE,
+                WebServiceConstants.CMS_TYPE_ABOUT).findFirst();
+        if (results != null) {
+            txtAboutUs.setText(results.getValue());
+            txtAboutUs.setMovementMethod(new ScrollingMovementMethod());
+        }
+
     }
 
     @Override

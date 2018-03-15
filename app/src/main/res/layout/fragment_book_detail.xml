@@ -301,6 +301,7 @@
                 android:textColor="@color/app_font_black"
                 android:textSize="@dimen/x16"
                 android:textStyle="bold"
+                android:visibility="gone"
                 app:typeface="@string/font_normal"/>
 
             <com.ingic.auditix.ui.views.AnyTextView
@@ -309,6 +310,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/x5"
                 android:gravity="start"
+                android:visibility="gone"
+
                 android:textColor="@color/app_font_gray"
                 android:textSize="@dimen/x13"
                 app:typeface="@string/font_normal"/>

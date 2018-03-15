@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 
 import com.facebook.FacebookSdk;
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.CMSEnt;
 import com.ingic.auditix.fragments.BooksFilterFragment;
 import com.ingic.auditix.fragments.FilterFragment;
 import com.ingic.auditix.fragments.HomeFragment;
@@ -31,23 +32,30 @@ import com.ingic.auditix.fragments.SideMenuFragment;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.SideMenuChooser;
 import com.ingic.auditix.global.SideMenuDirection;
+import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.Blur;
 import com.ingic.auditix.helpers.ScreenHelper;
+import com.ingic.auditix.helpers.ServiceHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.helpers.Utilities;
 import com.ingic.auditix.interfaces.ImageSetter;
+import com.ingic.auditix.interfaces.webServiceResponseLisener;
 import com.ingic.auditix.residemenu.ResideMenu;
+import com.ingic.auditix.retrofit.WebService;
+import com.ingic.auditix.retrofit.WebServiceFactory;
 import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import droidninja.filepicker.FilePickerBuilder;
 import droidninja.filepicker.FilePickerConst;
 import droidninja.filepicker.utils.Orientation;
-import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class MainActivity extends DockActivity implements OnClickListener {
@@ -352,6 +360,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
         ButterKnife.bind(this);
         titleBar = header_main;
         titleBar.setMainActivity(this);
+        getCMSFromService();
         // setBehindContentView(R.layout.fragment_frame);
         mContext = this;
         Log.i("Screen Density", ScreenHelper.getDensity(this) + "");
@@ -440,6 +449,27 @@ public class MainActivity extends DockActivity implements OnClickListener {
 
     @Override
     public void hideHeaderButtons(boolean leftBtn, boolean rightBtn) {
+    }
+
+    private void getCMSFromService() {
+        WebService webService = WebServiceFactory.getWebServiceInstanceWithCustomInterceptor(getApplicationContext(),
+                WebServiceConstants.SERVICE_URL);
+        ServiceHelper helper = new ServiceHelper(new webServiceResponseLisener() {
+            @Override
+            public void ResponseSuccess(Object result, String Tag) {
+                RealmResults<CMSEnt> results = realm.where(CMSEnt.class).findAll();
+                realm.beginTransaction();
+                results.deleteAllFromRealm();
+                realm.copyToRealm((ArrayList<CMSEnt>) result);
+                realm.commitTransaction();
+            }
+
+            @Override
+            public void ResponseFailure(String tag) {
+
+            }
+        }, this);
+        helper.enqueueCall(webService.getStaticContents(), WebServiceConstants.GET_CONTENTS, false);
     }
 
     @Override

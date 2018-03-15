@@ -44,6 +44,7 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
     private ArrayList<String> tabTexts;
     private String tag = AppConstants.TAB_NEWS;
     private TitleBar titleBar;
+    private View viewParent;
 
     public static HomeTabFragment newInstance() {
         Bundle args = new Bundle();
@@ -168,32 +169,26 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
         bindTabsResources(new SearchFragment(), R.drawable.search_orange, R.drawable.search_grey, R.string.search);
         bindTabsResources(new BooksFragment(), R.drawable.books_orange, R.drawable.books_grey, R.string.books);
         bindTabsResources(new ProfileFragment(), R.drawable.profile_icon_orange, R.drawable.profile_icon_grey, R.string.profile);
-       /* pager.setAdapter(adapter);
-        pager.getAdapter().notifyDataSetChanged();*/
-        //tabLayout.setupWithViewPager(pager, false);
         for (int i = 0; i < adapter.getCount(); i++) {
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setCustomView(R.layout.tab_item_home);
-            tabLayout.addTab(tab);
+            tabLayout.addTab(tab,false);
             bindUnselectedTabView(tab);
 
         }
         tabLayout.addOnTabSelectedListener(this);
         selectTabBasedOnTag(tag);
     }
-    private View viewParent;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-      /*  View view = inflater.inflate(R.layout.fragment_tabs_home, container, false);
-        unbinder = ButterKnife.bind(this, view);
-*/
         if (viewParent != null) {
             ViewGroup parent = (ViewGroup) viewParent.getParent();
             if (parent != null)
                 parent.removeView(viewParent);
         }
         try {
-            viewParent =  inflater.inflate(R.layout.fragment_tabs_home, container, false);
+            viewParent = inflater.inflate(R.layout.fragment_tabs_home, container, false);
 
         } catch (InflateException e) {
             e.printStackTrace();
@@ -201,9 +196,7 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
         if (viewParent != null)
             ButterKnife.bind(this, viewParent);
 
-        // ButterKnife.bind(this, viewParent);
         return viewParent;
-       // return view;
     }
 
     @Override
@@ -213,45 +206,32 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
     }
 
 
-
     private void selectTabBasedOnTag(String tag) {
         TabLayout.Tab tab;
         switch (tag) {
             case AppConstants.TAB_NEWS:
-                //  pager.setCurrentItem(INDEX_NEWS);
                 tab = tabLayout.getTabAt(INDEX_NEWS);
                 tab.select();
-//                bindSelectedTabView();
                 break;
             case AppConstants.TAB_PODCAST:
-                // pager.setCurrentItem(INDEX_PODCAST);
                 tab = tabLayout.getTabAt(INDEX_PODCAST);
                 tab.select();
-//                bindSelectedTabView(tabLayout.getTabAt(INDEX_PODCAST));
                 break;
             case AppConstants.TAB_BOOKS:
                 tab = tabLayout.getTabAt(INDEX_BOOKS);
                 tab.select();
-                // pager.setCurrentItem(INDEX_BOOKS);
-//                bindSelectedTabView(tabLayout.getTabAt(INDEX_BOOKS));
                 break;
             case AppConstants.TAB_SEARCH:
                 tab = tabLayout.getTabAt(INDEX_SEARCH);
                 tab.select();
-                //  pager.setCurrentItem(INDEX_SEARCH);
-//                bindSelectedTabView(tabLayout.getTabAt(INDEX_SEARCH));
                 break;
             case AppConstants.TAB_PROFILE:
                 tab = tabLayout.getTabAt(INDEX_PROFILE);
                 tab.select();
-                //  pager.setCurrentItem(INDEX_PROFILE);
-//                bindSelectedTabView(tabLayout.getTabAt(INDEX_PROFILE));
                 break;
             default:
                 tab = tabLayout.getTabAt(INDEX_NEWS);
                 tab.select();
-                // pager.setCurrentItem(INDEX_NEWS);
-//                bindSelectedTabView(tabLayout.getTabAt(INDEX_NEWS));
                 break;
 
         }
@@ -271,6 +251,6 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-
+      //  bindSelectedTabView(tab);
     }
 }

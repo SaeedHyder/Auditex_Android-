@@ -9,7 +9,7 @@
     <com.ingic.auditix.ui.views.AnyTextView
         android:id="@+id/txt_no_data"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/x200"
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/no_data_available"

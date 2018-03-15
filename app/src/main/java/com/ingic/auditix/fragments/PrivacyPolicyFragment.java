@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.CMSEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.ui.views.TitleBar;
 
 import butterknife.BindView;
@@ -50,10 +53,12 @@ public class PrivacyPolicyFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        txtPrivacyPolicy.setText(getDockActivity().getResources().getString(R.string.lorem_ipsum)
-                +getDockActivity().getResources().getString(R.string.lorem_ipsum)
-                +getDockActivity().getResources().getString(R.string.lorem_ipsum));
-        txtPrivacyPolicy.setMovementMethod(new ScrollingMovementMethod());
+        CMSEnt results = getMainActivity().realm.where(CMSEnt.class).equalTo(AppConstants.KEY_CMS_TYPE,
+                WebServiceConstants.CMS_TYPE_PRIVACY).findFirst();
+        if (results != null) {
+            txtPrivacyPolicy.setText(results.getValue());
+            txtPrivacyPolicy.setMovementMethod(new ScrollingMovementMethod());
+        }
     }
     @Override
     public void setTitleBar(TitleBar titleBar) {

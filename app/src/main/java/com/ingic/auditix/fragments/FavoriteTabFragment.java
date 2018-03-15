@@ -50,6 +50,7 @@ public class FavoriteTabFragment extends BaseFragment implements TabLayout.OnTab
     @Override
     public void setTitleBar(TitleBar titleBar) {
         super.setTitleBar(titleBar);
+        titleBar.hideButtons();
         titleBar.addBackground();
         titleBar.setSubHeading(getString(R.string.my_favourite));
         titleBar.showBackButton();

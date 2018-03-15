@@ -66,6 +66,7 @@ public class NewEpisodesFragment extends BaseFragment implements CompoundButton.
         swtStream.setOnCheckedChangeListener(this);
         swtDownloadedWifi.setOnCheckedChangeListener(this);
         swtDonloadWifiCell.setOnCheckedChangeListener(this);
+        swtDonloadWifiCell.setChecked(prefHelper.isDownloadOnAll());
     }
 
     @Override
@@ -78,11 +79,13 @@ public class NewEpisodesFragment extends BaseFragment implements CompoundButton.
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         switch (compoundButton.getId()) {
             case R.id.swt_stream:
+                willbeimplementedinfuture();
                 break;
             case R.id.swt_downloaded_wifi:
                 swtDonloadWifiCell.setChecked(!b);
                 break;
             case R.id.swt_donload_wifi_cell:
+                prefHelper.setDownloadOnAll(b);
                 swtDownloadedWifi.setChecked(!b);
                 break;
         }

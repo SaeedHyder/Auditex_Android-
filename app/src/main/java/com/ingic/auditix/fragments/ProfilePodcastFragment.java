@@ -65,6 +65,8 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
     CustomRecyclerView rvSubscribe;
     @BindView(R.id.txt_subscription_no_data)
     AnyTextView txtSubscriptionNoData;
+    @BindView(R.id.txt_download_no_data)
+    AnyTextView txtDownloadNoData;
     private ArrayList<CartEnt> todayDownloadsCollections;
     private ArrayList<CartEnt> monthDownloadsCollections;
     private ArrayList<CartEnt> olderDownloadsCollections;
@@ -191,6 +193,8 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bindTabs();
+        rvDownloads.setVisibility(View.GONE);
+        txtDownloadNoData.setVisibility(View.VISIBLE);
 
 
     }
@@ -267,6 +271,7 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
     }
 
     private void replaceList(int position) {
+        willbeimplementedinfuture();
         rvDownloads.clearList();
         if (position == 0) {
             rvDownloads.addAll(todayDownloadsCollections);

@@ -127,12 +127,14 @@ public class FilterFragment extends BaseFragment {
         this.listener = listener;
     }
 
-    @OnClick({R.id.btn_clear, R.id.btn_done, R.id.btn_close})
+    @OnClick({R.id.btn_clear, R.id.btn_done, R.id.btn_close,R.id.container_genre,R.id.upper_container,R.id.lower_container})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_clear:
-                binder.clearFilterIDs();
-                rvfilters.notifyDataSetChanged();
+                if (binder != null && rvfilters != null && child1Collection != null && child1Collection.size() > 0) {
+                    binder.clearFilterIDs();
+                    rvfilters.notifyDataSetChanged();
+                }
                 break;
             case R.id.btn_done:
                 if (listener != null) {
@@ -143,6 +145,9 @@ public class FilterFragment extends BaseFragment {
             case R.id.btn_close:
                 getMainActivity().closeDrawer();
                 break;
+                case R.id.container_genre:
+                break;
+
 
         }
     }

@@ -20,6 +20,9 @@ public class BookFavoriteEnt {
     @SerializedName("AuthorName")
     @Expose
     private String authorName;
+    @SerializedName("NarratorName")
+    @Expose
+    private String narratorName;
     @SerializedName("Rating")
     @Expose
     private Integer rating;
@@ -56,6 +59,14 @@ public class BookFavoriteEnt {
     @SerializedName("Chapters")
     @Expose
     private BookChaptersEnt chapters;
+
+    public String getNarratorName() {
+        return narratorName;
+    }
+
+    public void setNarratorName(String narratorName) {
+        this.narratorName = narratorName;
+    }
 
     public Integer getBookID() {
         return bookID;

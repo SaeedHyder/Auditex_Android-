@@ -24,13 +24,27 @@
             android:id="@+id/txt_item_text"
             android:layout_width="@dimen/x140"
             android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:layout_marginTop="@dimen/x5"
             android:ellipsize="end"
-            android:gravity="center"
+            android:gravity="start"
             android:singleLine="true"
-            android:text="Barbarasdhahsdgshasdsadagdsagdasgdjasgdas"
+            android:maxLines="1"
+            android:text="Barbaras"
             android:textColor="@color/black"
             android:textSize="@dimen/x16"
             app:typeface="@string/font_normal"/>
+        <Button
+            android:id="@+id/btn_subscribe"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/x30"
+            android:layout_gravity="start|bottom"
+            android:layout_marginTop="@dimen/x5"
+            android:background="@drawable/button_orange"
+            android:paddingEnd="@dimen/x10"
+            android:paddingStart="@dimen/x10"
+            android:text="@string/unsubscribe"
+            android:textAllCaps="false"
+            android:textColor="@color/white"/>
     </LinearLayout>
 </FrameLayout>

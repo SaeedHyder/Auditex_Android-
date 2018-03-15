@@ -1,11 +1,13 @@
 package com.ingic.auditix.ui.binders;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.ingic.auditix.R;
-import com.ingic.auditix.entities.BookDetailEnt;
+import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.viewbinders.abstracts.RecyclerViewBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -16,19 +18,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created on 2/1/2018.
+ * Created on 3/14/2018.
  */
 
-public class BestBooksBinder extends RecyclerViewBinder<BookDetailEnt> implements View.OnClickListener {
+public class NewsCategoryBinder extends RecyclerViewBinder<NewsCategoryEnt> implements View.OnClickListener {
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private RecyclerViewItemListener listener;
+    private int itemWidth = 0;
 
-    public BestBooksBinder(DisplayImageOptions options, RecyclerViewItemListener listener) {
-        super(R.layout.row_item_books_home_best);
+    public NewsCategoryBinder(DisplayImageOptions options, RecyclerViewItemListener listener) {
+        super(R.layout.row_item_new_home);
+        this.imageLoader = ImageLoader.getInstance();
         this.options = options;
         this.listener = listener;
-        imageLoader = ImageLoader.getInstance();
     }
 
     @Override
@@ -37,13 +40,17 @@ public class BestBooksBinder extends RecyclerViewBinder<BookDetailEnt> implement
     }
 
     @Override
-    public void bindView(BookDetailEnt entity, int position, Object viewHolder, Context context) {
+    public void bindView(NewsCategoryEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
-        imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, options);
-        holder.txtTitle.setText(entity.getBookName() + "");
-        holder.txtNarratorText.setText(entity.getNarratorName()+"");
-        holder.itemView.setTag(R.integer.key_recycler_object, entity);
-        holder.itemView.setTag(R.integer.key_recycler_position, position);
+        if (itemWidth == 0) {
+            DisplayMetrics matrics = context.getResources().getDisplayMetrics();
+            itemWidth = (matrics.widthPixels / 2) - (Math.round(context.getResources().getDimension(R.dimen.x10)) * 2);
+        }
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(holder.txtItemImage.getLayoutParams());
+        layoutParams.height = itemWidth;
+        holder.txtItemImage.setLayoutParams(layoutParams);
+        imageLoader.displayImage(entity.getSourceImageUrl(), holder.txtItemImage, options);
+        holder.txtItemText.setText(entity.getSourceName() + "");
         holder.itemView.setTag(R.integer.key_recycler_object, entity);
         holder.itemView.setTag(R.integer.key_recycler_position, position);
         holder.itemView.setOnClickListener(this);
@@ -58,12 +65,10 @@ public class BestBooksBinder extends RecyclerViewBinder<BookDetailEnt> implement
     }
 
     static class ViewHolder extends BaseViewHolder {
-        @BindView(R.id.img_item_pic)
-        ImageView imgItemPic;
-        @BindView(R.id.txt_title)
-        AnyTextView txtTitle;
-        @BindView(R.id.txt_narrator_text)
-        AnyTextView txtNarratorText;
+        @BindView(R.id.txt_item_image)
+        ImageView txtItemImage;
+        @BindView(R.id.txt_item_text)
+        AnyTextView txtItemText;
 
         ViewHolder(View view) {
             super(view);
@@ -71,4 +76,3 @@ public class BestBooksBinder extends RecyclerViewBinder<BookDetailEnt> implement
         }
     }
 }
-

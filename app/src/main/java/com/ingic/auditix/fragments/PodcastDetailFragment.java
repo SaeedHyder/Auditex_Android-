@@ -20,6 +20,7 @@ import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.DialogHelper;
+import com.ingic.auditix.helpers.InternetHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.helpers.Utils;
 import com.ingic.auditix.interfaces.DownloadListenerFragment;
@@ -45,7 +46,7 @@ import butterknife.Unbinder;
  * Created on 12/27/2017.
  */
 public class PodcastDetailFragment extends BaseFragment {
-    private static final String TAG = "PodcastDetailFragment";
+    public static final String TAG = "PodcastDetailFragment";
     @BindView(R.id.img_item_pic)
     ImageView imgItemPic;
     @BindView(R.id.txt_title)
@@ -177,6 +178,12 @@ public class PodcastDetailFragment extends BaseFragment {
                 openPlayer(position);
             } else {
                 //Case For Download Button Clicked
+                if (!prefHelper.isDownloadOnAll()){
+                    if (InternetHelper.isConnectedOnMobile(getDockActivity())){
+                        UIHelper.showShortToastInCenter(getDockActivity(),getDockActivity().getResources().getString(R.string.network_mobile_error));
+                        return;
+                    }
+                }
                 PodcastTrackEnt ent = (PodcastTrackEnt) Ent;
                 if (podcastDetailEnt.isEpisodeAdded()) {
                     getDockActivity().addDownload(podcastDetailEnt.AudioUrl, ent.getFileUrl(), ent.getId(),ent.getName());

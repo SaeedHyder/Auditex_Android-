@@ -45,7 +45,7 @@ public class BookFavoriteBinder extends RecyclerViewBinder<BookFavoriteEnt> impl
         ViewHolder holder = (ViewHolder) viewHolder;
         imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, imageoptions);
         holder.txtTitle.setText(entity.getBookName() + "");
-        holder.txtNarratorText.setText(entity.getAuthorName() + "");
+        holder.txtNarratorText.setText(entity.getNarratorName() + "");
         viewBinderHelper.bind(holder.swipeLayout, String.valueOf(position));
         holder.btnDelete.setTag(R.integer.key_recycler_object, entity);
         holder.btnDelete.setTag(R.integer.key_recycler_position, position);

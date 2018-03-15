@@ -5,12 +5,14 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="?android:colorBackground"
     android:scrollbars="none"
     android:weightSum="1">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:id="@+id/upper_container"
         android:layout_weight="0.3">
 
         <ImageView
@@ -39,6 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.7"
+        android:id="@+id/lower_container"
         android:orientation="vertical">
 
         <LinearLayout
@@ -51,6 +54,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/x60"
+                android:id="@+id/container_genre"
                 android:background="@color/app_filter_gray">
 
                 <com.ingic.auditix.ui.views.AnyTextView

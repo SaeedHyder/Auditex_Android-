@@ -9,7 +9,7 @@
     <com.ingic.auditix.ui.views.CustomRecyclerView
         android:id="@+id/rv_favorite"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="@dimen/x10"
         android:layout_marginBottom="@dimen/x50"
         android:divider="@null"

@@ -69,8 +69,8 @@ public class CartListFragment extends BaseFragment implements RecyclerViewItemLi
                     results.deleteAllFromRealm();
                     getMainActivity().realm.commitTransaction();
                 }
-                UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.book_item_added_Book));
-
+                UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.books_item_added_Book));
+                bindView();
                 break;
         }
     }
@@ -110,10 +110,13 @@ public class CartListFragment extends BaseFragment implements RecyclerViewItemLi
         cartCollections.addAll(results.subList(0, results.size()));
         if (cartCollections.size() <= 0) {
             txtNoData.setVisibility(View.VISIBLE);
-            rvCart.setVisibility(View.GONE);
+            rvCart.setVisibility(View.INVISIBLE);
+            btnCheckout.setVisibility(View.INVISIBLE);
         } else {
-            txtNoData.setVisibility(View.GONE);
+            txtNoData.setVisibility(View.INVISIBLE);
             rvCart.setVisibility(View.VISIBLE);
+            btnCheckout.setVisibility(View.VISIBLE);
+
 
         }
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
@@ -136,7 +139,8 @@ public class CartListFragment extends BaseFragment implements RecyclerViewItemLi
         rvCart.notifyItemRangeChanged(position, cartCollections.size());
         if (cartCollections.size() <= 0) {
             txtNoData.setVisibility(View.VISIBLE);
-            rvCart.setVisibility(View.GONE);
+            rvCart.setVisibility(View.INVISIBLE);
+            btnCheckout.setVisibility(View.INVISIBLE);
         }
     }
 

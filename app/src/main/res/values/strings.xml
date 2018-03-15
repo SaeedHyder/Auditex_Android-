@@ -9,7 +9,7 @@
     <string name="drawer_close">close</string>
 
     <string name="api_key">AIzaSyCqnLLeF_NFDYJ8AJo_KIg6RKeYjslLv6Q</string>
-    <string name="app_name">Auditix</string>
+    <string name="app_name">Audtix</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <!--<string name="facebook_app_id">2046118735633328</string>
@@ -213,7 +213,7 @@
     <string name="about_us">About Us</string>
     <string name="my_account">My Account</string>
     <string name="payment_details">Payment Details</string>
-    <string name="continues_play">Continous Play</string>
+    <string name="continues_play">Continuous Play</string>
     <string name="new_episode">New Episodes</string>
     <string name="played_episodes">Played Episodes</string>
     <string name="stream">Stream when Played</string>
@@ -229,7 +229,7 @@
     <string name="buy_now">Buy Now</string>
     <string name="billing_details">Billing Details</string>
     <string name="enter_correct_cc">Credit card number cannot be Empty</string>
-    <string name="cclenght">Short credit card number lenght</string>
+    <string name="cclenght">Short credit card number length</string>
     <string name="ccv_error">Enter correct CCV</string>
     <string name="expire_error_message">Expiration date cannot be Empty</string>
     <string name="all_books">All Books</string>
@@ -244,10 +244,12 @@
     <string name="book_item_remove_favorite">Podcast has been removed as favorite</string>
     <string name="listenbook">Listen Book</string>
     <string name="book_item_added_Book">Book has been added to Library</string>
+    <string name="books_item_added_Book">Books has been added to Library</string>
     <string name="preview">Preview</string>
     <string name="chapters">Chapter </string>
     <string name="chapters_heading">Chapters</string>
     <string name="download_error">Cannot download </string>
     <string name="add_cart_toast">Book has been added to Cart</string>
     <string name="proceed_checkout">Proceed to Checkout</string>
+    <string name="network_mobile_error">Its seems like you are using data network, kindly change the settings to download this.</string>
 </resources>

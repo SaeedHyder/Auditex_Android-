@@ -6,12 +6,15 @@ import com.ingic.auditix.entities.BookCategoryEnt;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.BookFavoriteEnt;
 import com.ingic.auditix.entities.BookGenreEnt;
+import com.ingic.auditix.entities.CMSEnt;
+import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.entities.PodcastCategoryListEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.entities.PodcastFavoriteEnt;
 import com.ingic.auditix.entities.PodcastHomeEnt;
 import com.ingic.auditix.entities.ResponseWrapper;
+import com.ingic.auditix.entities.SearchEnt;
 import com.ingic.auditix.entities.SubscribePodcastEnt;
 import com.ingic.auditix.entities.UserModel;
 import com.ingic.auditix.entities.WalkthroughEnt;
@@ -150,12 +153,14 @@ public interface WebService {
                                                                       @Query("genreIdList") String genreIdList,
                                                                       @Query("culture") String culture,
                                                                       @Header(WebServiceConstants.HEADER_KEY) String header);
+
     @GET("BooksByCategoryId")
     Call<ResponseWrapper<BookCategoryDetailEnt>> getAllCategoryBooks(@Query("categoryId") Integer categoryId,
-                                                                    @Query("PageNo") Integer PageNo,
-                                                                    @Query("PageSize") Integer PageSize,
-                                                                    @Query("culture") String culture,
-                                                                    @Header(WebServiceConstants.HEADER_KEY) String header);
+                                                                     @Query("PageNo") Integer PageNo,
+                                                                     @Query("PageSize") Integer PageSize,
+                                                                     @Query("culture") String culture,
+                                                                     @Header(WebServiceConstants.HEADER_KEY) String header);
+
     @GET("GetFavoriteBooks")
     Call<ResponseWrapper<ArrayList<BookFavoriteEnt>>> getBooksAllFavorite(@Query("culture") String culture, @Header(WebServiceConstants.HEADER_KEY) String header);
 
@@ -170,13 +175,34 @@ public interface WebService {
 
     @GET("AddBooksToLibrary")
     Call<ResponseWrapper> AddBookToLibrary(@Query("BookIds") String bookId, @Header(WebServiceConstants.HEADER_KEY) String header);
+
     @GET("GetAllGenre")
-    Call<ResponseWrapper<ArrayList<BookGenreEnt>>> getAllBooksFilters(@Query("culture") String culture,@Header(WebServiceConstants.HEADER_KEY) String header);
+    Call<ResponseWrapper<ArrayList<BookGenreEnt>>> getAllBooksFilters(@Query("culture") String culture, @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("MyLibraryBooks")
     Call<ResponseWrapper<ArrayList<BookDetailEnt>>> getLibraryBooks(@Query("PageNo") Integer pageNumber,
-                                           @Query("PageSize") Integer pageSize,
-                                           @Query("culture") String culture,
-                                           @Header(WebServiceConstants.HEADER_KEY) String header);
+                                                                    @Query("PageSize") Integer pageSize,
+                                                                    @Query("culture") String culture,
+                                                                    @Header(WebServiceConstants.HEADER_KEY) String header);
+    //endregion
+
+    //region Search
+    @GET("GetSearch")
+    Call<ResponseWrapper<ArrayList<SearchEnt>>> getSearchItem(@Query("pageNumber") Integer pageNumber,
+                                                              @Query("totalCount") Integer totalCount,
+                                                              @Query("Text") String Text,
+                                                              @Header(WebServiceConstants.HEADER_KEY) String header);
+
+    //endregion
+
+    //region Content
+    @GET("GetAllContent")
+    Call<ResponseWrapper<ArrayList<CMSEnt>>> getStaticContents();
+    //endregion
+
+    //region News
+    @GET("GetAllNewsCategory")
+    Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllNewsCategories(@Header(WebServiceConstants.HEADER_KEY) String userToken);
+
     //endregion
 }

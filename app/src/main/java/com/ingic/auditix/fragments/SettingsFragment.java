@@ -75,10 +75,11 @@ public class SettingsFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        swtContinousPlay.setChecked(prefHelper.isContinous());
         swtContinousPlay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
+                prefHelper.setContinousPlay(b);
             }
         });
     }

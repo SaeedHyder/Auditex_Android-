@@ -314,6 +314,7 @@ public abstract class DockActivity extends AppCompatActivity implements
                 .setListener(fileDownloadListener)
                 .setTag(tag)
                 .setTag(getResources().getInteger(R.integer.key_item_name), name)
+                .setWifiRequired(!prefHelper.isDownloadOnAll())
                 .setCallbackProgressTimes(100)
                 .setAutoRetryTimes(50)
                 .start();
@@ -327,6 +328,7 @@ public abstract class DockActivity extends AppCompatActivity implements
                 .setListener(fileDownloadListener)
                 .setTag(tag)
                 .setTag(getResources().getInteger(R.integer.key_item_name), name)
+                .setWifiRequired(!prefHelper.isDownloadOnAll())
                 .setCallbackProgressTimes(100)
                 .setAutoRetryTimes(5)
                 .start();

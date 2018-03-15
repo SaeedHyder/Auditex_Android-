@@ -59,4 +59,5 @@
     <color name="fb_button_color">#3E5D9D</color>
     <color name="gp_button_color">#D6492F</color>
     <color name="google_color">#D6492F</color>
+    <color name="seekbar_progress">#D6492F</color>
 </resources>

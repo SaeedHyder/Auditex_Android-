@@ -24,7 +24,7 @@ import com.ingic.auditix.R;
 import com.google.common.base.Strings;
 
 public class UIHelper {
-	
+	static  Toast toast;
 	public static void showLongToastInCenter( Context ctx, int messageId ) {
 		Toast toast = Toast.makeText( ctx, messageId, Toast.LENGTH_LONG );
 		toast.setGravity( Gravity.CENTER, 0, 0 );
@@ -50,9 +50,13 @@ public class UIHelper {
 		TextView txtv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
 		txtv.setGravity(Gravity.CENTER_HORIZONTAL);
 	}
+
 	public static void showShortToastInCenter( Context ctx, String message ) {
 		message = Strings.nullToEmpty( message );
-		Toast toast = Toast.makeText( ctx, message, Toast.LENGTH_SHORT );
+		if (toast!=null){
+			toast.cancel();
+		}
+		toast = Toast.makeText( ctx, message, Toast.LENGTH_SHORT );
 		toast.setGravity( Gravity.CENTER, 0, 0 );
 		toast.show();
 	}

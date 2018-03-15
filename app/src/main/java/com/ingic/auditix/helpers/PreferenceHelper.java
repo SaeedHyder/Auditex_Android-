@@ -49,7 +49,14 @@ public class PreferenceHelper {
 		boolean value = preferences.getBoolean( key, false );
 		return value;
 	}
-	
+	protected boolean getBooleanPreference( Context context, String prefsName,
+											String key,boolean defaultValue ) {
+
+		SharedPreferences preferences = context.getSharedPreferences(
+				prefsName, Activity.MODE_PRIVATE );
+		boolean value = preferences.getBoolean( key, defaultValue );
+		return value;
+	}
 	protected void putIntegerPreference( Context context, String prefsName,
 			String key, int value ) {
 		

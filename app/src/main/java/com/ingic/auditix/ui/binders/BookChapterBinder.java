@@ -49,7 +49,7 @@ public class BookChapterBinder extends RecyclerViewBinder<BooksChapterItemEnt> i
     @Override
     public void bindView(BooksChapterItemEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
-        holder.txtName.setText(context.getResources().getString(R.string.chapters) + " " + entity.getChapterNumber());
+        holder.txtName.setText(context.getResources().getString(R.string.chapters) + " " + (position + 1));
         holder.btnDownload.setTag(R.integer.key_recycler_object, entity);
         holder.btnDownload.setTag(R.integer.key_recycler_position, position);
         holder.btnDownload.setOnClickListener(this);
@@ -68,7 +68,7 @@ public class BookChapterBinder extends RecyclerViewBinder<BooksChapterItemEnt> i
             holder.btnDownload.setVisibility(View.GONE);
             holder.downloadProgress.setVisibility(View.GONE);
             holder.btnPlay.setVisibility(View.VISIBLE);
-        } else if (entity.getStatusState() != AppConstants.DownloadStates.DOWNLOADING)  {
+        } else if (entity.getStatusState() != AppConstants.DownloadStates.DOWNLOADING) {
             DownloadItemModel downloadItem = getObjectfromRealm(entity.getChapterID());
             if (downloadItem != null) {
                 entity.setStatusState(downloadItem.getDownloadState());

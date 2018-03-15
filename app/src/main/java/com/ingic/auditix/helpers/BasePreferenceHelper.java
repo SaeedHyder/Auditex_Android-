@@ -13,9 +13,11 @@ public class BasePreferenceHelper extends PreferenceHelper {
     protected static final String KEY_LOGIN_STATUS = "islogin";
     protected static final String Firebase_TOKEN = "Firebasetoken";
     protected static final String NotificationCount = "NotificationCount";
-    protected static final String KEY_USER = "key_user";
     private static final String FILENAME = "preferences";
+    protected static final String KEY_USER = "key_user";
     private static final String KEY_USERID = "USERID";
+    private static final String KEY_CONTINOUS_PLAY = "KEY_CONTINOUS_PLAY";
+    private static final String KEY_DOWNLOAD_ON_ALL = "KEY_DOWNLOAD_ON_ALL";
     private Context context;
 
     public BasePreferenceHelper(Context c) {
@@ -32,6 +34,22 @@ public class BasePreferenceHelper extends PreferenceHelper {
 
     public boolean isLogin() {
         return getBooleanPreference(context, FILENAME, KEY_LOGIN_STATUS);
+    }
+
+    public void setContinousPlay(boolean isContinous) {
+        putBooleanPreference(context, FILENAME, KEY_CONTINOUS_PLAY, isContinous);
+    }
+
+    public boolean isContinous() {
+        return getBooleanPreference(context, FILENAME, KEY_CONTINOUS_PLAY,true);
+    }
+
+    public void setDownloadOnAll(boolean isLogin) {
+        putBooleanPreference(context, FILENAME, KEY_DOWNLOAD_ON_ALL, isLogin);
+    }
+
+    public boolean isDownloadOnAll() {
+        return getBooleanPreference(context, FILENAME, KEY_DOWNLOAD_ON_ALL,true);
     }
 
     public String getFirebase_TOKEN() {

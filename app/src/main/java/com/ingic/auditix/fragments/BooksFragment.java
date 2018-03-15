@@ -228,6 +228,9 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
 
     @OnClick({R.id.btn_allbooks_seeall, R.id.btn_recommne_seeall, R.id.btn_best_seeall})
     public void onViewClicked(View view) {
+        if (bookCategoryEnts == null){
+            return;
+        }
         switch (view.getId()) {
             case R.id.btn_allbooks_seeall:
                 openCategoryListing(bookCategoryEnts.size() > 0 ? bookCategoryEnts.get(0).getCategoryId() : -1);

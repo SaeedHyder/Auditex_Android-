@@ -18,6 +18,7 @@ import com.ingic.auditix.entities.BooksChapterItemEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
+import com.ingic.auditix.helpers.InternetHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.interfaces.DownloadListenerFragment;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
@@ -158,6 +159,12 @@ public class BookDetailFragment extends BaseFragment {
                 //Case For Play Button Clicked
                 openPlayer(position);
             } else {
+                if (!prefHelper.isDownloadOnAll()) {
+                    if (InternetHelper.isConnectedOnMobile(getDockActivity())) {
+                        UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.network_mobile_error));
+                        return;
+                    }
+                }
                 //Case For Download Button Clicked
                 BooksChapterItemEnt ent = (BooksChapterItemEnt) Ent;
                 getDockActivity().addDownload(detailEnt.getChapters().getAudioUrl(), ent.getAudioUrl(), ent.getChapterID(), getDownloadName(ent.getChapterNumber()));
@@ -237,12 +244,27 @@ public class BookDetailFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         serviceHelper.enqueueCall(webService.getBookDetails(this.bookID, prefHelper.getUserToken()), WebServiceConstants.GET_BOOK_DETAIL);
         getDockActivity().setFileDownloadListener(fileDownloadListener);
+        if (detailEnt!=null) {
+            if (detailEnt.getIsPurchased())
+            try {
+                RealmResults<BookDetailEnt> object = getMainActivity().realm
+                        .where(BookDetailEnt.class)
+                        .equalTo("bookID", detailEnt.getBookID()).findAll();
+                if (object.size() > 0) {
+                    btnAddCart.setVisibility(View.GONE);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        detailEnt = null;
     }
 
     public String getDurationText(Integer secound) {
@@ -296,18 +318,30 @@ public class BookDetailFragment extends BaseFragment {
 
         }
         if (result.getIsPurchased()) {
-            txtChaptersText.setText((result.getTotalChapters() - 1) + "");
+            if (result.getTotalChapters() == 2) {
+                txtChaptersText.setText(String.format(Locale.ENGLISH, "%d %s",
+                        result.getTotalChapters() - 1, getDockActivity().getResources().getString(R.string.chapters)));
+
+            } else {
+
+                txtChaptersText.setText(String.format(Locale.ENGLISH, "%d %s", result.getTotalChapters() - 1, getDockActivity().getResources().getString(R.string.chapters_heading)));
+            }
             btnListen.setText(R.string.listenbook);
             btnAddCart.setVisibility(View.GONE);
             if (detailEnt.getIsPurchased() && detailEnt.getChapters().getChapter().size() > 1) {
-                    detailEnt.getChapters().getChapter().remove(0);
+                detailEnt.getChapters().getChapter().remove(0);
             }
             chapterCollections = new ArrayList<>(detailEnt.getChapters().getChapter().subList(0, detailEnt.getChapters().getChapter().size()));
             rvChapters.setNestedScrollingEnabled(false);
             LinearLayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
             rvChapters.BindRecyclerView(new BookChapterBinder(chapterItemListener, getMainActivity().realm), chapterCollections, layoutManager, new DefaultItemAnimator());
         } else {
-            txtChaptersText.setText((result.getTotalChapters()) + "");
+            if (result.getTotalChapters() == 2) {
+                txtChaptersText.setText(String.format(Locale.ENGLISH, "%d %s", result.getTotalChapters() - 1, getDockActivity().getResources().getString(R.string.chapters)));
+
+            } else {
+                txtChaptersText.setText(String.format(Locale.ENGLISH, "%d %s", result.getTotalChapters() - 1, getDockActivity().getResources().getString(R.string.chapters_heading)));
+            }
         }
         btnAddFavorite.setChecked(result.getIsFavorite());
         if (titleBar != null) {
@@ -334,15 +368,16 @@ public class BookDetailFragment extends BaseFragment {
                 openPlayer(0);
                 break;
             case R.id.btn_add_cart:
-
-                if (detailEnt.getIsPaid()) {
-                    getMainActivity().realm.beginTransaction();
-                    getMainActivity().realm.copyToRealm(detailEnt);
-                    getMainActivity().realm.commitTransaction();
-                    btnAddCart.setVisibility(View.GONE);
-                    UIHelper.showShortToastInCenter(getDockActivity(),getDockActivity().getResources().getString(R.string.add_cart_toast));
-                } else {
-                    serviceHelper.enqueueCall(webService.AddBookToLibrary(bookID+"", prefHelper.getUserToken()), WebServiceConstants.ADD_LIBRARY);
+                if (detailEnt != null) {
+                    if (detailEnt.getIsPaid()) {
+                        getMainActivity().realm.beginTransaction();
+                        getMainActivity().realm.copyToRealm(detailEnt);
+                        getMainActivity().realm.commitTransaction();
+                        btnAddCart.setVisibility(View.GONE);
+                        UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.add_cart_toast));
+                    } else {
+                        serviceHelper.enqueueCall(webService.AddBookToLibrary(bookID + "", prefHelper.getUserToken()), WebServiceConstants.ADD_LIBRARY);
+                    }
                 }
                 break;
         }

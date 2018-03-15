@@ -42,7 +42,7 @@ public class PodcastEpisodeBinder extends RecyclerViewBinder<PodcastTrackEnt> im
     public void bindView(final PodcastTrackEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
         holder.txtTitle.setText(entity.getName() + "");
-        holder.txt_position.setText(context.getResources().getString(R.string.episode) + " " + position);
+        holder.txt_position.setText(context.getResources().getString(R.string.episode) + " " + (position+1));
         holder.btnDownload.setTag(R.integer.key_recycler_object, entity);
         holder.btnDownload.setTag(R.integer.key_recycler_position, position);
         holder.btnDownload.setOnClickListener(this);

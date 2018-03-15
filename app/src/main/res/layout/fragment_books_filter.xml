@@ -8,6 +8,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/x60"
+        android:id="@+id/container_frame"
         android:background="@color/app_filter_gray">
 
         <com.ingic.auditix.ui.views.AnyTextView

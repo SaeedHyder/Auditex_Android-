@@ -58,7 +58,7 @@ public class BaseApplication extends MultiDexApplication {
         initImageLoader();
         initRealm();
         configureExoMedia();
-        getDownloadFilePath();
+       // getDownloadFilePath();
         initDownloadManager();
     }
 

@@ -55,7 +55,8 @@
         <com.ingic.auditix.ui.views.AnyTextView
             android:id="@+id/txt_subscription_no_data"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/x200"
+            android:gravity="center"
             android:layout_gravity="start"
             android:layout_marginTop="@dimen/x10"
             android:maxLines="1"
@@ -108,7 +109,8 @@
         <com.ingic.auditix.ui.views.AnyTextView
             android:id="@+id/txt_recommended_no_data"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/x200"
+            android:gravity="center"
             android:layout_gravity="start"
             android:layout_marginTop="@dimen/x10"
             android:maxLines="1"
@@ -160,7 +162,8 @@
         <com.ingic.auditix.ui.views.AnyTextView
             android:id="@+id/txt_default_no_data"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/x200"
+            android:gravity="center"
             android:layout_gravity="start"
             android:layout_marginTop="@dimen/x10"
             android:maxLines="1"

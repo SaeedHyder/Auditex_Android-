@@ -95,6 +95,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     Unbinder unbinder;
     @BindView(R.id.pb_buffering)
     ProgressBar pbBuffering;
+    boolean hasItemPlayCompleted = false;
     private PlayerAdapter mPlayerAdapter;
     private boolean mUserIsSeeking = false;
     private boolean hasPlaylistComplete = false;
@@ -103,8 +104,9 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     private BookDetailEnt bookDetailEnt;
     private Integer ID;
     private String playerType = "";
-    private int startingIndex = 0;
     //endregion
+    private int startingIndex = 0;
+    private PlayerItemChangeListener itemChangeListener;
 
     //region Fragment Lifecycles
     public static PlayerFragment newInstance(PodcastDetailEnt podcastDetail, Integer ID, String playerType, BookDetailEnt bookDetailEnt, int startingIndex) {
@@ -123,11 +125,6 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         }
     }
 
-    public void setItemChangeListener(PlayerItemChangeListener itemChangeListener) {
-        this.itemChangeListener = itemChangeListener;
-    }
-
-    private PlayerItemChangeListener itemChangeListener;
     @Override
     public void setTitleBar(TitleBar titleBar) {
         super.setTitleBar(titleBar);
@@ -154,14 +151,14 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                     getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
                 }
             });
-            if (itemChangeListener!=null){
+            if (itemChangeListener != null) {
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         itemChangeListener.onItemChanged(startingIndex);
                     }
-                },1000);
+                }, 1000);
             }
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
             if (bookDetailEnt.getIsPurchased()) {
@@ -177,14 +174,14 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                         getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
                     }
                 });
-                if (itemChangeListener!=null){
+                if (itemChangeListener != null) {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             itemChangeListener.onItemChanged(startingIndex);
                         }
-                    },1000);
+                    }, 1000);
                 }
             }
             getMainActivity().titleBar.showFavoriteButton(bookDetailEnt.getIsFavorite(), new CompoundButton.OnCheckedChangeListener() {
@@ -198,6 +195,10 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 }
             });
         }
+    }
+
+    public void setItemChangeListener(PlayerItemChangeListener itemChangeListener) {
+        this.itemChangeListener = itemChangeListener;
     }
 
     private void setContent(PodcastDetailEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt, int startingIndex) {
@@ -214,6 +215,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
+    //endregion
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -222,7 +224,6 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
 
         getMainActivity().setFlagKeepScreenOn();
     }
-    //endregion
 
     @Override
     public void onStop() {
@@ -279,7 +280,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         }
         txtTitle.setText(ent.getBookName() + "");
         txtGenreText.setText(ent.getGenre() + "");
-        txtNarratorText.setText(ent.getAuthorName() + "");
+        txtNarratorText.setText(ent.getNarratorName() + "");
         sbProgress.setPadding(0, 0, 0, 0);
         txtDuration.setVisibility(View.VISIBLE);
         txtDurationText.setVisibility(View.VISIBLE);
@@ -292,7 +293,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         initializeSeekbar();
         mUserPlaylist = new ArrayList<>();
         if (bookDetailEnt.getIsPurchased() && chapters.getChapter().size() > 1) {
-           // chapters.getChapter().remove(0);
+            // chapters.getChapter().remove(0);
         }
         for (BooksChapterItemEnt tracks : chapters.getChapter()
                 ) {
@@ -306,7 +307,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             }
 
         }
-        mPlayerAdapter.loadPlayList(mUserPlaylist,startingIndex);
+        mPlayerAdapter.loadPlayList(mUserPlaylist, startingIndex);
         setItemName(startingIndex);
     }
 
@@ -328,7 +329,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 }
             }
         }
-        mPlayerAdapter.loadPlayList(mUserPlaylist,startingIndex);
+        mPlayerAdapter.loadPlayList(mUserPlaylist, startingIndex);
         setItemName(startingIndex);
 
     }
@@ -349,7 +350,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             case R.id.btn_play:
                 if (mPlayerAdapter.isReadyForPlay()) {
                     if (!mPlayerAdapter.isPlaying() && !hasPlaylistComplete) {
-                        performPlayClick();
+                        performPlayClick(hasItemPlayCompleted);
                     } else {
                         performPauseClick();
                     }
@@ -362,6 +363,9 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 }
                 break;
             case R.id.btn_forward:
+                if (!prefHelper.isContinous()) {
+                    hasPlaylistComplete = false;
+                }
                 mPlayerAdapter.playNext();
                 break;
         }
@@ -423,9 +427,14 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 });
     }
 
-    private void performPlayClick() {
+    private void performPlayClick(boolean isReplay) {
         hasPlaylistComplete = false;
-        mPlayerAdapter.play();
+        hasItemPlayCompleted = false;
+        if (isReplay) {
+            mPlayerAdapter.replay();
+        } else {
+            mPlayerAdapter.play();
+        }
         pbBuffering.setVisibility(View.GONE);
         btnPlay.setVisibility(View.VISIBLE);
         btnPlay.setImageResource(R.drawable.pause_icon_big);
@@ -453,7 +462,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             if (index < mUserPlaylist.size()) {
                 txtPlayingItemName.setText(podcastDetailEnt.getTrackList().get(index).getName());
                 txtPlayingItemAlbum.setText(podcastDetailEnt.getTitle());
-                if (itemChangeListener!=null){
+                if (itemChangeListener != null) {
                     itemChangeListener.onItemChanged(index);
                 }
             }
@@ -465,7 +474,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                     txtPlayingItemName.setText(getDockActivity().getResources().getString(R.string.chapters) + " " + (index + 1));
                 }
                 txtPlayingItemAlbum.setText(bookDetailEnt.getBookName());
-                if (itemChangeListener!=null){
+                if (itemChangeListener != null) {
                     itemChangeListener.onItemChanged(index);
                 }
             }
@@ -501,7 +510,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                     animation.setInterpolator(new LinearInterpolator());
                     animation.start();
                 }
-                if (remainingMinute == 0 && remainingSecond == 0) {
+                if (remainingMinute <= 0 && remainingSecond <= 0) {
                     txtRemainingTime.setText(String.format(Locale.ENGLISH, "%02d:%02d", remainingMinute, remainingSecond));
                 } else {
                     txtRemainingTime.setText(String.format(Locale.ENGLISH, "-%02d:%02d", remainingMinute, remainingSecond));
@@ -522,7 +531,13 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             pbBuffering.setVisibility(View.GONE);
             btnPlay.setVisibility(View.VISIBLE);
             btnPlay.setImageResource(R.drawable.play_icon_white);
-            mPlayerAdapter.playNext();
+            onPositionChanged(0, 0, 0);
+            if (prefHelper.isContinous()) {
+                mPlayerAdapter.playNext();
+            } else {
+                hasItemPlayCompleted = true;
+            }
+
         }
 
         @Override
@@ -542,7 +557,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             if (hasPlaylistComplete) {
                 return;
             } else {
-                performPlayClick();
+                performPlayClick(hasItemPlayCompleted);
             }
         }
 

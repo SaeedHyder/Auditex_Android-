@@ -64,6 +64,16 @@ public class WalkThroughFragment extends BaseFragment implements OnNextButtonLis
     }
 
     @Override
+    public void ResponseFailure(String tag) {
+        switch (tag) {
+            case WebServiceConstants.GET_ALL_WALKTHROUGH:
+                getDockActivity().popBackStackTillEntry(0);
+                getDockActivity().replaceDockableFragment(AccessSelectionFragment.newInstance(), false);
+                break;
+        }
+    }
+
+    @Override
     public void setTitleBar(TitleBar titleBar) {
         super.setTitleBar(titleBar);
         titleBar.hideTitleBar();

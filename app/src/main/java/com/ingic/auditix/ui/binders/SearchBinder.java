@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.ingic.auditix.R;
-import com.ingic.auditix.entities.BookDetailEnt;
+import com.ingic.auditix.entities.SearchEnt;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.viewbinders.abstracts.RecyclerViewBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -16,16 +16,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created on 2/1/2018.
+ * Created on 3/13/2018.
  */
 
-public class BestBooksBinder extends RecyclerViewBinder<BookDetailEnt> implements View.OnClickListener {
+public class SearchBinder extends RecyclerViewBinder<SearchEnt> implements View.OnClickListener {
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private RecyclerViewItemListener listener;
-
-    public BestBooksBinder(DisplayImageOptions options, RecyclerViewItemListener listener) {
-        super(R.layout.row_item_books_home_best);
+    public SearchBinder(DisplayImageOptions options,RecyclerViewItemListener listener) {
+        super(R.layout.row_item_search);
         this.options = options;
         this.listener = listener;
         imageLoader = ImageLoader.getInstance();
@@ -37,13 +36,11 @@ public class BestBooksBinder extends RecyclerViewBinder<BookDetailEnt> implement
     }
 
     @Override
-    public void bindView(BookDetailEnt entity, int position, Object viewHolder, Context context) {
+    public void bindView(SearchEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
         imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, options);
-        holder.txtTitle.setText(entity.getBookName() + "");
-        holder.txtNarratorText.setText(entity.getNarratorName()+"");
-        holder.itemView.setTag(R.integer.key_recycler_object, entity);
-        holder.itemView.setTag(R.integer.key_recycler_position, position);
+        holder.txtTitle.setText(entity.getName() + "");
+        holder.txtNarratorText.setText(entity.getNarratedBy() + "");
         holder.itemView.setTag(R.integer.key_recycler_object, entity);
         holder.itemView.setTag(R.integer.key_recycler_position, position);
         holder.itemView.setOnClickListener(this);
@@ -62,6 +59,8 @@ public class BestBooksBinder extends RecyclerViewBinder<BookDetailEnt> implement
         ImageView imgItemPic;
         @BindView(R.id.txt_title)
         AnyTextView txtTitle;
+        @BindView(R.id.txt_narrator)
+        AnyTextView txtNarrator;
         @BindView(R.id.txt_narrator_text)
         AnyTextView txtNarratorText;
 
@@ -71,4 +70,3 @@ public class BestBooksBinder extends RecyclerViewBinder<BookDetailEnt> implement
         }
     }
 }
-

@@ -1,10 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:layout_width="wrap_content"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                            android:id="@+id/parent_scroll"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:fillViewport="true"
+                                            android:padding="@dimen/x10"
+                                            android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Will be Implemented in next module"/>
-</android.support.constraint.ConstraintLayout>
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_subscription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/x10"
+                android:maxLines="1"
+                android:text="@string/my_subscriptions"
+                android:textAllCaps="true"
+                android:textColor="@color/app_font_black"
+                android:textSize="@dimen/x16"
+                android:textStyle="bold"
+                app:typeface="@string/font_bold"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/btn_subscription_seeall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:maxLines="1"
+                android:text="@string/see_all"
+                android:textColor="@color/app_title_orange"
+                android:textSize="@dimen/x14"
+                android:textStyle="bold"
+                app:typeface="@string/font_normal"/>
+        </FrameLayout>
+
+        <com.ingic.auditix.ui.views.CustomRecyclerView
+            android:id="@+id/rv_subscribe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x10"
+            android:divider="@null"
+            android:scrollbars="none"/>
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_subscription_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x200"
+            android:layout_gravity="start"
+            android:layout_marginTop="@dimen/x10"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/no_data_available"
+            android:textColor="@color/app_font_black"
+            android:textSize="@dimen/x16"
+            android:visibility="gone"
+            app:typeface="@string/font_normal"/>
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_news"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="@dimen/x10"
+            android:maxLines="1"
+            android:text="@string/most_recommended"
+            android:textAllCaps="true"
+            android:textColor="@color/app_font_black"
+            android:textSize="@dimen/x16"
+            android:visibility="gone"
+            app:typeface="@string/font_bold"/>
+
+
+        <com.ingic.auditix.ui.views.CustomRecyclerView
+            android:id="@+id/rv_categories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x10"
+            android:divider="@null"
+            android:scrollbars="none"/>
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_news_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x200"
+            android:layout_gravity="start"
+            android:layout_marginTop="@dimen/x10"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/no_data_available"
+            android:textColor="@color/app_font_black"
+            android:textSize="@dimen/x16"
+            android:visibility="gone"
+            app:typeface="@string/font_normal"/>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

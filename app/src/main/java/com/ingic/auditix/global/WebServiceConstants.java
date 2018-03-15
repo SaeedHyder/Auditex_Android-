@@ -7,6 +7,12 @@ public class WebServiceConstants {
     public static final String IMAGE_PATH = "http://auditix.stagingic.com/AuditixShared/Users/";
     public static final int GENDER_MALE = 0;
     public static final int GENDER_FEMALE = 1;
+    public static final int CMS_TYPE_TERMS = 1;
+    public static final int CMS_TYPE_PRIVACY = 2;
+    public static final int CMS_TYPE_ABOUT = 3;
+    public static final int SEARCH_TYPE_PODCAST = 1;
+    public static final int SEARCH_TYPE_BOOKS = 2;
+    public static final int SEARCH_TYPE_NEWS = 3;
     public static final int REGISTER_TYPE_EMAIL = 0;
     public static final int REGISTER_TYPE_FACEBOOK = 1;
     public static final int REGISTER_TYPE_GMAIL = 2;
@@ -41,4 +47,8 @@ public class WebServiceConstants {
     public static final String GET_BOOK_DETAIL = "GET_BOOK_DETAIL";
     public static final String ADD_LIBRARY = "ADD_LIBRARY";
     public static final String GET_ALL_LIBRARY_BOOK = "GET_ALL_LIBRARY_BOOK";
+    public static final String GET_SEARCH = "GET_SEARCH";
+    public static final String GET_PAGED_SEARCH = "GET_PAGED_SEARCH";
+    public static final String GET_CONTENTS = "GET_CONTENTS";
+    public static final String GET_ALL_NEWS_CATEGORIES = "GET_ALL_NEWS_CATEGORIES";
 }

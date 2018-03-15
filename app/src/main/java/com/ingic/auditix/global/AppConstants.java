@@ -29,6 +29,7 @@ public class AppConstants {
     public static final String TAB_PROFILE = "profile";
     //Path to Drawable
     public static final String DRAWABLE_PATH = "drawable://";
+    public static final String KEY_CMS_TYPE = "Key";
     public static String twitter = "twitter";
     public static int INTENT_ID = 100;
     // id to handle the notification in the notification tray

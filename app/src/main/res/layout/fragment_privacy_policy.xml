@@ -10,7 +10,6 @@
         android:gravity="start|top"
         android:padding="10dp"
         android:scrollbars="vertical"
-        android:text="@string/lorem_ipsum"
         android:textColor="@color/app_font_black"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/con_agree"

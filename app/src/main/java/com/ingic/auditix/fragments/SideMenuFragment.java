@@ -15,6 +15,7 @@ import com.ingic.auditix.R;
 import com.ingic.auditix.entities.NavigationEnt;
 import com.ingic.auditix.entities.UserModel;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.DialogHelper;
 import com.ingic.auditix.ui.adapters.ArrayListAdapter;
@@ -25,6 +26,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -175,6 +177,8 @@ public class SideMenuFragment extends BaseFragment {
                     logoutdialog.initlogout(R.layout.dialog_logout, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                           // File dir = new File(AppConstants.DOWNLOAD_PATH);
+                           // DeleteRecursive(dir);
                             prefHelper.setLoginStatus(false);
                             getDockActivity().popBackStackTillEntry(0);
                             getDockActivity().replaceDockableFragment(AccessSelectionFragment.newInstance(), "AccessSelectionFragment");
@@ -191,5 +195,15 @@ public class SideMenuFragment extends BaseFragment {
                 }
             }
         });
+    }
+
+    void DeleteRecursive(File fileOrDirectory) {
+
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                DeleteRecursive(child);
+
+        fileOrDirectory.delete();
+
     }
 }
