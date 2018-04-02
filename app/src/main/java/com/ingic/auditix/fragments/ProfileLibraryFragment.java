@@ -63,7 +63,8 @@ public class ProfileLibraryFragment extends BaseFragment {
                     detailEnt.getChapters().getChapter().remove(0);
                 }
 
-                getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt,0), "PlayerFragment");
+                getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt,
+                        null,0), PlayerFragment.TAG);
             }
         }
     };

@@ -27,7 +27,6 @@ import com.ingic.auditix.interfaces.LoadingListener;
 import com.ingic.auditix.residemenu.ResideMenu;
 import com.ingic.auditix.ui.dialogs.DialogFactory;
 import com.liulishuo.filedownloader.FileDownloadConnectListener;
-import com.liulishuo.filedownloader.FileDownloadList;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.event.DownloadServiceConnectChangedEvent;
 import com.liulishuo.filedownloader.event.IDownloadEvent;
@@ -308,7 +307,8 @@ public abstract class DockActivity extends AppCompatActivity implements
         }
     }
 
-    public void addDownload(String downloadUrl, String fileName, String fileFormat, int tag, String name) {
+    public void addDownload(String downloadUrl,
+                            String fileName, String fileFormat, int tag, String name) {
         FileDownloader.getImpl().create(getDownloadUrl(downloadUrl, ""))
                 .setPath(getDownloadPath(fileName, fileFormat))
                 .setListener(fileDownloadListener)
@@ -335,12 +335,17 @@ public abstract class DockActivity extends AppCompatActivity implements
 //        FileDownloader.getImpl().start(fileDownloadListener, false);
     }
 
-    @NonNull
-    private String getDownloadPath(String fileName, String fileFormat) {
-        return AppConstants.DOWNLOAD_PATH + File.separator + fileName
-                .replaceAll("\\s+", "")
+    private String getSymbolsReplacedString(String text) {
+        return text.replaceAll("\\s+", "")
                 .replaceAll("\\\\", "")
-                .replaceAll("/", "")
+                .replaceAll("/", "");
+    }
+
+    @NonNull
+    private String getDownloadPath( String fileName, String fileFormat) {
+        return AppConstants.DOWNLOAD_PATH
+                + File.separator
+                + File.separator + getSymbolsReplacedString(fileName)
                 + fileFormat;
     }
 

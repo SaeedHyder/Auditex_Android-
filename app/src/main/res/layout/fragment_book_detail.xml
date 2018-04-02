@@ -30,8 +30,8 @@
                     android:layout_width="@dimen/x110"
                     android:layout_height="@dimen/x130"
                     android:layout_marginEnd="@dimen/x5"
-                    android:scaleType="fitXY"
                     android:contentDescription="@string/profile"
+                    android:scaleType="fitXY"
                     android:src="@drawable/com_facebook_profile_picture_blank_square"/>
 
                 <android.support.constraint.ConstraintLayout
@@ -118,6 +118,7 @@
                         app:layout_constraintStart_toEndOf="@+id/txt_author"
                         app:layout_constraintTop_toBottomOf="@id/txt_narrator_text"
                         app:typeface="@string/font_normal"/>
+
                     <com.ingic.auditix.ui.views.AnyTextView
                         android:id="@+id/txt_rating"
                         android:layout_width="0dp"
@@ -240,6 +241,7 @@
                         app:layout_constraintStart_toEndOf="@+id/txt_chapters"
                         app:layout_constraintTop_toBottomOf="@id/txt_duration_text"
                         app:typeface="@string/font_normal"/>
+
                     <com.ingic.auditix.ui.views.AnyTextView
                         android:id="@+id/txt_price"
                         android:layout_width="0dp"
@@ -310,122 +312,136 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/x5"
                 android:gravity="start"
-                android:visibility="gone"
-
                 android:textColor="@color/app_font_gray"
+
                 android:textSize="@dimen/x13"
+                android:visibility="gone"
                 app:typeface="@string/font_normal"/>
         </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/container_buttons"
+        <LinearLayout
+            android:id="@+id/container_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/x30"
+            android:layout_marginStart="@dimen/x30"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <Button
+                android:id="@+id/btn_listen"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginEnd="@dimen/x30"
-                android:layout_marginStart="@dimen/x30"
-                android:visibility="visible">
-                <Button
-                    android:id="@+id/btn_listen"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/x40"
-                    android:layout_marginTop="@dimen/x20"
-                    android:background="@drawable/rate_btn"
-                    android:text="@string/listenpreview"
-                    android:textAllCaps="false"
-                    android:textColor="@color/app_title_orange"/>
-                <Button
-                    android:id="@+id/btn_add_cart"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/x40"
-                    android:layout_marginTop="@dimen/x10"
-                    android:background="@drawable/button_orange"
-                    android:text="@string/addtocart"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"/>
-                <ToggleButton
-                    android:id="@+id/btn_add_favorite"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/x40"
-                    android:layout_marginTop="@dimen/x10"
-                    android:layout_marginBottom="@dimen/x25"
-                    android:background="@drawable/button_orange"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textOff="@string/add_favorite"
-                    android:textOn="@string/remove_favorite"/>
-            </LinearLayout>
+                android:layout_height="@dimen/x40"
+                android:layout_marginTop="@dimen/x20"
+                android:background="@drawable/rate_btn"
+                android:text="@string/listenpreview"
+                android:textAllCaps="false"
+                android:textColor="@color/app_title_orange"/>
+
+            <Button
+                android:id="@+id/btn_add_cart"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x40"
+                android:layout_marginTop="@dimen/x10"
+                android:background="@drawable/button_orange"
+                android:text="@string/addtocart"
+                android:textAllCaps="false"
+                android:textColor="@color/white"/>
+
+            <ToggleButton
+                android:id="@+id/btn_add_favorite"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x40"
+                android:layout_marginTop="@dimen/x10"
+                android:background="@drawable/button_orange"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textOff="@string/add_favorite"
+                android:textOn="@string/remove_favorite"/>
+
+            <Button
+                android:id="@+id/btn_rate"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x40"
+                android:layout_marginBottom="@dimen/x25"
+                android:layout_marginTop="@dimen/x10"
+                android:background="@drawable/button_orange"
+                android:text="@string/rate_book"
+                android:textAllCaps="false"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_player"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/x1"
+            android:background="@drawable/orange_box_head"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/x5"
+            android:paddingEnd="@dimen/x15"
+            android:paddingStart="@dimen/x15"
+            android:paddingTop="@dimen/x5"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/img_player_cover"
+                android:layout_width="@dimen/x35"
+                android:layout_height="@dimen/x35"
+                android:src="@drawable/dummyalbum"/>
 
             <LinearLayout
-                android:id="@+id/container_player"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="@dimen/x1"
-                android:background="@drawable/orange_box_head"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/x50"
+                android:layout_marginEnd="@dimen/x10"
+                android:layout_marginStart="@dimen/x10"
+                android:layout_weight="0.5"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/x5"
-                android:paddingEnd="@dimen/x15"
-                android:paddingStart="@dimen/x15"
-                android:paddingTop="@dimen/x5"
-                android:visibility="gone">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/img_player_cover"
-                    android:layout_width="@dimen/x35"
-                    android:layout_height="@dimen/x35"
-                    android:src="@drawable/dummyalbum"/>
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/txt_player_item_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="@dimen/x5"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text="@string/lorem_ipsum"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/x14"
+                    app:typeface="@string/font_normal"/>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/x50"
-                    android:layout_marginEnd="@dimen/x10"
-                    android:layout_marginStart="@dimen/x10"
-                    android:layout_weight="0.5"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
-
-                    <com.ingic.auditix.ui.views.AnyTextView
-                        android:id="@+id/txt_player_item_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginStart="@dimen/x5"
-                        android:ellipsize="marquee"
-                        android:singleLine="true"
-                        android:text="@string/lorem_ipsum"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/x14"
-                        app:typeface="@string/font_normal"/>
-
-                    <com.ingic.auditix.ui.views.AnyTextView
-                        android:id="@+id/txt_player_item_album"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginStart="@dimen/x5"
-                        android:ellipsize="marquee"
-                        android:singleLine="true"
-                        android:text="@string/lorem_ipsum"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/x12"
-                        app:typeface="@string/font_normal"/>
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/btn_player_play"
-                    android:layout_width="@dimen/x20"
-                    android:layout_height="@dimen/x20"
-                    android:layout_marginEnd="@dimen/x10"
-                    android:src="@drawable/pause_icon_small"/>
-
-                <ImageView
-                    android:id="@+id/btn_player_forward"
-                    android:layout_width="@dimen/x15"
-                    android:layout_height="@dimen/x15"
-                    android:src="@drawable/forward_icon"/>
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/txt_player_item_album"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="@dimen/x5"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text="@string/lorem_ipsum"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/x12"
+                    app:typeface="@string/font_normal"/>
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/btn_player_play"
+                android:layout_width="@dimen/x20"
+                android:layout_height="@dimen/x20"
+                android:layout_marginEnd="@dimen/x10"
+                android:src="@drawable/pause_icon_small"/>
+
+            <ImageView
+                android:id="@+id/btn_player_forward"
+                android:layout_width="@dimen/x15"
+                android:layout_height="@dimen/x15"
+                android:src="@drawable/forward_icon"/>
+        </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"

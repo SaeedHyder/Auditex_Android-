@@ -28,6 +28,7 @@ import com.ingic.auditix.fragments.FilterFragment;
 import com.ingic.auditix.fragments.HomeFragment;
 import com.ingic.auditix.fragments.LanguageSelectionFragment;
 import com.ingic.auditix.fragments.NotificationsFragment;
+import com.ingic.auditix.fragments.SampleFragment;
 import com.ingic.auditix.fragments.SideMenuFragment;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.SideMenuChooser;
@@ -43,6 +44,7 @@ import com.ingic.auditix.interfaces.webServiceResponseLisener;
 import com.ingic.auditix.residemenu.ResideMenu;
 import com.ingic.auditix.retrofit.WebService;
 import com.ingic.auditix.retrofit.WebServiceFactory;
+import com.ingic.auditix.ui.slidinglayout.SlidingUpPanelLayout;
 import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -68,6 +70,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
     @BindView(R.id.filterFragmentContainer)
     public FrameLayout filterFragmentContainer;
     public boolean isNavigationGravityRight = false;
+    public SlidingUpPanelLayout mSlidingLayout;
     @BindView(R.id.header_main)
     TitleBar header_main;
     @BindView(R.id.mainFrameLayout)
@@ -78,6 +81,11 @@ public class MainActivity extends DockActivity implements OnClickListener {
     ProgressBar progressBar;
     @BindView(R.id.imageBlur)
     ImageView imageBlur;
+    @BindView(R.id.sliding_layout)
+    SlidingUpPanelLayout slidingLayout;
+    @BindView(R.id.bottomView)
+    FrameLayout bottomView;
+    RelativeLayout.LayoutParams params;
     private MainActivity mContext;
     private boolean loading;
     private ResideMenu resideMenu;
@@ -132,7 +140,6 @@ public class MainActivity extends DockActivity implements OnClickListener {
         return imageBlur;
     }
 
-
     public String getBlurredBackgroundFilename() {
         Bitmap localBitmap = Blur.fastblur(this, this.mDownScaled, 20);
         String str = Utilities.saveBitmapToFile(this, localBitmap);
@@ -150,7 +157,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
     }
 
     public void clearFlagKeepScreenOn() {
-        getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void setRightSideDrawer() {
@@ -291,13 +298,11 @@ public class MainActivity extends DockActivity implements OnClickListener {
     }
 
     public void addMainframeBelowTitlebar() {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.addRule(RelativeLayout.BELOW, R.id.header_main);
         mainFrameLayout.setLayoutParams(params);
     }
 
     public void removeMainframeBelowTitlebar() {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.addRule(RelativeLayout.BELOW, 0);
         mainFrameLayout.setLayoutParams(params);
     }
@@ -363,6 +368,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
         getCMSFromService();
         // setBehindContentView(R.layout.fragment_frame);
         mContext = this;
+        params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         Log.i("Screen Density", ScreenHelper.getDensity(this) + "");
 
         sideMenuType = SideMenuChooser.DRAWER.getValue();
@@ -406,7 +412,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
                 }
             }
         });
-
+        initBottomPlayer(SampleFragment.newInstance());
         titleBar.setNotificationButtonListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -449,6 +455,28 @@ public class MainActivity extends DockActivity implements OnClickListener {
 
     @Override
     public void hideHeaderButtons(boolean leftBtn, boolean rightBtn) {
+    }
+
+    public void showBottomPlayer() {
+        slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, Math.round(getResources().getDimension(R.dimen.x50)));
+        mainFrameLayout.setLayoutParams(params);
+
+    }
+
+    public void hideBottomPlayer() {
+        slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+        params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, 0);
+        mainFrameLayout.setLayoutParams(params);
+    }
+
+    private void initBottomPlayer(BaseFragment playerFragment) {
+        mSlidingLayout = slidingLayout;
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction();
+        transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit, R.anim.fragment_popenter, R.anim.fragment_pop_exit);
+        transaction.replace(R.id.bottomView, playerFragment).commit();
+        showBottomPlayer();
     }
 
     private void getCMSFromService() {

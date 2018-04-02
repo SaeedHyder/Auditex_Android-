@@ -51,4 +51,7 @@ public class WebServiceConstants {
     public static final String GET_PAGED_SEARCH = "GET_PAGED_SEARCH";
     public static final String GET_CONTENTS = "GET_CONTENTS";
     public static final String GET_ALL_NEWS_CATEGORIES = "GET_ALL_NEWS_CATEGORIES";
+    public static final String GET_ALL_NEWS_BY_CATEGORIES = "GET_ALL_NEWS_BY_CATEGORIES";
+    public static final String RATE_BOOK = "RATE_BOOK";
+
 }

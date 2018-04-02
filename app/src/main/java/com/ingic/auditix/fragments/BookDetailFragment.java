@@ -18,6 +18,7 @@ import com.ingic.auditix.entities.BooksChapterItemEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
+import com.ingic.auditix.helpers.DialogHelper;
 import com.ingic.auditix.helpers.InternetHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.interfaces.DownloadListenerFragment;
@@ -78,6 +79,8 @@ public class BookDetailFragment extends BaseFragment {
     NestedScrollView nestedScrollView;
     @BindView(R.id.rv_chapters)
     CustomRecyclerView rvChapters;
+    @BindView(R.id.btn_rate)
+    Button btnRate;
     private int bookID;
     private BookDetailEnt detailEnt;
     private TitleBar titleBar;
@@ -176,6 +179,7 @@ public class BookDetailFragment extends BaseFragment {
 
         }
     };
+    private DialogHelper helper;
 
     public static BookDetailFragment newInstance(int bookId) {
         Bundle args = new Bundle();
@@ -220,6 +224,12 @@ public class BookDetailFragment extends BaseFragment {
                 btnAddCart.setVisibility(View.GONE);
                 UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.book_item_added_Book));
                 break;
+            case WebServiceConstants.RATE_BOOK:
+                UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.rating_submit_message));
+                if (helper != null) {
+                    rbRating.setScore(helper.getDialogRating());
+                }
+                break;
         }
     }
 
@@ -244,19 +254,19 @@ public class BookDetailFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         serviceHelper.enqueueCall(webService.getBookDetails(this.bookID, prefHelper.getUserToken()), WebServiceConstants.GET_BOOK_DETAIL);
         getDockActivity().setFileDownloadListener(fileDownloadListener);
-        if (detailEnt!=null) {
+        if (detailEnt != null) {
             if (detailEnt.getIsPurchased())
-            try {
-                RealmResults<BookDetailEnt> object = getMainActivity().realm
-                        .where(BookDetailEnt.class)
-                        .equalTo("bookID", detailEnt.getBookID()).findAll();
-                if (object.size() > 0) {
-                    btnAddCart.setVisibility(View.GONE);
-                }
+                try {
+                    RealmResults<BookDetailEnt> object = getMainActivity().realm
+                            .where(BookDetailEnt.class)
+                            .equalTo("bookID", detailEnt.getBookID()).findAll();
+                    if (object.size() > 0) {
+                        btnAddCart.setVisibility(View.GONE);
+                    }
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
         }
     }
 
@@ -272,11 +282,11 @@ public class BookDetailFragment extends BaseFragment {
         int hours = secound / 3600;
 
         if (hours > 1) {
-            return (hours) + "Hr" + (minutes) + "mins";
+            return (hours) + " Hr " + (minutes) + " Mins";
         } else if (minutes > 0) {
-            return (minutes) + " mins";
+            return (minutes) + " Mins";
         } else if (secound > 0) {
-            return (secound) + " sec";
+            return (secound) + " Sec";
         } else {
             return "-";
         }
@@ -361,11 +371,31 @@ public class BookDetailFragment extends BaseFragment {
 
     }
 
-    @OnClick({R.id.btn_listen, R.id.btn_add_cart})
+    @OnClick({R.id.btn_rate, R.id.btn_listen, R.id.btn_add_cart})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_listen:
                 openPlayer(0);
+                break;
+            case R.id.btn_rate:
+                if (detailEnt != null) {
+                    helper = new DialogHelper(getDockActivity());
+                    helper.initRatingDialog(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            serviceHelper.enqueueCall(webService.rateBook(bookID, helper.getDialogRating(),
+                                    prefHelper.getUserToken()), WebServiceConstants.RATE_BOOK);
+                            helper.hideDialog();
+                        }
+                    }, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            helper.hideDialog();
+                        }
+                    });
+                    helper.setCancelable(false);
+                    helper.showDialog();
+                }
                 break;
             case R.id.btn_add_cart:
                 if (detailEnt != null) {
@@ -388,7 +418,8 @@ public class BookDetailFragment extends BaseFragment {
             if (getMainActivity().booksFilterFragment != null) {
                 getMainActivity().booksFilterFragment.clearFilters();
             }
-            getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, bookID, AppConstants.TAB_BOOKS, detailEnt, startingIndex), "PlayerFragment");
+            getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, bookID, AppConstants.TAB_BOOKS, detailEnt,
+                    null, startingIndex), PlayerFragment.TAG);
         }
     }
 }

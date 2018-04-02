@@ -355,11 +355,6 @@ public class PodcastDetailFragment extends BaseFragment {
         getDetails();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
 
     private void setTrackID(Integer trackID) {
         this.trackID = trackID;
@@ -420,7 +415,8 @@ public class PodcastDetailFragment extends BaseFragment {
             if (getMainActivity().filterFragment != null) {
                 getMainActivity().filterFragment.clearFilters();
             }
-            getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST, null, startingIndex), "PlayerFragment");
+            getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST, null,null,
+                    startingIndex), PlayerFragment.TAG);
         }
     }
 }

@@ -56,7 +56,8 @@ public class ServiceHelper<T> {
                         }
                     } else {
                         serviceResponseLisener.ResponseFailure(tag);
-                        UIHelper.showShortToastInCenter(context, context.getResources().getString(R.string.server_response_error));
+                        UIHelper.showShortToastInCenter(context, response.message()+"");
+//                        UIHelper.showShortToastInCenter(context, context.getResources().getString(R.string.server_response_error));
                     }
 
                 }
@@ -99,7 +100,8 @@ public class ServiceHelper<T> {
                         }
                     } else {
                         serviceResponseLisener.ResponseFailure(tag);
-                        UIHelper.showShortToastInCenter(context, context.getResources().getString(R.string.server_response_error));
+                        UIHelper.showShortToastInCenter(context, response.message()+"");
+                        //   UIHelper.showShortToastInCenter(context, context.getResources().getString(R.string.server_response_error));
                     }
 
                 }

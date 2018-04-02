@@ -22,6 +22,7 @@ import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BookChaptersEnt;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.BooksChapterItemEnt;
+import com.ingic.auditix.entities.NewsEpisodeEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.entities.PodcastTrackEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
@@ -55,7 +56,7 @@ import butterknife.Unbinder;
 public class PlayerFragment extends BaseFragment implements TrackListItemListener {
 
     //region Global Variables
-    private static final String TAG = "PlayerFragment";
+    public static final String TAG = "PlayerFragment";
     @BindView(R.id.btn_volume)
     ImageView btnVolume;
     @BindView(R.id.txt_playing_item_album)
@@ -101,6 +102,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     private boolean hasPlaylistComplete = false;
     private ArrayList<PlayListModel> mUserPlaylist;
     private PodcastDetailEnt podcastDetailEnt;
+    private NewsEpisodeEnt newsEpisodeEnt;
     private BookDetailEnt bookDetailEnt;
     private Integer ID;
     private String playerType = "";
@@ -109,12 +111,13 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     private PlayerItemChangeListener itemChangeListener;
 
     //region Fragment Lifecycles
-    public static PlayerFragment newInstance(PodcastDetailEnt podcastDetail, Integer ID, String playerType, BookDetailEnt bookDetailEnt, int startingIndex) {
+    public static PlayerFragment newInstance(PodcastDetailEnt podcastDetail, Integer ID, String playerType,
+                                             BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex) {
         Bundle args = new Bundle();
 
         PlayerFragment fragment = new PlayerFragment();
         fragment.setArguments(args);
-        fragment.setContent(podcastDetail, ID, playerType, bookDetailEnt, startingIndex);
+        fragment.setContent(podcastDetail, ID, playerType, bookDetailEnt, newsEpisodeEnt, startingIndex);
         return fragment;
     }
 
@@ -194,6 +197,12 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                     }
                 }
             });
+        } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
+            getMainActivity().titleBar.showFavoriteButton(false, new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                }
+            });
         }
     }
 
@@ -201,11 +210,12 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         this.itemChangeListener = itemChangeListener;
     }
 
-    private void setContent(PodcastDetailEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt, int startingIndex) {
+    private void setContent(PodcastDetailEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex) {
         this.podcastDetailEnt = podcastDetail;
         this.ID = trackID;
         this.playerType = playerType;
         this.bookDetailEnt = bookDetailEnt;
+        this.newsEpisodeEnt = newsEpisodeEnt;
         this.startingIndex = startingIndex;
     }
 
@@ -245,7 +255,35 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             setupUIViewsPodcast(podcastDetailEnt);
         } else if (type.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
             setupUIViewsBook(bookDetailEnt);
+        } else if (type.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
+            setupUIViewsNews(newsEpisodeEnt);
         }
+
+    }
+
+    private void setupUIViewsNews(NewsEpisodeEnt ent) {
+        DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
+        ImageLoader.getInstance().displayImage(ent.getImage_url(), imgItemCover, options);
+        ImageLoader.getInstance().displayImage(ent.getImage_url(), imgItemPic, options);
+        txtPlayingItemAlbum.setSelected(true);
+        txtPlayingItemName.setSelected(true);
+        txtTitle.setText(ent.getTitle() + "");
+        sbProgress.setPadding(0, 0, 0, 0);
+        txtDuration.setVisibility(View.VISIBLE);
+        txtDurationText.setVisibility(View.VISIBLE);
+        txtDurationText.setText(getBookDurationText(ent.getDuration()));
+        initializePlaybackController();
+        initializeSeekbar();
+        mUserPlaylist = new ArrayList<>();
+        String path = AppConstants.DOWNLOAD_PATH + File.separator + ent.getTitle().replaceAll("\\s+", "") + ".mp3";
+        if (new File(path).exists()) {
+            mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path, false));
+        } else {
+            mUserPlaylist.add(new PlayListModel("", ent.getAudio_link(), false));
+        }
+        mPlayerAdapter.loadPlayList(mUserPlaylist, startingIndex);
+        setItemName(startingIndex);
+
 
     }
 
@@ -478,6 +516,14 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                     itemChangeListener.onItemChanged(index);
                 }
             }
+        } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
+            if (index < mUserPlaylist.size()) {
+                txtPlayingItemName.setText(newsEpisodeEnt.getTitle());
+                txtPlayingItemAlbum.setText(newsEpisodeEnt.getSource_name());
+                if (itemChangeListener != null) {
+                    itemChangeListener.onItemChanged(index);
+                }
+            }
         }
     }
 
@@ -490,11 +536,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         @Override
         public void onDurationChanged(int duration) {
             sbProgress.setMax(duration);
-            if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
-                txtTimeTotal.setText(getTotalDuaration(duration));
-            } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
-                txtTimeTotal.setText(getTotalDuaration(duration));
-            }
+            txtTimeTotal.setText(getTotalDuaration(duration));
             Log.d(TAG, String.format("setPlaybackDuration: setMax(%d)", duration));
         }
 

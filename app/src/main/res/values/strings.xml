@@ -163,9 +163,11 @@
     <string name="duration">Duration :</string>
     <string name="location">Location :</string>
     <string name="about_podcast">About The Podcast</string>
+    <string name="about_news">About The News</string>
     <string name="narrator_intro">Narrator Introduction</string>
     <string name="add_favorite">Add to Favorite</string>
     <string name="rate_podcast">Rate this Podcast</string>
+    <string name="rate_book">Rate this Book</string>
     <string name="rate_now">Rate Now</string>
     <string name="clear">Clear</string>
     <string name="done">Done</string>
@@ -252,4 +254,7 @@
     <string name="add_cart_toast">Book has been added to Cart</string>
     <string name="proceed_checkout">Proceed to Checkout</string>
     <string name="network_mobile_error">Its seems like you are using data network, kindly change the settings to download this.</string>
+    <string name="show_and_episodes"><![CDATA[Shows & Episodes]]></string>
+    <string name="news_detail">News Detail</string>
+    <string name="mins">Mins</string>
 </resources>

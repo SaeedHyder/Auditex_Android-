@@ -1,6 +1,7 @@
 package com.ingic.auditix.retrofit;
 
 
+import com.ingic.auditix.entities.AdvertisementEnt;
 import com.ingic.auditix.entities.BookCategoryDetailEnt;
 import com.ingic.auditix.entities.BookCategoryEnt;
 import com.ingic.auditix.entities.BookDetailEnt;
@@ -8,6 +9,7 @@ import com.ingic.auditix.entities.BookFavoriteEnt;
 import com.ingic.auditix.entities.BookGenreEnt;
 import com.ingic.auditix.entities.CMSEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
+import com.ingic.auditix.entities.NewsEpisodeEnt;
 import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.entities.PodcastCategoryListEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
@@ -184,6 +186,11 @@ public interface WebService {
                                                                     @Query("PageSize") Integer pageSize,
                                                                     @Query("culture") String culture,
                                                                     @Header(WebServiceConstants.HEADER_KEY) String header);
+
+    @GET("BookRating")
+    Call<ResponseWrapper> rateBook(@Query("BookID") Integer BookID,
+                                   @Query("RatingScore") Integer RatingScore,
+                                   @Header(WebServiceConstants.HEADER_KEY) String header);
     //endregion
 
     //region Search
@@ -198,11 +205,20 @@ public interface WebService {
     //region Content
     @GET("GetAllContent")
     Call<ResponseWrapper<ArrayList<CMSEnt>>> getStaticContents();
+
+    //endregion
+
+    //region Advertisement
+    @GET("GetAllAdvertisement")
+    Call<ResponseWrapper<ArrayList<AdvertisementEnt>>> getAllAdvertisement(@Header(WebServiceConstants.HEADER_KEY) String header);
     //endregion
 
     //region News
     @GET("GetAllNewsCategory")
     Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllNewsCategories(@Header(WebServiceConstants.HEADER_KEY) String userToken);
+
+    @GET("GetAllNewsByCategoryId")
+    Call<ResponseWrapper<ArrayList<NewsEpisodeEnt>>> getAllNewsByCategory(@Query("Id") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
 
     //endregion
 }

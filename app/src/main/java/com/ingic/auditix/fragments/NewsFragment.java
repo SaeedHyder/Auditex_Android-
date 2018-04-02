@@ -72,7 +72,7 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-
+            getDockActivity().replaceDockableFragment(NewsCategoryDetailFragment.newInstance((NewsCategoryEnt) Ent),NewsCategoryDetailFragment.TAG);
         }
     };
 
@@ -130,13 +130,6 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
 //        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
 
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
     private void bindNewsCategories(ArrayList<NewsCategoryEnt> result) {
         if (result.size() <= 0) {
             txtNewsNoData.setVisibility(View.VISIBLE);

@@ -67,27 +67,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.14"/>
+        app:layout_constraintGuide_percent="0.10"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/podcast_down_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35"/>
+        app:layout_constraintGuide_percent="0.20"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/podcast_verticle_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.40"/>
+        app:layout_constraintGuide_percent="0.25"/>
+
     <android.support.constraint.Guideline
         android:id="@+id/podcast_verticle_guide_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.60"/>
+        app:layout_constraintGuide_percent="0.50"/>
     <!--endregion-->
 
     <!--region Books-->
@@ -130,23 +131,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.56"/>
+        app:layout_constraintGuide_percent="0.53"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/book_upper_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.38"/>
+        app:layout_constraintGuide_percent="0.30"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/book_down_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6"/>
+        app:layout_constraintGuide_percent="0.45"/>
     <!--endregion-->
-
     <!--region News-->
     <ImageView
         android:id="@+id/btn_news"
@@ -155,11 +155,9 @@
         android:background="@drawable/podcast_circle_white"
         android:scaleType="centerInside"
         android:src="@drawable/news_orange"
-        app:layout_constraintBottom_toBottomOf="@+id/news_down_guide"
-        app:layout_constraintEnd_toEndOf="@id/podcast_verticle_guide_end"
-        app:layout_constraintHorizontal_bias="0.50"
-        app:layout_constraintStart_toStartOf="@id/podcast_verticle_guide"
-        app:layout_constraintTop_toTopOf="@+id/news_upper_guide"/>
+        app:layout_constraintBottom_toBottomOf="@id/news_down_guide"
+        app:layout_constraintStart_toStartOf="@id/book_verticle_guide"
+        app:layout_constraintTop_toTopOf="@id/news_upper_guide"/>
 
     <ImageView
         android:id="@+id/news_shape"
@@ -188,13 +186,62 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.63"/>
+        app:layout_constraintGuide_percent="0.57"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/news_down_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85"/>
+        app:layout_constraintGuide_percent="0.72"/>
+    <!--endregion-->
+    <!--region Profile-->
+    <ImageView
+        android:id="@+id/btn_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/podcast_circle_white"
+        android:scaleType="centerInside"
+        android:src="@drawable/news_orange"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_down_guide"
+        app:layout_constraintEnd_toEndOf="@id/podcast_verticle_guide_end"
+        app:layout_constraintStart_toStartOf="@id/podcast_verticle_guide"
+        app:layout_constraintTop_toTopOf="@+id/profile_upper_guide"/>
+
+    <ImageView
+        android:id="@+id/profile_shape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/play_icon_orange"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_profile"
+        app:layout_constraintStart_toEndOf="@id/btn_profile"
+        app:layout_constraintTop_toTopOf="@+id/btn_profile"/>
+
+    <com.ingic.auditix.ui.views.AnyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x10"
+        android:gravity="start"
+        android:text="@string/profile"
+        android:textColor="@color/font_home_color"
+        android:textSize="@dimen/x16"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_profile"
+        app:layout_constraintStart_toEndOf="@id/btn_profile"
+        app:layout_constraintTop_toTopOf="@+id/btn_profile"
+        app:typeface="@string/font_normal"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/profile_upper_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.80"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/profile_down_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9"/>
     <!--endregion-->
 </android.support.constraint.ConstraintLayout>
