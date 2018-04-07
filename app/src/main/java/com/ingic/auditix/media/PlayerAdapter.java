@@ -47,7 +47,7 @@ public interface PlayerAdapter {
 
     int getCurrentItemIndex();
 
-    void loadPlayList(ArrayList<PlayListModel> mPlayList,int currentPlayingItem);
+    void loadPlayList(ArrayList<PlayListModel> mPlayList, int currentPlayingItem);
 
     void initializeProgressCallback();
 

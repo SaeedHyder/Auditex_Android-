@@ -53,5 +53,9 @@ public class WebServiceConstants {
     public static final String GET_ALL_NEWS_CATEGORIES = "GET_ALL_NEWS_CATEGORIES";
     public static final String GET_ALL_NEWS_BY_CATEGORIES = "GET_ALL_NEWS_BY_CATEGORIES";
     public static final String RATE_BOOK = "RATE_BOOK";
+    public static final String SUBSCRIBE_NEWS = "SUBSCRIBE_NEWS";
+    public static final String FAVORITE_NEWS = "FAVORITE_NEWS";
+    public static final String UNFAVORITE_NEWS = "UNFAVORITE_NEWS";
 
+    public static final String GET_ADVERTISEMENT = "GET_ADVERTISEMENT";
 }

@@ -10,6 +10,7 @@ import android.widget.Switch;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.ui.views.TitleBar;
 
 import butterknife.BindView;
@@ -103,7 +104,8 @@ public class SettingsFragment extends BaseFragment {
                 getDockActivity().replaceDockableFragment(NewEpisodesFragment.newInstance(), NewEpisodesFragment.TAG);
                 break;
             case R.id.btn_played_episodes:
-                getDockActivity().replaceDockableFragment(PlayedEpisodesFragment.newInstance(), PlayedEpisodesFragment.TAG);
+                UIHelper.showShortToastInCenter(getDockActivity(),"Comming Soon");
+                // getDockActivity().replaceDockableFragment(PlayedEpisodesFragment.newInstance(), PlayedEpisodesFragment.TAG);
                 break;
             case R.id.btn_notifications:
                 getDockActivity().replaceDockableFragment(NotificationsFragment.newInstance(), NotificationsFragment.TAG);

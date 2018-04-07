@@ -136,7 +136,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/x5"
         android:gravity="center_horizontal"
-        android:text="@string/my_cc"
+        android:text="@string/notification"
         android:textColor="@color/font_home_color"
         android:textSize="@dimen/x16"
         app:layout_constraintEnd_toEndOf="parent"

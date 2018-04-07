@@ -4,21 +4,29 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
+import com.devbrackets.android.exomedia.AudioPlayer;
+import com.devbrackets.android.exomedia.listener.OnCompletionListener;
+import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 import com.google.android.exoplayer2.Player;
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.AdvertisementEnt;
 import com.ingic.auditix.entities.BookChaptersEnt;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.BooksChapterItemEnt;
@@ -28,6 +36,7 @@ import com.ingic.auditix.entities.PodcastTrackEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
+import com.ingic.auditix.helpers.InternetHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.interfaces.PlayerItemChangeListener;
 import com.ingic.auditix.interfaces.TrackListItemListener;
@@ -35,9 +44,9 @@ import com.ingic.auditix.media.MediaPlayerHolder;
 import com.ingic.auditix.media.PlayListModel;
 import com.ingic.auditix.media.PlaybackInfoListener;
 import com.ingic.auditix.media.PlayerAdapter;
+import com.ingic.auditix.ui.slidinglayout.SlidingUpPanelLayout;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRatingBar;
-import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -97,6 +106,26 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     @BindView(R.id.pb_buffering)
     ProgressBar pbBuffering;
     boolean hasItemPlayCompleted = false;
+    @BindView(R.id.img_player_cover)
+    ImageView imgPlayerCover;
+    // @BindView(R.id.btn_player_play)
+    ImageView btnPlayerPlay;
+    @BindView(R.id.container_player)
+    LinearLayout containerPlayer;
+    @BindView(R.id.btnLeft)
+    ImageView btnLeft;
+    @BindView(R.id.txt_subHead)
+    AnyTextView txtSubHead;
+    @BindView(R.id.btn_favorite)
+    CheckBox btnFavorite;
+    @BindView(R.id.title_bar)
+    RelativeLayout titleBarView;
+    @BindView(R.id.txt_item_name)
+    AnyTextView txtItemName;
+    @BindView(R.id.txt_item_album)
+    AnyTextView txtItemAlbum;
+    @BindView(R.id.pb_bottom_buffering)
+    ProgressBar pbBottomBuffering;
     private PlayerAdapter mPlayerAdapter;
     private boolean mUserIsSeeking = false;
     private boolean hasPlaylistComplete = false;
@@ -106,10 +135,11 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     private BookDetailEnt bookDetailEnt;
     private Integer ID;
     private String playerType = "";
-    //endregion
+
     private int startingIndex = 0;
     private PlayerItemChangeListener itemChangeListener;
 
+    //endregion
     //region Fragment Lifecycles
     public static PlayerFragment newInstance(PodcastDetailEnt podcastDetail, Integer ID, String playerType,
                                              BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex) {
@@ -129,14 +159,44 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     }
 
     @Override
-    public void setTitleBar(TitleBar titleBar) {
-        super.setTitleBar(titleBar);
-        titleBar.hideButtons();
-        titleBar.setSubHeading(getString(R.string.playing_now));
-        titleBar.showBackButton();
-        titleBar.addBackground();
+    public void ResponseSuccess(final Object result, String Tag) {
+        switch (Tag) {
+            case WebServiceConstants.GET_ADVERTISEMENT:
+                final ArrayList<AdvertisementEnt> results = (ArrayList<AdvertisementEnt>) result;
+                if (results != null && results.size() > 0) {
+                    getMainActivity().showAdvertisementImage();
+                    final AudioPlayer mMediaPlayer = new AudioPlayer(getContext());
+                    mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+                        @Override
+                        public void onCompletion() {
+                            getMainActivity().hideAdvertisementImage();
+                            mMediaPlayer.release();
+                            bindScreenData();
+
+                        }
+                    });
+
+                    mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
+                        @Override
+                        public void onPrepared() {
+                            mMediaPlayer.start();
+                        }
+                    });
+                    AdvertisementEnt ent = results.get(0);
+                    mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    mMediaPlayer.setDataSource(Uri.parse(ent.getAudioUrl() + ent.getAudioPath()));
+                    mMediaPlayer.prepareAsync();
+                } else {
+                    bindScreenData();
+                }
+                break;
+        }
+    }
+
+    private void setHeadBar() {
         if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
-            getMainActivity().titleBar.showFavoriteButton(podcastDetailEnt.isFavorite(), new CompoundButton.OnCheckedChangeListener() {
+            btnFavorite.setChecked(podcastDetailEnt.isFavorite());
+            btnFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     serviceHelper.enqueueCall(webService.changeFavoriteStatus(ID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
@@ -146,14 +206,14 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             fragment.setListItemListener(this);
             setItemChangeListener(fragment);
             fragment.setTrackList(podcastDetailEnt.getTrackList());
-            getMainActivity().setRightSideFragment(fragment);
-            titleBar.showListingFragment(new View.OnClickListener() {
+            setEpisodeFragment(fragment);
+            /*titleBar.showListingFragment(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     getMainActivity().isNavigationGravityRight = true;
                     getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
                 }
-            });
+            });*/
             if (itemChangeListener != null) {
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -169,14 +229,14 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 fragment.setListItemListener(this);
                 setItemChangeListener(fragment);
                 fragment.setTrackList(new ArrayList<>(bookDetailEnt.getChapters().getChapter().subList(0, bookDetailEnt.getChapters().getChapter().size())));
-                getMainActivity().setRightSideFragment(fragment);
-                titleBar.showListingFragment(new View.OnClickListener() {
+                setEpisodeFragment(fragment);
+                /*titleBar.showListingFragment(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         getMainActivity().isNavigationGravityRight = true;
                         getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
                     }
-                });
+                });*/
                 if (itemChangeListener != null) {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
@@ -187,7 +247,8 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                     }, 1000);
                 }
             }
-            getMainActivity().titleBar.showFavoriteButton(bookDetailEnt.getIsFavorite(), new CompoundButton.OnCheckedChangeListener() {
+            btnFavorite.setChecked(bookDetailEnt.getIsFavorite());
+            btnFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
@@ -198,19 +259,36 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 }
             });
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
-            getMainActivity().titleBar.showFavoriteButton(false, new CompoundButton.OnCheckedChangeListener() {
+            if (getChildFragmentManager().findFragmentById(R.id.items)!=null) {
+                getChildFragmentManager().beginTransaction().
+                        remove(getChildFragmentManager().findFragmentById(R.id.items)).commit();
+            }
+            btnFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        serviceHelper.enqueueCall(webService.favoriteNews(ID, prefHelper.getUserToken()), WebServiceConstants.FAVORITE_NEWS);
+                    } else {
+                        serviceHelper.enqueueCall(webService.unFavoriteNews(ID, prefHelper.getUserToken()), WebServiceConstants.UNFAVORITE_NEWS);
+                    }
                 }
             });
         }
     }
 
-    public void setItemChangeListener(PlayerItemChangeListener itemChangeListener) {
+    private void setEpisodeFragment(BaseFragment fragment) {
+        FragmentTransaction transaction = getChildFragmentManager()
+                .beginTransaction();
+        transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
+        transaction.replace(R.id.items, fragment);
+        transaction.commit();
+    }
+
+    private void setItemChangeListener(PlayerItemChangeListener itemChangeListener) {
         this.itemChangeListener = itemChangeListener;
     }
 
-    private void setContent(PodcastDetailEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex) {
+    public void setContent(PodcastDetailEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex) {
         this.podcastDetailEnt = podcastDetail;
         this.ID = trackID;
         this.playerType = playerType;
@@ -218,6 +296,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         this.newsEpisodeEnt = newsEpisodeEnt;
         this.startingIndex = startingIndex;
     }
+    //endregion
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -225,14 +304,12 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
-    //endregion
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getDetails(playerType);
-
-        getMainActivity().setFlagKeepScreenOn();
+        btnPlayerPlay = (ImageView) view.findViewById(R.id.btn_player_play);
+        addSlidingListener();
     }
 
     @Override
@@ -250,6 +327,67 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         unbinder.unbind();
     }
 
+    public void resetPlayer() {
+        getMainActivity().clearFlagKeepScreenOn();
+        if (mPlayerAdapter != null) {
+            mPlayerAdapter.release();
+        }
+    }
+
+    public void startPlaying() {
+        setHeadBar();
+        getMainActivity().setFlagKeepScreenOn();
+        if (InternetHelper.CheckInternetConectivityandShowToast(getDockActivity())) {
+            playAdvertisement();
+        } else {
+            bindScreenData();
+        }
+
+    }
+
+    private void bindScreenData() {
+        getDetails(playerType);
+    }
+
+    private void playAdvertisement() {
+        serviceHelper.enqueueCall(webService.getAllAdvertisement(prefHelper.getUserToken()), WebServiceConstants.GET_ADVERTISEMENT);
+    }
+
+    private void addSlidingListener() {
+        getMainActivity().mSlidingLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                float offset = Math.abs((slideOffset - 1));
+                Log.e(TAG, "onPanelSlide: offset :  " + offset);
+                containerPlayer.setAlpha(offset);
+                titleBarView.setAlpha(slideOffset);
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                switch (newState) {
+                    case HIDDEN:
+                        break;
+                    case DRAGGING:
+                        break;
+                    case EXPANDED:
+                        btnFavorite.setVisibility(View.VISIBLE);
+                      /*  btnPlayerPlay.setVisibility(View.GONE);
+                        pbBottomBuffering.setVisibility(View.GONE);*/
+                        break;
+                    case ANCHORED:
+                        break;
+                    case COLLAPSED:
+                        btnFavorite.setVisibility(View.GONE);
+                       /* btnPlayerPlay.setVisibility(View.VISIBLE);
+                        pbBottomBuffering.setVisibility(View.GONE);*/
+                        break;
+                }
+            }
+        });
+
+    }
+
     private void getDetails(String type) {
         if (type.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
             setupUIViewsPodcast(podcastDetailEnt);
@@ -259,14 +397,18 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             setupUIViewsNews(newsEpisodeEnt);
         }
 
+        txtPlayingItemAlbum.setSelected(true);
+        txtPlayingItemName.setSelected(true);
+        txtItemName.setSelected(true);
+        txtItemAlbum.setSelected(true);
+
     }
 
     private void setupUIViewsNews(NewsEpisodeEnt ent) {
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
         ImageLoader.getInstance().displayImage(ent.getImage_url(), imgItemCover, options);
         ImageLoader.getInstance().displayImage(ent.getImage_url(), imgItemPic, options);
-        txtPlayingItemAlbum.setSelected(true);
-        txtPlayingItemName.setSelected(true);
+        ImageLoader.getInstance().displayImage(ent.getImage_url(), imgPlayerCover, options);
         txtTitle.setText(ent.getTitle() + "");
         sbProgress.setPadding(0, 0, 0, 0);
         txtDuration.setVisibility(View.VISIBLE);
@@ -291,8 +433,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
         ImageLoader.getInstance().displayImage(ent.getImage(), imgItemCover, options);
         ImageLoader.getInstance().displayImage(ent.getImage(), imgItemPic, options);
-        txtPlayingItemAlbum.setSelected(true);
-        txtPlayingItemName.setSelected(true);
+        ImageLoader.getInstance().displayImage(ent.getImage(), imgPlayerCover, options);
         if (podcastDetailEnt.getRating() == -1) {
             rbRating.setScore(0);
         } else {
@@ -309,8 +450,8 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
         ImageLoader.getInstance().displayImage(ent.getImageUrl(), imgItemCover, options);
         ImageLoader.getInstance().displayImage(ent.getImageUrl(), imgItemPic, options);
-        txtPlayingItemAlbum.setSelected(true);
-        txtPlayingItemName.setSelected(true);
+        ImageLoader.getInstance().displayImage(ent.getImageUrl(), imgPlayerCover, options);
+
         if (ent.getRating() == -1) {
             rbRating.setScore(0);
         } else {
@@ -372,7 +513,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
 
     }
 
-    @OnClick({R.id.btn_volume, R.id.btn_backward, R.id.btn_play, R.id.btn_forward})
+    @OnClick({R.id.btn_volume, R.id.btn_backward, R.id.btn_play, R.id.btn_forward, R.id.btnLeft, R.id.btn_player_play, R.id.btn_close})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_volume:
@@ -386,19 +527,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 mPlayerAdapter.playPrevious();
                 break;
             case R.id.btn_play:
-                if (mPlayerAdapter.isReadyForPlay()) {
-                    if (!mPlayerAdapter.isPlaying() && !hasPlaylistComplete) {
-                        performPlayClick(hasItemPlayCompleted);
-                    } else {
-                        performPauseClick();
-                    }
-                } else {
-                    if (hasPlaylistComplete) {
-
-                    } else {
-                        UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.buffering_text));
-                    }
-                }
+                checkCanPlay();
                 break;
             case R.id.btn_forward:
                 if (!prefHelper.isContinous()) {
@@ -406,6 +535,31 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 }
                 mPlayerAdapter.playNext();
                 break;
+            case R.id.btnLeft:
+                getMainActivity().mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                break;
+            case R.id.btn_player_play:
+                checkCanPlay();
+                break;
+            case R.id.btn_close:
+                getMainActivity().hideBottomPlayer();
+                break;
+        }
+    }
+
+    private void checkCanPlay() {
+        if (mPlayerAdapter.isReadyForPlay()) {
+            if (!mPlayerAdapter.isPlaying() && !hasPlaylistComplete) {
+                performPlayClick(hasItemPlayCompleted);
+            } else {
+                performPauseClick();
+            }
+        } else {
+            if (hasPlaylistComplete) {
+
+            } else {
+                UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.buffering_text));
+            }
         }
     }
 
@@ -419,7 +573,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         return elapsedMinutes == 0 ? elapsedSeconds.intValue() + "s" : elapsedMinutes.intValue() + "m";
     }
 
-    public String getBookDurationText(Integer secound) {
+    private String getBookDurationText(Integer secound) {
         int minutes = (secound % 3600) / 60;
         int hours = secound / 3600;
         if (minutes > 0) {
@@ -438,6 +592,26 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         mMediaPlayerHolder.setPlaybackInfoListener(new PlaybackListener());
         mPlayerAdapter = mMediaPlayerHolder;
         Log.d(TAG, "initializePlaybackController: MediaPlayerHolder progress callback set");
+    }
+
+    private void showPlayButton() {
+        btnPlay.setVisibility(View.VISIBLE);
+        btnPlayerPlay.setVisibility(View.VISIBLE);
+    }
+
+    private void hidePlayButton() {
+        btnPlay.setVisibility(View.GONE);
+        btnPlayerPlay.setVisibility(View.GONE);
+    }
+
+    private void setPlayButtonResource() {
+        btnPlay.setImageResource(R.drawable.play_icon_white);
+        btnPlayerPlay.setImageResource(R.drawable.ic_play_arrow);
+    }
+
+    private void setPauseButtonResource() {
+        btnPlay.setImageResource(R.drawable.pause_icon_big);
+        btnPlayerPlay.setImageResource(R.drawable.pause_icon_small);
     }
 
     private void initializeSeekbar() {
@@ -474,14 +648,18 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             mPlayerAdapter.play();
         }
         pbBuffering.setVisibility(View.GONE);
-        btnPlay.setVisibility(View.VISIBLE);
-        btnPlay.setImageResource(R.drawable.pause_icon_big);
+        pbBottomBuffering.setVisibility(View.GONE);
+        showPlayButton();
+        setPauseButtonResource();
+       /* btnPlay.setVisibility(View.VISIBLE);
+        btnPlay.setImageResource(R.drawable.pause_icon_big);*/
 
     }
 
     private void performPauseClick() {
         mPlayerAdapter.pause();
-        btnPlay.setImageResource(R.drawable.play_icon_white);
+/*        btnPlay.setImageResource(R.drawable.play_icon_white);*/
+        setPlayButtonResource();
 
     }
 
@@ -490,36 +668,42 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         if (mPlayerAdapter != null) {
             hasPlaylistComplete = false;
             mPlayerAdapter.playIndex(index);
-            getMainActivity().closeDrawer();
+            //  getMainActivity().closeDrawer();
             setItemName(index);
         }
+    }
+
+    private void setNameOnTextViews(String itemName, String albumName) {
+        txtItemName.setText(itemName + "");
+        txtPlayingItemName.setText(itemName + "");
+        txtItemAlbum.setText(albumName + "");
+        txtPlayingItemAlbum.setText(albumName + "");
     }
 
     private void setItemName(int index) {
         if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
             if (index < mUserPlaylist.size()) {
-                txtPlayingItemName.setText(podcastDetailEnt.getTrackList().get(index).getName());
-                txtPlayingItemAlbum.setText(podcastDetailEnt.getTitle());
+                setNameOnTextViews(podcastDetailEnt.getTrackList().get(index).getName(), podcastDetailEnt.getTitle());
                 if (itemChangeListener != null) {
                     itemChangeListener.onItemChanged(index);
                 }
             }
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
             if (index < mUserPlaylist.size()) {
+                String name = "";
                 if (!bookDetailEnt.getIsPurchased()) {
-                    txtPlayingItemName.setText(R.string.preview);
+                    name = getResString(R.string.preview);
                 } else {
-                    txtPlayingItemName.setText(getDockActivity().getResources().getString(R.string.chapters) + " " + (index + 1));
+                    name = getResString(R.string.chapters) + " " + (index + 1);
                 }
-                txtPlayingItemAlbum.setText(bookDetailEnt.getBookName());
+                setNameOnTextViews(name, bookDetailEnt.getBookName());
                 if (itemChangeListener != null) {
                     itemChangeListener.onItemChanged(index);
                 }
             }
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
             if (index < mUserPlaylist.size()) {
-                txtPlayingItemName.setText(newsEpisodeEnt.getTitle());
-                txtPlayingItemAlbum.setText(newsEpisodeEnt.getSource_name());
+                setNameOnTextViews(newsEpisodeEnt.getTitle(), newsEpisodeEnt.getSource_name());
                 if (itemChangeListener != null) {
                     itemChangeListener.onItemChanged(index);
                 }
@@ -571,8 +755,9 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         @Override
         public void onPlaybackCompleted() {
             pbBuffering.setVisibility(View.GONE);
-            btnPlay.setVisibility(View.VISIBLE);
-            btnPlay.setImageResource(R.drawable.play_icon_white);
+            pbBottomBuffering.setVisibility(View.GONE);
+            showPlayButton();
+            setPlayButtonResource();
             onPositionChanged(0, 0, 0);
             if (prefHelper.isContinous()) {
                 mPlayerAdapter.playNext();
@@ -589,8 +774,9 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             sbProgress.setProgress(0);
             hasPlaylistComplete = true;
             pbBuffering.setVisibility(View.GONE);
-            btnPlay.setVisibility(View.VISIBLE);
-            btnPlay.setImageResource(R.drawable.play_icon_white);
+            pbBottomBuffering.setVisibility(View.GONE);
+            showPlayButton();
+            setPlayButtonResource();
 //            getMainActivity().clearFlagKeepScreenOn();
         }
 
@@ -608,29 +794,35 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             switch (what) {
                 case Player.STATE_BUFFERING:
                     pbBuffering.setVisibility(View.VISIBLE);
-                    btnPlay.setVisibility(View.GONE);
+                    pbBottomBuffering.setVisibility(View.VISIBLE);
+                    hidePlayButton();
                     break;
                 case Player.STATE_READY:
                     pbBuffering.setVisibility(View.GONE);
-                    btnPlay.setVisibility(View.VISIBLE);
+                    pbBottomBuffering.setVisibility(View.GONE);
+                    showPlayButton();
                     break;
                 case MediaPlayer.MEDIA_INFO_BUFFERING_START:
                     pbBuffering.setVisibility(View.VISIBLE);
-                    btnPlay.setVisibility(View.GONE);
+                    pbBottomBuffering.setVisibility(View.VISIBLE);
+                    hidePlayButton();
                     break;
                 case MediaPlayer.MEDIA_INFO_BUFFERING_END:
                     pbBuffering.setVisibility(View.GONE);
-                    btnPlay.setVisibility(View.VISIBLE);
+                    pbBottomBuffering.setVisibility(View.GONE);
+                    showPlayButton();
                     break;
                 case State.NEXT:
                     pbBuffering.setVisibility(View.VISIBLE);
-                    btnPlay.setVisibility(View.GONE);
+                    pbBottomBuffering.setVisibility(View.VISIBLE);
+                    hidePlayButton();
                     setItemName(mPlayerAdapter.getCurrentItemIndex());
                     //  onPositionChanged(0,0,0);
                     break;
                 case State.PREVIOUS:
                     pbBuffering.setVisibility(View.VISIBLE);
-                    btnPlay.setVisibility(View.GONE);
+                    pbBottomBuffering.setVisibility(View.VISIBLE);
+                    hidePlayButton();
                     setItemName(mPlayerAdapter.getCurrentItemIndex());
                     //onPositionChanged(0,0,0);
                     break;

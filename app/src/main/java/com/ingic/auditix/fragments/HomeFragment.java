@@ -18,7 +18,6 @@ import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener {
@@ -31,6 +30,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.btn_news)
     ImageView btnNews;
     HomeTabFragment tabFragment;
+    @BindView(R.id.btn_profile)
+    ImageView btnProfile;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -72,13 +73,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             getMainActivity().booksFilterFragment.clearFilters();
         }
         setListeners();
-        getDownloadFilePath(prefHelper.getUser().getAccountID()+"");
+        getDownloadFilePath(prefHelper.getUser().getAccountID() + "");
     }
 
     private void setListeners() {
         btnBooks.setOnClickListener(this);
         btnNews.setOnClickListener(this);
         btnPoscast.setOnClickListener(this);
+        btnProfile.setOnClickListener(this);
     }
 
     private void getDownloadFilePath(String userID) {
@@ -115,7 +117,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_poscast:
                 tabFragment.setTag(AppConstants.TAB_PODCAST);
                 getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
@@ -129,7 +131,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
                 //willbeimplementedinfuture();
                 break;
+                case R.id.btn_profile:
+                tabFragment.setTag(AppConstants.TAB_PROFILE);
+                getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
+                //willbeimplementedinfuture();
+                break;
         }
     }
+
+
 }
 

@@ -192,6 +192,7 @@
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/app_orange"
                 app:tabIndicatorHeight="@dimen/x5"
+                android:visibility="gone"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/app_title_orange"
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"

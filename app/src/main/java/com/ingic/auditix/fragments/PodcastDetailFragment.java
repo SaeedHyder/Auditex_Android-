@@ -34,6 +34,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -178,17 +179,20 @@ public class PodcastDetailFragment extends BaseFragment {
                 openPlayer(position);
             } else {
                 //Case For Download Button Clicked
-                if (!prefHelper.isDownloadOnAll()){
-                    if (InternetHelper.isConnectedOnMobile(getDockActivity())){
-                        UIHelper.showShortToastInCenter(getDockActivity(),getDockActivity().getResources().getString(R.string.network_mobile_error));
+                if (!prefHelper.isDownloadOnAll()) {
+                    if (InternetHelper.isConnectedOnMobile(getDockActivity())) {
+                        UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.network_mobile_error));
                         return;
                     }
                 }
                 PodcastTrackEnt ent = (PodcastTrackEnt) Ent;
+                getMainActivity().realm.beginTransaction();
+                getMainActivity().realm.copyToRealmOrUpdate(podcastDetailEnt);
+                getMainActivity().realm.commitTransaction();
                 if (podcastDetailEnt.isEpisodeAdded()) {
-                    getDockActivity().addDownload(podcastDetailEnt.AudioUrl, ent.getFileUrl(), ent.getId(),ent.getName());
+                    getDockActivity().addDownload(podcastDetailEnt.AudioUrl, podcastDetailEnt.getTitle() + File.separator + ent.getFileUrl(), ent.getId(), ent.getName());
                 } else {
-                    getDockActivity().addDownload(ent.getFileUrl(), ent.getName(), ".mp3", ent.getId(),ent.getName());
+                    getDockActivity().addDownload(ent.getFileUrl(), podcastDetailEnt.getTitle() + File.separator + ent.getName(), ".mp3", ent.getId(), ent.getName());
                 }
             }
 
@@ -323,7 +327,7 @@ public class PodcastDetailFragment extends BaseFragment {
 
         rvEpisodes.setNestedScrollingEnabled(false);
         layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
-        rvEpisodes.BindRecyclerView(new PodcastEpisodeBinder(episodeItemListener,getMainActivity().realm), podcastTrackEnts, layoutManager, new DefaultItemAnimator());
+        rvEpisodes.BindRecyclerView(new PodcastEpisodeBinder(episodeItemListener, getMainActivity().realm), podcastTrackEnts, layoutManager, new DefaultItemAnimator());
     }
 
     private void getNextPageItems(final Integer pageNumber) {
@@ -415,8 +419,10 @@ public class PodcastDetailFragment extends BaseFragment {
             if (getMainActivity().filterFragment != null) {
                 getMainActivity().filterFragment.clearFilters();
             }
-            getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST, null,null,
-                    startingIndex), PlayerFragment.TAG);
+            getMainActivity().showBottomPlayer(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST, null, null,
+                    startingIndex);
+          /*  getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST, null,null,
+                    startingIndex), PlayerFragment.TAG);*/
         }
     }
 }

@@ -33,8 +33,7 @@ public class SampleFragment extends BaseFragment {
     ImageView btnPlayerPlay;
     @BindView(R.id.container_player)
     LinearLayout containerPlayer;
-    @BindView(R.id.fragmentItems)
-    RelativeLayout fragmentItems;
+
     Unbinder unbinder;
 
     public static SampleFragment newInstance() {

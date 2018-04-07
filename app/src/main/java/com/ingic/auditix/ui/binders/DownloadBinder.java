@@ -8,6 +8,7 @@ import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.CartEnt;
+import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.ui.viewbinders.abstracts.RecyclerViewBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
 
@@ -18,7 +19,7 @@ import butterknife.ButterKnife;
  * Created on 1/6/2018.
  */
 
-public class DownloadBinder extends RecyclerViewBinder<CartEnt> {
+public class DownloadBinder extends RecyclerViewBinder<PodcastDetailEnt> {
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
     public DownloadBinder() {
@@ -32,7 +33,7 @@ public class DownloadBinder extends RecyclerViewBinder<CartEnt> {
     }
 
     @Override
-    public void bindView(CartEnt entity, int position, Object viewHolder, Context context) {
+    public void bindView(PodcastDetailEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
         viewBinderHelper.bind(holder.swipeLayout, String.valueOf(position));
     }

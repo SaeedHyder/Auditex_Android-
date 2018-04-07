@@ -6,8 +6,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ToggleButton;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.NewsCategoryEnt;
@@ -39,8 +40,6 @@ public class NewsCategoryDetailFragment extends BaseFragment {
     ImageView imgItemPic;
     @BindView(R.id.txt_title)
     AnyTextView txtTitle;
-    @BindView(R.id.btn_subscribe)
-    Button btnSubscribe;
     @BindView(R.id.txt_about)
     AnyTextView txtAbout;
     @BindView(R.id.rv_episodes)
@@ -49,6 +48,8 @@ public class NewsCategoryDetailFragment extends BaseFragment {
     @BindView(R.id.txt_episodes_no_data)
     AnyTextView txtEpisodesNoData;
     DisplayImageOptions options;
+    @BindView(R.id.btn_subscribe)
+    ToggleButton btnSubscribe;
     private NewsCategoryEnt categoryDetail;
     private RecyclerViewItemListener episodeListener = new RecyclerViewItemListener() {
         @Override
@@ -58,18 +59,10 @@ public class NewsCategoryDetailFragment extends BaseFragment {
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(NewsEpisodeDetailFragment.newInstance((NewsEpisodeEnt) Ent), NewsEpisodeDetailFragment.TAG);
+            getDockActivity().replaceDockableFragment(NewsEpisodeDetailFragment.newInstance((NewsEpisodeEnt) Ent, categoryDetail.getId()), NewsEpisodeDetailFragment.TAG);
         }
     };
 
-    @Override
-    public void setTitleBar(TitleBar titleBar) {
-        super.setTitleBar(titleBar);
-        titleBar.hideButtons();
-        titleBar.showBackButton();
-        titleBar.addBackground();
-        titleBar.setSubHeading(getResString(R.string.news_detail));
-    }
     public static NewsCategoryDetailFragment newInstance(NewsCategoryEnt categoryDetail) {
         Bundle args = new Bundle();
 
@@ -82,8 +75,6 @@ public class NewsCategoryDetailFragment extends BaseFragment {
     public void setCategoryDetail(NewsCategoryEnt categoryDetail) {
         this.categoryDetail = categoryDetail;
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +91,15 @@ public class NewsCategoryDetailFragment extends BaseFragment {
                 bindData((ArrayList<NewsEpisodeEnt>) result);
                 break;
         }
+    }
+
+    @Override
+    public void setTitleBar(TitleBar titleBar) {
+        super.setTitleBar(titleBar);
+        titleBar.hideButtons();
+        titleBar.showBackButton();
+        titleBar.addBackground();
+        titleBar.setSubHeading(getResString(R.string.news_detail));
     }
 
     private void bindData(ArrayList<NewsEpisodeEnt> result) {
@@ -129,6 +129,12 @@ public class NewsCategoryDetailFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
         serviceHelper.enqueueCall(webService.getAllNewsByCategory(categoryDetail.getId(), prefHelper.getUserToken()), WebServiceConstants.GET_ALL_NEWS_BY_CATEGORIES);
+        btnSubscribe.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                serviceHelper.enqueueCall(webService.subscribeNews(categoryDetail.getId(), prefHelper.getUserToken()), WebServiceConstants.SUBSCRIBE_NEWS);
+            }
+        });
     }
 
     @Override

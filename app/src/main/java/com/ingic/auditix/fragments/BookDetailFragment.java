@@ -418,8 +418,10 @@ public class BookDetailFragment extends BaseFragment {
             if (getMainActivity().booksFilterFragment != null) {
                 getMainActivity().booksFilterFragment.clearFilters();
             }
-            getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, bookID, AppConstants.TAB_BOOKS, detailEnt,
-                    null, startingIndex), PlayerFragment.TAG);
+       /*     getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, bookID, AppConstants.TAB_BOOKS, detailEnt,
+                    null, startingIndex), PlayerFragment.TAG);*/
+            getMainActivity().showBottomPlayer(null, bookID, AppConstants.TAB_BOOKS, detailEnt,
+                    null, startingIndex);
         }
     }
 }

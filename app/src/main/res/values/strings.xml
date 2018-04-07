@@ -257,4 +257,5 @@
     <string name="show_and_episodes"><![CDATA[Shows & Episodes]]></string>
     <string name="news_detail">News Detail</string>
     <string name="mins">Mins</string>
+    <string name="new_noteworthy"><![CDATA[New & Noteworthy]]></string>
 </resources>

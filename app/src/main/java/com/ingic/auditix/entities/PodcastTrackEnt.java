@@ -6,11 +6,13 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import io.realm.RealmObject;
+
 /**
  * Created on 1/10/2018.
  */
 
-public class PodcastTrackEnt {
+public class PodcastTrackEnt extends RealmObject{
 
     @SerializedName("Id")
     @Expose

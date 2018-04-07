@@ -179,6 +179,7 @@ public class SideMenuFragment extends BaseFragment {
                         public void onClick(View v) {
                            // File dir = new File(AppConstants.DOWNLOAD_PATH);
                            // DeleteRecursive(dir);
+                            getMainActivity().hideBottomPlayer();
                             prefHelper.setLoginStatus(false);
                             getDockActivity().popBackStackTillEntry(0);
                             getDockActivity().replaceDockableFragment(AccessSelectionFragment.newInstance(), "AccessSelectionFragment");

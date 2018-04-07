@@ -93,6 +93,8 @@ public class BookChaptersListingFragment extends BaseFragment implements PlayerI
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
         trackList.get(previousSelected).setSelected(true);
+        getMainActivity().mSlidingLayout.setScrollableView(rvEpisode);
+        rvEpisode.setNestedScrollingEnabled(false);
         rvEpisode.BindRecyclerView(new ChapterListBinder(episodeItemListener), trackList, layoutManager, new DefaultItemAnimator());
 
     }
@@ -105,11 +107,14 @@ public class BookChaptersListingFragment extends BaseFragment implements PlayerI
 
     @Override
     public void onItemChanged(int position) {
-        trackList.get(previousSelected).setSelected(false);
-        rvEpisode.notifyItemChanged(previousSelected);
-        trackList.get(position).setSelected(true);
-        rvEpisode.notifyItemChanged(position);
-        previousSelected = position;
+        if (rvEpisode != null) {
+            trackList.get(previousSelected).setSelected(false);
+            rvEpisode.notifyItemChanged(previousSelected);
+            trackList.get(position).setSelected(true);
+            rvEpisode.notifyItemChanged(position);
+            previousSelected = position;
+        }
+
     }
 
     @OnClick(R.id.container)

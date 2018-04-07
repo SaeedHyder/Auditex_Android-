@@ -10,6 +10,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/x50"
+        android:visibility="gone"
         android:background="@color/app_title_orange">
 
         <com.ingic.auditix.ui.views.AnyTextView

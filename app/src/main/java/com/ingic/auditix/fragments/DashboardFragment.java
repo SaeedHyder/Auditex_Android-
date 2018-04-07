@@ -71,7 +71,7 @@ public class DashboardFragment extends BaseFragment {
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.dashboard));
         titleBar.showBackButton();
-        titleBar.showNotificationButton(0);
+       // titleBar.showNotificationButton(0);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class DashboardFragment extends BaseFragment {
                 getDockActivity().replaceDockableFragment(CartListFragment.newInstance(), "CartListFragment");
                 break;
             case R.id.btn_cc:
-                willbeimplementedinfuture();
+               getDockActivity().replaceDockableFragment(NotificationsFragment.newInstance(),NotificationsFragment.TAG);
                 break;
             case R.id.btn_favourite:
                 getDockActivity().replaceDockableFragment(FavoriteTabFragment.newInstance(), FavoriteTabFragment.TAG);

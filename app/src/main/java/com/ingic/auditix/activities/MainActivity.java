@@ -22,13 +22,16 @@ import android.widget.RelativeLayout;
 
 import com.facebook.FacebookSdk;
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.CMSEnt;
+import com.ingic.auditix.entities.NewsEpisodeEnt;
+import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.fragments.BooksFilterFragment;
 import com.ingic.auditix.fragments.FilterFragment;
 import com.ingic.auditix.fragments.HomeFragment;
 import com.ingic.auditix.fragments.LanguageSelectionFragment;
 import com.ingic.auditix.fragments.NotificationsFragment;
-import com.ingic.auditix.fragments.SampleFragment;
+import com.ingic.auditix.fragments.PlayerFragment;
 import com.ingic.auditix.fragments.SideMenuFragment;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.SideMenuChooser;
@@ -86,6 +89,10 @@ public class MainActivity extends DockActivity implements OnClickListener {
     @BindView(R.id.bottomView)
     FrameLayout bottomView;
     RelativeLayout.LayoutParams params;
+    @BindView(R.id.image_advertise)
+    RelativeLayout imageAdvertise;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
     private MainActivity mContext;
     private boolean loading;
     private ResideMenu resideMenu;
@@ -97,6 +104,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
     private Bitmap mDownScaled;
     private String mBackgroundFilename;
     private Bitmap background;
+    private PlayerFragment playerFragment;
 
     public View getDrawerView() {
         return getLayoutInflater().inflate(getSideMenuFrameLayoutId(), null);
@@ -412,7 +420,8 @@ public class MainActivity extends DockActivity implements OnClickListener {
                 }
             }
         });
-        initBottomPlayer(SampleFragment.newInstance());
+        playerFragment = new PlayerFragment();
+        initBottomPlayer(playerFragment);
         titleBar.setNotificationButtonListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -433,8 +442,16 @@ public class MainActivity extends DockActivity implements OnClickListener {
             if (loading) {
                 UIHelper.showLongToastInCenter(getApplicationContext(),
                         R.string.message_wait);
-            } else
-                super.onBackPressed();
+            } else {
+                if (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED) {
+                    slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                } else {
+                    if (imageAdvertise.getVisibility() != View.VISIBLE){
+                        super.onBackPressed();
+                    }
+                }
+            }
+
         }
     }
 
@@ -457,7 +474,19 @@ public class MainActivity extends DockActivity implements OnClickListener {
     public void hideHeaderButtons(boolean leftBtn, boolean rightBtn) {
     }
 
-    public void showBottomPlayer() {
+    public void showAdvertisementImage() {
+        imageAdvertise.setVisibility(View.VISIBLE);
+    }
+
+    public void hideAdvertisementImage() {
+        imageAdvertise.setVisibility(View.GONE);
+    }
+
+    public void showBottomPlayer(PodcastDetailEnt podcastDetail, Integer ID, String playerType,
+                                 BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex) {
+        playerFragment.resetPlayer();
+        playerFragment.setContent(podcastDetail, ID, playerType, bookDetailEnt, newsEpisodeEnt, startingIndex);
+        playerFragment.startPlaying();
         slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, Math.round(getResources().getDimension(R.dimen.x50)));
         mainFrameLayout.setLayoutParams(params);
@@ -465,9 +494,14 @@ public class MainActivity extends DockActivity implements OnClickListener {
     }
 
     public void hideBottomPlayer() {
+        playerFragment.resetPlayer();
         slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, 0);
         mainFrameLayout.setLayoutParams(params);
+    }
+
+    public void collapse() {
+        slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 
     private void initBottomPlayer(BaseFragment playerFragment) {
@@ -476,7 +510,6 @@ public class MainActivity extends DockActivity implements OnClickListener {
                 .beginTransaction();
         transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit, R.anim.fragment_popenter, R.anim.fragment_pop_exit);
         transaction.replace(R.id.bottomView, playerFragment).commit();
-        showBottomPlayer();
     }
 
     private void getCMSFromService() {

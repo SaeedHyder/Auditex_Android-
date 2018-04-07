@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.CartEnt;
+import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.entities.SubscribePodcastEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
@@ -30,6 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.RealmResults;
 
 /**
  * Created on 1/6/2018.
@@ -88,6 +90,7 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
 
         }
     };
+    private ArrayList<PodcastDetailEnt> downloadCollection;
 
     public static ProfilePodcastFragment newInstance() {
         Bundle args = new Bundle();
@@ -167,6 +170,7 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
         tabLayout.addTab(tabLayout.newTab().setText(R.string.this_month), false);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.older), false);
 //        replaceTab(startingWithIndex);
+
         bindViewWithPosition(startingWithIndex);
         tabLayout.addOnTabSelectedListener(this);
 
@@ -192,10 +196,9 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        bindTabs();
-        rvDownloads.setVisibility(View.GONE);
-        txtDownloadNoData.setVisibility(View.VISIBLE);
-
+        //bindTabs();
+        RealmResults<PodcastDetailEnt> results = getMainActivity().realm.where(PodcastDetailEnt.class).findAll();
+        bindSingleDownloadList(results);
 
     }
 
@@ -255,16 +258,31 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
         olderDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));*/
     }
 
+    private void bindSingleDownloadList(RealmResults<PodcastDetailEnt> result) {
+        if (result.size() > 0) {
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
+            layoutManager.setAutoMeasureEnabled(true);
+            downloadCollection = new ArrayList<>(result.subList(0, result.size()));
+            rvDownloads.BindRecyclerView(new DownloadBinder(), downloadCollection, layoutManager, new DefaultItemAnimator());
+            rvDownloads.setNestedScrollingEnabled(false);
+        } else {
+            rvDownloads.setVisibility(View.GONE);
+            txtDownloadNoData.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
     private void bindViewWithPosition(int Position) {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
         layoutManager.setAutoMeasureEnabled(true);
         if (Position == 0) {
-            rvDownloads.BindRecyclerView(new DownloadBinder(), todayDownloadsCollections, layoutManager, new DefaultItemAnimator());
+            //    rvDownloads.BindRecyclerView(new DownloadBinder(), todayDownloadsCollections, layoutManager, new DefaultItemAnimator());
         } else if (Position == 1) {
-            rvDownloads.BindRecyclerView(new DownloadBinder(), monthDownloadsCollections, layoutManager, new DefaultItemAnimator());
+            //     rvDownloads.BindRecyclerView(new DownloadBinder(), monthDownloadsCollections, layoutManager, new DefaultItemAnimator());
         } else if (Position == 2) {
-            rvDownloads.BindRecyclerView(new DownloadBinder(), olderDownloadsCollections, layoutManager, new DefaultItemAnimator());
+            //  rvDownloads.BindRecyclerView(new DownloadBinder(), olderDownloadsCollections, layoutManager, new DefaultItemAnimator());
         }
         rvDownloads.setNestedScrollingEnabled(false);
 

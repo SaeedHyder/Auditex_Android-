@@ -15,6 +15,7 @@ import com.ingic.auditix.interfaces.PlayerItemChangeListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.interfaces.TrackListItemListener;
 import com.ingic.auditix.ui.binders.PodcastEpisodeListingBinder;
+import com.ingic.auditix.ui.slidinglayout.ScrollableViewHelper;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
 
 import java.util.ArrayList;
@@ -98,6 +99,8 @@ public class EpisodeListingFragment extends BaseFragment implements PlayerItemCh
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         trackList.get(previousSelected).setSelected(true);
+        getMainActivity().mSlidingLayout.setScrollableView(rvEpisode);
+        rvEpisode.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
         rvEpisode.BindRecyclerView(new PodcastEpisodeListingBinder(episodeItemListener), trackList, layoutManager, new DefaultItemAnimator());
 
@@ -111,11 +114,13 @@ public class EpisodeListingFragment extends BaseFragment implements PlayerItemCh
 
     @Override
     public void onItemChanged(int position) {
-        trackList.get(previousSelected).setSelected(false);
-        rvEpisode.notifyItemChanged(previousSelected);
-        trackList.get(position).setSelected(true);
-        rvEpisode.notifyItemChanged(position);
-        previousSelected = position;
+        if (rvEpisode != null) {
+            trackList.get(previousSelected).setSelected(false);
+            rvEpisode.notifyItemChanged(previousSelected);
+            trackList.get(position).setSelected(true);
+            rvEpisode.notifyItemChanged(position);
+            previousSelected = position;
+        }
     }
 
     @OnClick(R.id.container)

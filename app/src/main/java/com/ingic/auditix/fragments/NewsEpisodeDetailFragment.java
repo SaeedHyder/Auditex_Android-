@@ -47,14 +47,20 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
     NewsEpisodeEnt episodeData;
     DisplayImageOptions options;
     private int startingIndex = 0;
+    private int newsCategoryID = 0;
 
-    public static NewsEpisodeDetailFragment newInstance(NewsEpisodeEnt data) {
+    public static NewsEpisodeDetailFragment newInstance(NewsEpisodeEnt data, int newsCategoryID) {
         Bundle args = new Bundle();
 
         NewsEpisodeDetailFragment fragment = new NewsEpisodeDetailFragment();
         fragment.setArguments(args);
         fragment.setEpisodeData(data);
+        fragment.setNewsCategoryID(newsCategoryID);
         return fragment;
+    }
+
+    public void setNewsCategoryID(int newsCategoryID) {
+        this.newsCategoryID = newsCategoryID;
     }
 
     public void setEpisodeData(NewsEpisodeEnt episodeData) {
@@ -126,8 +132,10 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
 
     @OnClick(R.id.btn_play)
     public void onViewClicked() {
-        getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, 0,
-                AppConstants.TAB_NEWS, null, episodeData, startingIndex), PlayerFragment.TAG);
+        getMainActivity().showBottomPlayer(null, newsCategoryID,
+                AppConstants.TAB_NEWS, null, episodeData, startingIndex);
+        /*getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, 0,
+                AppConstants.TAB_NEWS, null, episodeData, startingIndex), PlayerFragment.TAG);*/
 
     }
 }

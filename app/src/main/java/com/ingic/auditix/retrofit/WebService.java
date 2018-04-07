@@ -220,5 +220,14 @@ public interface WebService {
     @GET("GetAllNewsByCategoryId")
     Call<ResponseWrapper<ArrayList<NewsEpisodeEnt>>> getAllNewsByCategory(@Query("Id") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
 
+    @GET("SubscribeNewsCategory")
+    Call<ResponseWrapper> subscribeNews(@Query("Id") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
+
+    @GET("FavoriteNews")
+    Call<ResponseWrapper> favoriteNews(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
+
+    @GET("UnFavoriteNews")
+    Call<ResponseWrapper> unFavoriteNews(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
+
     //endregion
 }

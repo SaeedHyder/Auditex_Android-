@@ -62,9 +62,10 @@ public class ProfileLibraryFragment extends BaseFragment {
                 if (detailEnt.getChapters().getChapter().size() > 1) {
                     detailEnt.getChapters().getChapter().remove(0);
                 }
-
-                getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt,
-                        null,0), PlayerFragment.TAG);
+                getMainActivity().showBottomPlayer(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt,
+                        null,0);
+               /* getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt,
+                        null,0), PlayerFragment.TAG);*/
             }
         }
     };

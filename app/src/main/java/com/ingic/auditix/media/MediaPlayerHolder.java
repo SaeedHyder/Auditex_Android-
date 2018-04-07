@@ -182,14 +182,6 @@ public final class MediaPlayerHolder implements PlayerAdapter, OnPreparedListene
     }
 
     @Override
-    public void replay() {
-        reset();
-        onPlaybackInfo(PlaybackInfoListener.State.NEXT, 0);
-        logToUI("playingNextWithIndex(" + currentPlayingItem + ")");
-        loadMedia(getResouceURI(currentPlayingItem));
-    }
-
-    @Override
     public void reset() {
         if (mMediaPlayer != null) {
             logToUI("playbackReset()");
@@ -247,6 +239,14 @@ public final class MediaPlayerHolder implements PlayerAdapter, OnPreparedListene
     }
 
     @Override
+    public void replay() {
+        reset();
+        onPlaybackInfo(PlaybackInfoListener.State.NEXT, 0);
+        logToUI("playingNextWithIndex(" + currentPlayingItem + ")");
+        loadMedia(getResouceURI(currentPlayingItem));
+    }
+
+    @Override
     public void playIndex(int index) {
         if (index < mPlayList.size()) {
             reset();
@@ -263,7 +263,7 @@ public final class MediaPlayerHolder implements PlayerAdapter, OnPreparedListene
     }
 
     @Override
-    public void loadPlayList(ArrayList<PlayListModel> mPlayList,int currentPlayingItem) {
+    public void loadPlayList(ArrayList<PlayListModel> mPlayList, int currentPlayingItem) {
         if (this.mPlayList == null) {
             this.mPlayList = new ArrayList<>();
             this.mPlayList.addAll(mPlayList);
@@ -271,7 +271,7 @@ public final class MediaPlayerHolder implements PlayerAdapter, OnPreparedListene
             this.mPlayList.addAll(mPlayList);
         }
         initializeMediaPlayer();
-       this. currentPlayingItem = currentPlayingItem;
+        this.currentPlayingItem = currentPlayingItem;
         loadMedia(getResouceURI(currentPlayingItem));
         logToUI("LoadPlayList(" + this.mPlayList.size() + ")");
     }

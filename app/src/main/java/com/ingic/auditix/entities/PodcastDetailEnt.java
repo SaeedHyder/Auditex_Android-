@@ -8,11 +8,15 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created on 1/10/2018.
  */
 
-public class PodcastDetailEnt {
+public class PodcastDetailEnt extends RealmObject {
     @SerializedName("WowzaURL")
     @Expose
     public String WowzaURL;
@@ -28,6 +32,7 @@ public class PodcastDetailEnt {
     @SerializedName("IsEpisodeAdded")
     @Expose
     public boolean IsEpisodeAdded;
+    @PrimaryKey
     @SerializedName("Title")
     @Expose
     private String title;
@@ -60,7 +65,8 @@ public class PodcastDetailEnt {
     private boolean IsFavorite;
     @SerializedName("TrackList")
     @Expose
-    private ArrayList<PodcastTrackEnt> trackList = null;
+    private RealmList<PodcastTrackEnt> trackList = null;
+    private String downloadedOn;
 
     public String getAudioUrl() {
         return AudioUrl;
@@ -183,10 +189,11 @@ public class PodcastDetailEnt {
     }
 
     public ArrayList<PodcastTrackEnt> getTrackList() {
-        return trackList;
+
+        return new ArrayList<PodcastTrackEnt>((trackList.subList(0, trackList.size())));
     }
 
-    public void setTrackList(ArrayList<PodcastTrackEnt> trackList) {
+    public void setTrackList(RealmList<PodcastTrackEnt> trackList) {
         this.trackList = trackList;
     }
 
@@ -207,4 +214,11 @@ public class PodcastDetailEnt {
         return new EqualsBuilder().append(author, rhs.author).append(title, rhs.title).append(description, rhs.description).append(image, rhs.image).append(language, rhs.language).append(trackList, rhs.trackList).append(publishDate, rhs.publishDate).isEquals();
     }
 
+    public String getDownloadedOn() {
+        return downloadedOn;
+    }
+
+    public void setDownloadedOn(String downloadedOn) {
+        this.downloadedOn = downloadedOn;
+    }
 }

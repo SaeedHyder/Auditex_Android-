@@ -6,6 +6,7 @@
     <color name="blue">#0000FF</color>
     <color name="red">#f00</color>
     <color name="semi_tranparent">#77000000</color>
+    <color name="advertisement">#e5000000</color>
     <color name="transparent">#00000000</color>
     <color name="light_grey">#858992</color>
     <color name="c_light_blue">#1BB2E3</color>
