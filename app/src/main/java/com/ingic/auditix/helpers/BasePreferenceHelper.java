@@ -15,6 +15,7 @@ public class BasePreferenceHelper extends PreferenceHelper {
     protected static final String NotificationCount = "NotificationCount";
     private static final String FILENAME = "preferences";
     protected static final String KEY_USER = "key_user";
+    protected static final String KEY_GUEST = "key_GUEST";
     private static final String KEY_USERID = "USERID";
     private static final String KEY_CONTINOUS_PLAY = "KEY_CONTINOUS_PLAY";
     private static final String KEY_DOWNLOAD_ON_ALL = "KEY_DOWNLOAD_ON_ALL";
@@ -34,6 +35,13 @@ public class BasePreferenceHelper extends PreferenceHelper {
 
     public boolean isLogin() {
         return getBooleanPreference(context, FILENAME, KEY_LOGIN_STATUS);
+    }
+    public void setGuestStatus(boolean isGuest) {
+        putBooleanPreference(context, FILENAME, KEY_GUEST, isGuest);
+    }
+
+    public boolean isGuest() {
+        return getBooleanPreference(context, FILENAME, KEY_GUEST);
     }
 
     public void setContinousPlay(boolean isContinous) {

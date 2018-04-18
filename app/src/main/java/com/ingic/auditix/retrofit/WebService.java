@@ -15,6 +15,7 @@ import com.ingic.auditix.entities.PodcastCategoryListEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.entities.PodcastFavoriteEnt;
 import com.ingic.auditix.entities.PodcastHomeEnt;
+import com.ingic.auditix.entities.PodcastLocationEnt;
 import com.ingic.auditix.entities.ResponseWrapper;
 import com.ingic.auditix.entities.SearchEnt;
 import com.ingic.auditix.entities.SubscribePodcastEnt;
@@ -77,6 +78,14 @@ public interface WebService {
 
     @GET("ValidateCode")
     Call<ResponseWrapper<UserModel>> ResetPassword(@Query("Email") String email, @Query("Code") String code);
+    @FormUrlEncoded
+    @POST("GuestRegistration")
+    Call<ResponseWrapper<UserModel>> guestRegistration(@Field("DeviceName") String DeviceName,
+                                                       @Field("UniversalDeviceID") String UniversalDeviceID,
+                                                       @Field("IsAndroidPlatform") boolean IsAndroidPlatform,
+                                                       @Field("IsPlayStore") boolean IsPlayStore,
+                                                       @Field("IsProduction") boolean IsProduction,
+                                                       @Field("AuthToken") String AuthToken);
     //endregion
 
     //region Notification Module
@@ -89,6 +98,7 @@ public interface WebService {
                                       @Field("AccountID") Integer AccountID,
                                       @Field("IsProduction") boolean IsProduction,
                                       @Field("AuthToken") String firebaseToken,
+                                      @Field("IsGuest") boolean IsGuest,
                                       @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @POST("GetUnReadCount")
@@ -101,12 +111,12 @@ public interface WebService {
     //endregion
 
     //region Podcast Module
-    @GET("GetPodCastByCategoryId")
-    Call<ResponseWrapper<PodcastCategoryListEnt>> getPodcastsByCategory(@Query("categoryId") String categoryId,
-                                                                        @Query("limit") String limit,
-                                                                        @Query("countryCode") String countryCode,
-                                                                        @Query("offset") String offset,
-                                                                        @Header(WebServiceConstants.HEADER_KEY) String header);
+    @GET("GetPodCastByCategoryIdCountryCsv")
+    Call<ResponseWrapper<ArrayList<PodcastCategoryListEnt>>> getPodcastsByCategory(@Query("categoryId") Integer categoryId,
+                                                                                   @Query("limit") Integer limit,
+                                                                                   @Query("countryCode") String countryCode,
+                                                                                   @Query("offset") Integer offset,
+                                                                                   @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("GetDefaultPodCast")
     Call<ResponseWrapper<PodcastHomeEnt>> getDefaultPodcast(@Query("pageNumber") Integer pageNumber, @Query("totalCount") Integer totalCount, @Query("categoriesIds") String categoriesIds,
@@ -139,7 +149,10 @@ public interface WebService {
     Call<ResponseWrapper<ArrayList<PodcastFavoriteEnt>>> getAllFavorite(@Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("GetAllCategories")
-    Call<ResponseWrapper<ArrayList<PodcastCategoriesEnt>>> getAllFilters(@Header(WebServiceConstants.HEADER_KEY) String header);
+    Call<ResponseWrapper<ArrayList<PodcastCategoriesEnt>>> getAllPodcastCategories(@Header(WebServiceConstants.HEADER_KEY) String header);
+
+    @GET("GetLocationList")
+    Call<ResponseWrapper<ArrayList<PodcastLocationEnt>>> getAllFilter(@Header(WebServiceConstants.HEADER_KEY) String header);
     //endregion
 
     //region Walkthrough Module
@@ -221,13 +234,21 @@ public interface WebService {
     Call<ResponseWrapper<ArrayList<NewsEpisodeEnt>>> getAllNewsByCategory(@Query("Id") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
 
     @GET("SubscribeNewsCategory")
-    Call<ResponseWrapper> subscribeNews(@Query("Id") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
+    Call<ResponseWrapper> subscribeNews(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
+
+    @GET("UnSubscribeNewsCategory ")
+    Call<ResponseWrapper> unsubscribeNews(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
 
     @GET("FavoriteNews")
     Call<ResponseWrapper> favoriteNews(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
 
     @GET("UnFavoriteNews")
     Call<ResponseWrapper> unFavoriteNews(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
+
+    @GET("GetAllNewsSubscriptions")
+    Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllSubscribeNews(@Header(WebServiceConstants.HEADER_KEY) String userToken);
+    @GET("GetAllFavoriteNews")
+    Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllFavoriteNews(@Header(WebServiceConstants.HEADER_KEY) String userToken);
 
     //endregion
 }

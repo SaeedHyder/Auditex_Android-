@@ -16,7 +16,7 @@ public class PodcastTrackEnt extends RealmObject{
 
     @SerializedName("Id")
     @Expose
-    private Integer Id;
+    private String Id;
     @SerializedName("Name")
     @Expose
     private String name;
@@ -39,11 +39,11 @@ public class PodcastTrackEnt extends RealmObject{
     private int statusState;
     private int downloadProgress = 0;
 
-    public Integer getId() {
+    public String getId() {
         return Id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         Id = id;
     }
 

@@ -5,19 +5,19 @@ package com.ingic.auditix.entities;
  */
 
 public class FilterEnt {
-    private Integer GenreID;
+    private String GenreID;
     private String GenreName;
 
-    public FilterEnt(Integer genreID, String genreName) {
+    public FilterEnt(String genreID, String genreName) {
         GenreID = genreID;
         GenreName = genreName;
     }
 
-    public Integer getGenreID() {
+    public String getGenreID() {
         return GenreID;
     }
 
-    public void setGenreID(Integer genreID) {
+    public void setGenreID(String genreID) {
         GenreID = genreID;
     }
 

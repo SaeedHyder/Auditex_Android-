@@ -454,13 +454,15 @@
             android:layout_marginTop="@dimen/x10"
             android:layout_marginBottom="@dimen/x10"
             android:maxLines="1"
+            android:id="@+id/txt_chapter_header"
             android:text="@string/new_noteworthy"
             android:textAllCaps="true"
+            android:visibility="gone"
             android:layout_marginStart="@dimen/x10"
             android:textColor="@color/app_font_black"
             android:textSize="@dimen/x16"
             android:textStyle="bold"
-            app:typeface="@string/font_normal"/>
+            app:typeface="@string/font_bold"/>
         <com.ingic.auditix.ui.views.CustomRecyclerView
             android:id="@+id/rv_chapters"
             android:layout_width="match_parent"

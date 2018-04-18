@@ -56,6 +56,12 @@ public class WebServiceConstants {
     public static final String SUBSCRIBE_NEWS = "SUBSCRIBE_NEWS";
     public static final String FAVORITE_NEWS = "FAVORITE_NEWS";
     public static final String UNFAVORITE_NEWS = "UNFAVORITE_NEWS";
+    public static final String GET_ALL_FAVORITE = "GET_ALL_FAVORITE";
 
     public static final String GET_ADVERTISEMENT = "GET_ADVERTISEMENT";
+    public static final String GET_ALL_PODCAST_CATEGORIES = "GET_ALL_PODCAST_CATEGORIES";
+    public static final String GET_ALL_PODCAST_BY_CATEGORIES = "GET_ALL_PODCAST_BY_CATEGORIES";
+    public static final String GET_ALL_NEWS_SUBSCRIBE = "GET_ALL_NEWS_SUBSCRIBE";
+    public static final String UNSUBSCRIBE_NEWS = "UNSUBSCRIBE_NEWS";
+    public static final String GUEST_LOGIN = "GuestRegistration";
 }

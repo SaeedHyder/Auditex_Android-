@@ -52,8 +52,6 @@ public abstract class DockActivity extends AppCompatActivity implements
     public FilterFragment filterFragment;
     public BooksFilterFragment booksFilterFragment;
     protected BasePreferenceHelper prefHelper;
-    //For side menu
-    protected DrawerLayout drawerLayout;
     BaseFragment baseFragment;
     private ResideMenu.OnMenuListener menuListener = new ResideMenu.OnMenuListener() {
         @Override
@@ -178,26 +176,6 @@ public abstract class DockActivity extends AppCompatActivity implements
 
     }
 
-    public DrawerLayout getDrawerLayout() {
-        return drawerLayout;
-    }
-
-    public void closeDrawer() {
-        drawerLayout.closeDrawers();
-
-    }
-
-    public void lockDrawer() {
-        try {
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void releaseDrawer() {
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-    }
 
     public void addAndShowDialogFragment(
             android.support.v4.app.DialogFragment dialog) {
@@ -308,12 +286,14 @@ public abstract class DockActivity extends AppCompatActivity implements
     }
 
     public void addDownload(String downloadUrl,
-                            String fileName, String fileFormat, int tag, String name) {
+                            String fileName, String fileFormat, String tag, String name, String parentTitle,Object detailObject) {
         FileDownloader.getImpl().create(getDownloadUrl(downloadUrl, ""))
-                .setPath(getDownloadPath(fileName, fileFormat))
+                .setPath(getDownloadPath(parentTitle, fileName, fileFormat))
                 .setListener(fileDownloadListener)
                 .setTag(tag)
-                .setTag(getResources().getInteger(R.integer.key_item_name), name)
+                .setTag(R.integer.key_Download, parentTitle)
+                .setTag(R.integer.key_item_name, detailObject)
+                .setTag(R.integer.key_Download_failed,name)
                 .setWifiRequired(!prefHelper.isDownloadOnAll())
                 .setCallbackProgressTimes(100)
                 .setAutoRetryTimes(50)
@@ -322,12 +302,14 @@ public abstract class DockActivity extends AppCompatActivity implements
 
     }
 
-    public void addDownload(String serverPath, String audioUrl, int tag, String name) {
+    public void addDownload(String serverPath, String audioUrl, String tag, String name, String parentTitle,Object detailObject) {
         FileDownloader.getImpl().create(getDownloadUrl(serverPath, audioUrl))
-                .setPath(getDownloadPath(audioUrl, ""))
+                .setPath(getDownloadPath(parentTitle, audioUrl, ""))
                 .setListener(fileDownloadListener)
                 .setTag(tag)
-                .setTag(getResources().getInteger(R.integer.key_item_name), name)
+                .setTag(R.integer.key_Download, parentTitle)
+                .setTag(R.integer.key_item_name, detailObject)
+                .setTag(R.integer.key_Download_failed,name)
                 .setWifiRequired(!prefHelper.isDownloadOnAll())
                 .setCallbackProgressTimes(100)
                 .setAutoRetryTimes(5)
@@ -342,10 +324,12 @@ public abstract class DockActivity extends AppCompatActivity implements
     }
 
     @NonNull
-    private String getDownloadPath( String fileName, String fileFormat) {
+    private String getDownloadPath(String parentFolder, String fileName, String fileFormat) {
         return AppConstants.DOWNLOAD_PATH
                 + File.separator
-                + File.separator + getSymbolsReplacedString(fileName)
+                + parentFolder
+                + File.separator
+                + getSymbolsReplacedString(fileName)
                 + fileFormat;
     }
 

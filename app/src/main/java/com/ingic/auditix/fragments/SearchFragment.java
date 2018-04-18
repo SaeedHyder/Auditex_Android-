@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.entities.SearchEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
@@ -59,7 +60,7 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
             SearchEnt ent = (SearchEnt) Ent;
-            openItemDetailPage(ent.getID(), Integer.parseInt(ent.getType()));
+            openItemDetailPage(ent, Integer.parseInt(ent.getType()));
         }
     };
 
@@ -110,15 +111,20 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
 
     }
 
-    private void openItemDetailPage(Integer ID, Integer type) {
+    private void openItemDetailPage(SearchEnt searchItem, Integer type) {
         switch (type) {
             case WebServiceConstants.SEARCH_TYPE_PODCAST:
-                getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(ID), PodcastDetailFragment.TAG);
+                getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(searchItem.getID()), PodcastDetailFragment.TAG);
                 break;
             case WebServiceConstants.SEARCH_TYPE_BOOKS:
-                getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(ID), BookDetailFragment.TAG);
+                getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(searchItem.getID()), BookDetailFragment.TAG);
                 break;
             case WebServiceConstants.SEARCH_TYPE_NEWS:
+                NewsCategoryEnt ent = new NewsCategoryEnt();
+                ent.setId(searchItem.getID());
+                ent.setSourceImageUrl(searchItem.getImageUrl());
+                ent.setSourceName(searchItem.getName());
+                getDockActivity().replaceDockableFragment(NewsCategoryDetailFragment.newInstance(ent), NewsCategoryDetailFragment.TAG);
                 break;
         }
     }

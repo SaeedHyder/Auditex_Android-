@@ -64,8 +64,9 @@ public class ForgotPasswordResetFragment extends BaseFragment {
                 prefHelper.putUser(user);
                 prefHelper.setUserToken(user.getToken().getTokenType() + " " + user.getToken().getAccessToken());
                 prefHelper.setLoginStatus(true);
+                prefHelper.setGuestStatus(false);
                 TokenUpdater.getInstance().UpdateToken(getDockActivity(), user.getAccountID(), FirebaseInstanceId.getInstance().getToken(),
-                        prefHelper.getUserToken());
+                        prefHelper.getUserToken(),prefHelper.isGuest());
                 getDockActivity().popBackStackTillEntry(0);
                 getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), "HomeFragmnet");
                 break;

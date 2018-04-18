@@ -23,7 +23,8 @@ public class SearchBinder extends RecyclerViewBinder<SearchEnt> implements View.
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private RecyclerViewItemListener listener;
-    public SearchBinder(DisplayImageOptions options,RecyclerViewItemListener listener) {
+
+    public SearchBinder(DisplayImageOptions options, RecyclerViewItemListener listener) {
         super(R.layout.row_item_search);
         this.options = options;
         this.listener = listener;
@@ -41,6 +42,13 @@ public class SearchBinder extends RecyclerViewBinder<SearchEnt> implements View.
         imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, options);
         holder.txtTitle.setText(entity.getName() + "");
         holder.txtNarratorText.setText(entity.getNarratedBy() + "");
+        if (entity.getNarratedBy() == null) {
+            holder.txtNarrator.setVisibility(View.INVISIBLE);
+            holder.txtNarratorText.setVisibility(View.INVISIBLE);
+        } else {
+            holder.txtNarrator.setVisibility(View.VISIBLE);
+            holder.txtNarratorText.setVisibility(View.VISIBLE);
+        }
         holder.itemView.setTag(R.integer.key_recycler_object, entity);
         holder.itemView.setTag(R.integer.key_recycler_position, position);
         holder.itemView.setOnClickListener(this);

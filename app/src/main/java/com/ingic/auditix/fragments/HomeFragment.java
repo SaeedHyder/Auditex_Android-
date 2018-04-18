@@ -29,9 +29,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     ImageView btnBooks;
     @BindView(R.id.btn_news)
     ImageView btnNews;
-    HomeTabFragment tabFragment;
     @BindView(R.id.btn_profile)
     ImageView btnProfile;
+    HomeTabFragment tabFragment;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -50,7 +50,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         titleBar.showMenuButton();
         titleBar.addBackground();
         titleBar.setSubHeading(getString(R.string.home));
-        titleBar.showNotificationButton(0);
+        if (!prefHelper.isGuest()) {
+            titleBar.showNotificationButton(0);
+        }
 
     }
 
@@ -132,8 +134,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 //willbeimplementedinfuture();
                 break;
                 case R.id.btn_profile:
-                tabFragment.setTag(AppConstants.TAB_PROFILE);
-                getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
+                    if (prefHelper.isGuest()) {
+                        showGuestMessage();
+                    }else {
+                        tabFragment.setTag(AppConstants.TAB_PROFILE);
+                        getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
+                    }
                 //willbeimplementedinfuture();
                 break;
         }

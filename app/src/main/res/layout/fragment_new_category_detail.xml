@@ -37,7 +37,7 @@
                     android:layout_marginStart="@dimen/x5"
                     android:ellipsize="marquee"
                     android:singleLine="true"
-                    android:text="Just Courage"
+                    android:text=""
                     android:textAllCaps="true"
                     android:textColor="@color/black"
                     android:textSize="@dimen/x16"

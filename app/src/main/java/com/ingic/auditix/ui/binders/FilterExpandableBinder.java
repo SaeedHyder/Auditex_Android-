@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.FilterEnt;
-import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.ui.viewbinders.abstracts.ExpandableListViewBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.sRangeSeekBar;
@@ -25,7 +24,7 @@ import butterknife.ButterKnife;
  */
 
 public class FilterExpandableBinder extends ExpandableListViewBinder<String, FilterEnt> {
-    private ArrayList<Integer> filterCheckIDs;
+    private ArrayList<String> filterCheckIDs;
 
     public FilterExpandableBinder() {
         super(R.layout.row_item_filter_group, R.layout.row_item_filter_child_check);

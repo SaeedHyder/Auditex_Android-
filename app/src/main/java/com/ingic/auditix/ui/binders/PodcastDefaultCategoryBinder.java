@@ -6,7 +6,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.PodcastCategoryDetailEnt;
 import com.ingic.auditix.entities.PodcastDetailHomeEnt;
+import com.ingic.auditix.helpers.BasePreferenceHelper;
+import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.viewbinders.abstracts.RecyclerViewBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -20,22 +23,28 @@ import butterknife.ButterKnife;
  * Created on 1/10/2018.
  */
 
-public class PodcastDefaultCategoryBinder extends RecyclerViewBinder<PodcastDetailHomeEnt> implements View.OnClickListener {
+public class PodcastDefaultCategoryBinder extends RecyclerViewBinder<PodcastCategoryDetailEnt> implements View.OnClickListener {
     private ImageLoader imageLoader;
     private RecyclerViewItemListener listener;
     private DisplayImageOptions imageoptions;
+    private BasePreferenceHelper prefHelper;
 
-    public PodcastDefaultCategoryBinder(DisplayImageOptions options, RecyclerViewItemListener listener) {
+    public PodcastDefaultCategoryBinder(DisplayImageOptions options, RecyclerViewItemListener listener,BasePreferenceHelper helper) {
         super(R.layout.row_item_podcast_default_categories);
         this.listener = listener;
         imageLoader = ImageLoader.getInstance();
         imageoptions = options;
+        this.prefHelper =helper;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_subscribe:
+                if (prefHelper.isGuest()) {
+                    UIHelper.showShortToastInCenter(v.getContext(),v.getContext().getString(R.string.guest_message));
+                    return;
+                }
                 if (listener != null) {
                     listener.onRecyclerItemButtonClicked(v.getTag(R.integer.key_recycler_object),
                             (int) v.getTag(R.integer.key_recycler_position));
@@ -57,12 +66,12 @@ public class PodcastDefaultCategoryBinder extends RecyclerViewBinder<PodcastDeta
     }
 
     @Override
-    public void bindView(PodcastDetailHomeEnt entity, int position, Object viewHolder, Context context) {
+    public void bindView(PodcastCategoryDetailEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
         imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, imageoptions);
         holder.txtTitle.setText(entity.getName() + "");
         holder.txtNarratorText.setText(entity.getArtistName() + "");
-        if (entity.isSubscribed()) {
+        if (entity.getSubscribed()) {
             holder.btnSubscribe.setText(R.string.unsubscribe);
         } else {
             holder.btnSubscribe.setText(R.string.subscribe);

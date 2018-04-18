@@ -4,13 +4,13 @@ import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.chauthai.swipereveallayout.SwipeRevealLayout;
-import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.PodcastFavoriteEnt;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.viewbinders.abstracts.RecyclerViewBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
+import com.ingic.auditix.ui.views.SwipeRevealLayout;
+import com.ingic.auditix.ui.views.ViewBinderHelper;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

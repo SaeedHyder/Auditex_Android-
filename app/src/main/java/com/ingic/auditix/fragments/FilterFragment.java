@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.FilterEnt;
 import com.ingic.auditix.entities.PodcastCategoriesEnt;
+import com.ingic.auditix.entities.PodcastLocationEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.FilterDoneClickListener;
@@ -65,7 +66,7 @@ public class FilterFragment extends BaseFragment {
     public void ResponseSuccess(Object result, String Tag) {
         switch (Tag) {
             case WebServiceConstants.GET_ALL_FILTER:
-                bindPodcastListData((ArrayList<PodcastCategoriesEnt>) result);
+                bindPodcastListData((ArrayList<PodcastLocationEnt>) result);
                 break;
         }
     }
@@ -89,7 +90,7 @@ public class FilterFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (child1Collection == null && binder == null) {
-            serviceHelper.enqueueCall(webService.getAllFilters(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FILTER, false);
+            serviceHelper.enqueueCall(webService.getAllFilter(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FILTER, false);
         } else {
             rvfilters.BindRecyclerView(binder, child1Collection,
                     new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
@@ -97,12 +98,12 @@ public class FilterFragment extends BaseFragment {
         }
     }
 
-    private void bindPodcastListData(ArrayList<PodcastCategoriesEnt> result) {
+    private void bindPodcastListData(ArrayList<PodcastLocationEnt> result) {
 
         child1Collection = new ArrayList<>();
-        for (PodcastCategoriesEnt item : result
+        for (PodcastLocationEnt item : result
                 ) {
-            child1Collection.add(new FilterEnt(item.getCategoryId(), item.getTitle()));
+            child1Collection.add(new FilterEnt(item.getCountrycode(), item.getCountryname()));
         }
         binder = new FilterBinder();
         rvfilters.BindRecyclerView(binder, child1Collection,

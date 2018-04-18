@@ -10,6 +10,8 @@ public class NewsCategoryEnt {
 
     @SerializedName("Id")
     private int Id;
+    @SerializedName("NewsCategoryId")
+    private int NewsCategoryId;
     @SerializedName("SourceImageUrl")
     private String SourceImageUrl;
     @SerializedName("SourceName")
@@ -26,6 +28,14 @@ public class NewsCategoryEnt {
     private boolean Deleted;
     @SerializedName("InActive")
     private boolean InActive;
+
+    public int getNewsCategoryId() {
+        return NewsCategoryId;
+    }
+
+    public void setNewsCategoryId(int newsCategoryId) {
+        NewsCategoryId = newsCategoryId;
+    }
 
     public int getId() {
         return Id;

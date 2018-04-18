@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class DownloadItemModel extends RealmObject {
     private Integer downloadID;
-    private Integer downloadTag;
+    private String downloadTag;
     private Integer downloadProgress;
     private Integer downloadState;
     private Integer downloadedBytes;
@@ -23,11 +23,11 @@ public class DownloadItemModel extends RealmObject {
         this.downloadID = downloadID;
     }
 
-    public Integer getDownloadTag() {
+    public String getDownloadTag() {
         return downloadTag;
     }
 
-    public void setDownloadTag(Integer downloadTag) {
+    public void setDownloadTag(String downloadTag) {
         this.downloadTag = downloadTag;
     }
 

@@ -196,12 +196,18 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     private void setHeadBar() {
         if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
             btnFavorite.setChecked(podcastDetailEnt.isFavorite());
+
             btnFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    serviceHelper.enqueueCall(webService.changeFavoriteStatus(ID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                    if (prefHelper.isGuest()) {
+                        showGuestMessage();
+                    } else
+                        serviceHelper.enqueueCall(webService.changeFavoriteStatus(ID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
                 }
             });
+
+
             EpisodeListingFragment fragment = new EpisodeListingFragment();
             fragment.setListItemListener(this);
             setItemChangeListener(fragment);
@@ -251,25 +257,33 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             btnFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        serviceHelper.enqueueCall(webService.AddBookToFavorite(ID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                    if (prefHelper.isGuest()) {
+                        showGuestMessage();
                     } else {
-                        serviceHelper.enqueueCall(webService.RemoveBookFromFavorite(ID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                        if (isChecked) {
+                            serviceHelper.enqueueCall(webService.AddBookToFavorite(ID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                        } else {
+                            serviceHelper.enqueueCall(webService.RemoveBookFromFavorite(ID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                        }
                     }
                 }
             });
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
-            if (getChildFragmentManager().findFragmentById(R.id.items)!=null) {
+            if (getChildFragmentManager().findFragmentById(R.id.items) != null) {
                 getChildFragmentManager().beginTransaction().
                         remove(getChildFragmentManager().findFragmentById(R.id.items)).commit();
             }
             btnFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        serviceHelper.enqueueCall(webService.favoriteNews(ID, prefHelper.getUserToken()), WebServiceConstants.FAVORITE_NEWS);
+                    if (prefHelper.isGuest()) {
+                        showGuestMessage();
                     } else {
-                        serviceHelper.enqueueCall(webService.unFavoriteNews(ID, prefHelper.getUserToken()), WebServiceConstants.UNFAVORITE_NEWS);
+                        if (isChecked) {
+                            serviceHelper.enqueueCall(webService.favoriteNews(ID, prefHelper.getUserToken()), WebServiceConstants.FAVORITE_NEWS);
+                        } else {
+                            serviceHelper.enqueueCall(webService.unFavoriteNews(ID, prefHelper.getUserToken()), WebServiceConstants.UNFAVORITE_NEWS);
+                        }
                     }
                 }
             });
@@ -417,7 +431,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         initializePlaybackController();
         initializeSeekbar();
         mUserPlaylist = new ArrayList<>();
-        String path = AppConstants.DOWNLOAD_PATH + File.separator + ent.getTitle().replaceAll("\\s+", "") + ".mp3";
+        String path = AppConstants.DOWNLOAD_PATH + File.separator + ent.get_id() + File.separator + ent.getTitle().replaceAll("\\s+", "") + ".mp3";
         if (new File(path).exists()) {
             mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path, false));
         } else {
@@ -476,7 +490,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         }
         for (BooksChapterItemEnt tracks : chapters.getChapter()
                 ) {
-            String path = AppConstants.DOWNLOAD_PATH + File.separator + tracks.getAudioUrl().replaceAll("\\s+", "");
+            String path = AppConstants.DOWNLOAD_PATH + File.separator + bookDetailEnt.getBookName() + File.separator + tracks.getAudioUrl().replaceAll("\\s+", "");
             if (new File(path).exists()) {
                 mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path, false));
 
@@ -496,7 +510,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         mUserPlaylist = new ArrayList<>();
         for (PodcastTrackEnt tracks : trackList
                 ) {
-            String path = AppConstants.DOWNLOAD_PATH + File.separator + tracks.getName().replaceAll("\\s+", "") + ".mp3";
+            String path = AppConstants.DOWNLOAD_PATH + File.separator + podcastDetailEnt.getTitle() + File.separator + tracks.getName().replaceAll("\\s+", "") + ".mp3";
             if (new File(path).exists()) {
                 mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path, false));
             } else {
@@ -658,7 +672,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
 
     private void performPauseClick() {
         mPlayerAdapter.pause();
-/*        btnPlay.setImageResource(R.drawable.play_icon_white);*/
+        /*        btnPlay.setImageResource(R.drawable.play_icon_white);*/
         setPlayButtonResource();
 
     }

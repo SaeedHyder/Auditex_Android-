@@ -27,11 +27,13 @@ import io.realm.Realm;
 public class BookChapterBinder extends RecyclerViewBinder<BooksChapterItemEnt> implements View.OnClickListener {
     private RecyclerViewItemListener listener;
     private Realm realm;
+    private String parentFolderName = "";
 
-    public BookChapterBinder(RecyclerViewItemListener listener, Realm realm) {
+    public BookChapterBinder(RecyclerViewItemListener listener, Realm realm, String parentFolderName) {
         super(R.layout.row_item_chapters_download);
         this.listener = listener;
         this.realm = realm;
+        this.parentFolderName = parentFolderName;
     }
 
     public Realm getRealm() {
@@ -112,14 +114,14 @@ public class BookChapterBinder extends RecyclerViewBinder<BooksChapterItemEnt> i
 
     }
 
-    private DownloadItemModel getObjectfromRealm(Integer chapterID) {
+    private DownloadItemModel getObjectfromRealm(String chapterID) {
         return getRealm()
                 .where(DownloadItemModel.class)
                 .equalTo("downloadTag", chapterID).findFirst();
     }
 
     private boolean isAlreadyDownloaded(String audioUrl) {
-        return new File(AppConstants.DOWNLOAD_PATH + File.separator + audioUrl.
+        return new File(AppConstants.DOWNLOAD_PATH + File.separator + parentFolderName + File.separator + audioUrl.
                 replaceAll("\\s+", "")
                 .replaceAll("\\\\", "")
                 .replaceAll("/", "")).exists();

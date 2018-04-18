@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -19,6 +20,7 @@ import com.ingic.auditix.ui.adapters.TabViewPagerAdapter;
 import com.ingic.auditix.ui.views.TitleBar;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -172,9 +174,20 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
         for (int i = 0; i < adapter.getCount(); i++) {
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setCustomView(R.layout.tab_item_home);
-            tabLayout.addTab(tab,false);
+            tabLayout.addTab(tab, false);
             bindUnselectedTabView(tab);
-
+        }
+        if (prefHelper.isGuest()) {
+          /*  ViewGroup vgTab = (ViewGroup) tabLayout.getChildAt(INDEX_PROFILE);
+            if (vgTab != null)
+                vgTab.setEnabled(false);*/
+          Objects.requireNonNull(tabLayout.getTabAt(INDEX_PROFILE)).getCustomView().setOnTouchListener(new View.OnTouchListener() {
+              @Override
+              public boolean onTouch(View v, MotionEvent event) {
+                  showGuestMessage();
+                  return true;
+              }
+          });
         }
         tabLayout.addOnTabSelectedListener(this);
         selectTabBasedOnTag(tag);
@@ -251,6 +264,6 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-      //  bindSelectedTabView(tab);
+        //  bindSelectedTabView(tab);
     }
 }

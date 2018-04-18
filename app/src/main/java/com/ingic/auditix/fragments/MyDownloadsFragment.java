@@ -96,8 +96,8 @@ public class MyDownloadsFragment extends BaseFragment {
         adapter.notifyDataSetChanged();*/
         rvDownloads.setNestedScrollingEnabled(false);
 
-        rvDownloads.BindRecyclerView(new DownloadBinder(), downloadsCollections, new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
-                new DefaultItemAnimator());
+      /*  rvDownloads.BindRecyclerView(new DownloadBinder(), downloadsCollections, new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
+                new DefaultItemAnimator());*/
         //setListViewHeightBasedOnChildren(sideoptions);
 
     }

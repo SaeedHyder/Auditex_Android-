@@ -38,6 +38,7 @@
                 android:layout_gravity="end|bottom"
                 android:maxLines="1"
                 android:text="@string/see_all"
+                android:visibility="visible"
                 android:textColor="@color/app_title_orange"
                 android:textSize="@dimen/x14"
                 android:textStyle="bold"

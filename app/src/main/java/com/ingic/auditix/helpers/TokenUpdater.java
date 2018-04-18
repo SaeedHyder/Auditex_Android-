@@ -30,16 +30,14 @@ public class TokenUpdater {
         return tokenUpdater;
     }
 
-    public void UpdateToken(Context context, final Integer userid, String fireBaseToken, String userAccessToken) {
+    public void UpdateToken(Context context, final Integer userid, String fireBaseToken, String userAccessToken, boolean isGuest) {
         if (fireBaseToken.isEmpty()) {
             Log.e("Token Updater", "Token is Empty");
         }
         webservice = WebServiceFactory.getWebServiceInstanceWithCustomInterceptor(context,
                 WebServiceConstants.SERVICE_URL);
-        String android_id = UUID.randomUUID().toString();
-        ;
-        Call<ResponseWrapper> call = webservice.updateToken(AppConstants.ANDROID, android_id,
-                true, false, userid, false, fireBaseToken, userAccessToken);
+        Call<ResponseWrapper> call = webservice.updateToken(AppConstants.ANDROID, fireBaseToken,
+                true, false, userid, false, fireBaseToken, isGuest, userAccessToken);
         call.enqueue(new Callback<ResponseWrapper>() {
             @Override
             public void onResponse(Call<ResponseWrapper> call, Response<ResponseWrapper> response) {

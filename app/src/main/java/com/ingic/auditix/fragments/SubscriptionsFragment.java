@@ -110,7 +110,7 @@ public class SubscriptionsFragment extends BaseFragment implements RecyclerViewI
             rvSubscription.setVisibility(View.VISIBLE);
 
         }
-        rvSubscription.BindRecyclerView(new MySubscriptionsBinder(options, this), subscriptionsEnts,
+        rvSubscription.BindRecyclerView(new MySubscriptionsBinder(options, this, prefHelper), subscriptionsEnts,
                 new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false), new DefaultItemAnimator());
 
     }

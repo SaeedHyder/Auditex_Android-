@@ -2,7 +2,6 @@ package com.ingic.auditix.entities;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.ingic.auditix.global.AppConstants;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -17,7 +16,7 @@ public class BooksChapterItemEnt extends RealmObject {
 
     @SerializedName("ChapterID")
     @Expose
-    private Integer chapterID;
+    private String chapterID;
     @SerializedName("ChapterNumber")
     @Expose
     private Integer chapterNumber;
@@ -55,11 +54,11 @@ public class BooksChapterItemEnt extends RealmObject {
         isSelected = selected;
     }
 
-    public Integer getChapterID() {
+    public String getChapterID() {
         return chapterID;
     }
 
-    public void setChapterID(Integer chapterID) {
+    public void setChapterID(String chapterID) {
         this.chapterID = chapterID;
     }
 

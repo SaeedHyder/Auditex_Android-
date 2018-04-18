@@ -150,7 +150,9 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
 
         isLoading = true;
     }
-
+    public void showGuestMessage(){
+        UIHelper.showShortToastInCenter(getDockActivity(),getResString(R.string.guest_message));
+    }
     public void loadingFinished() {
 
         if (getParentFragment() != null)
@@ -179,8 +181,8 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefHelper = new BasePreferenceHelper(getContext());
-        if (getDockActivity().getDrawerLayout() != null) {
-            getDockActivity().lockDrawer();
+        if (getMainActivity().getDrawerLayout() != null) {
+            getMainActivity().lockDrawer();
         }
 
         mGpsTracker = new GPSTracker(getDockActivity());
@@ -203,8 +205,8 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
         //	setTitleBar( ((MainActivity) getDockActivity()).titleBar );
         LocalBroadcastManager.getInstance(getDockActivity()).registerReceiver(broadcastReceiver, new IntentFilter(AppConstants.NOTIFICATION_COUNT_RECIEVED));
         LocalBroadcastManager.getInstance(getDockActivity()).registerReceiver(broadcastReceiver, new IntentFilter(AppConstants.PUSH_NOTIFICATION));
-        if (getDockActivity().getDrawerLayout() != null) {
-            getDockActivity().lockDrawer();
+        if (getMainActivity().getDrawerLayout() != null) {
+            getMainActivity().lockDrawer();
         }
     }
 

@@ -68,6 +68,8 @@ public class BookDetailFragment extends BaseFragment {
     AnyTextView txtAboutText;
     @BindView(R.id.txt_narrator_intro_text)
     AnyTextView txtNarratorIntroText;
+    @BindView(R.id.txt_chapter_header)
+    AnyTextView chapterHeader;
     @BindView(R.id.btn_listen)
     Button btnListen;
     @BindView(R.id.btn_add_cart)
@@ -90,7 +92,7 @@ public class BookDetailFragment extends BaseFragment {
         @Override
         public void pending(final BaseDownloadTask task, int soFarBytes, int totalBytes) {
             if (chapterCollections != null && rvChapters != null) {
-                patsyObject.setChapterID((Integer) task.getTag());
+                patsyObject.setChapterID((String) task.getTag());
                 if (chapterCollections.contains(patsyObject)) {
                     int index = chapterCollections.indexOf(patsyObject);
                     chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.PENDING);
@@ -112,7 +114,7 @@ public class BookDetailFragment extends BaseFragment {
         @Override
         public void progress(final BaseDownloadTask task, int progress) {
             if (chapterCollections != null && rvChapters != null) {
-                patsyObject.setChapterID((Integer) task.getTag());
+                patsyObject.setChapterID((String) task.getTag());
                 if (chapterCollections.contains(patsyObject)) {
                     int index = chapterCollections.indexOf(patsyObject);
                     chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.DOWNLOADING);
@@ -125,7 +127,7 @@ public class BookDetailFragment extends BaseFragment {
         @Override
         public void completed(final BaseDownloadTask task) {
             if (chapterCollections != null && rvChapters != null) {
-                patsyObject.setChapterID((Integer) task.getTag());
+                patsyObject.setChapterID((String) task.getTag());
                 if (chapterCollections.contains(patsyObject)) {
                     int index = chapterCollections.indexOf(patsyObject);
                     chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.COMPLETE);
@@ -138,7 +140,7 @@ public class BookDetailFragment extends BaseFragment {
         @Override
         public void error(final BaseDownloadTask task, Throwable e) {
             if (chapterCollections != null && rvChapters != null) {
-                patsyObject.setChapterID((Integer) task.getTag());
+                patsyObject.setChapterID((String) task.getTag());
                 if (chapterCollections.contains(patsyObject)) {
                     int index = chapterCollections.indexOf(patsyObject);
                     chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.ERROR);
@@ -170,7 +172,7 @@ public class BookDetailFragment extends BaseFragment {
                 }
                 //Case For Download Button Clicked
                 BooksChapterItemEnt ent = (BooksChapterItemEnt) Ent;
-                getDockActivity().addDownload(detailEnt.getChapters().getAudioUrl(), ent.getAudioUrl(), ent.getChapterID(), getDownloadName(ent.getChapterNumber()));
+                getDockActivity().addDownload(detailEnt.getChapters().getAudioUrl(), ent.getAudioUrl(), ent.getChapterID(), getDownloadName(ent.getChapterNumber()), detailEnt.getBookName(), detailEnt);
             }
         }
 
@@ -311,8 +313,10 @@ public class BookDetailFragment extends BaseFragment {
         if (!result.getIsPaid()) {
             txtPrice.setText(R.string.free);
             btnAddCart.setText(R.string.addtolibrary);
+
         } else {
             txtPrice.setText("$ " + result.getPrice() + "");
+
             btnAddCart.setText(R.string.addtocart);
             try {
                 RealmResults<BookDetailEnt> object = getMainActivity().realm
@@ -327,6 +331,7 @@ public class BookDetailFragment extends BaseFragment {
             }
 
         }
+        btnRate.setVisibility(View.GONE);
         if (result.getIsPurchased()) {
             if (result.getTotalChapters() == 2) {
                 txtChaptersText.setText(String.format(Locale.ENGLISH, "%d %s",
@@ -336,6 +341,7 @@ public class BookDetailFragment extends BaseFragment {
 
                 txtChaptersText.setText(String.format(Locale.ENGLISH, "%d %s", result.getTotalChapters() - 1, getDockActivity().getResources().getString(R.string.chapters_heading)));
             }
+            btnRate.setVisibility(View.VISIBLE);
             btnListen.setText(R.string.listenbook);
             btnAddCart.setVisibility(View.GONE);
             if (detailEnt.getIsPurchased() && detailEnt.getChapters().getChapter().size() > 1) {
@@ -344,7 +350,12 @@ public class BookDetailFragment extends BaseFragment {
             chapterCollections = new ArrayList<>(detailEnt.getChapters().getChapter().subList(0, detailEnt.getChapters().getChapter().size()));
             rvChapters.setNestedScrollingEnabled(false);
             LinearLayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
-            rvChapters.BindRecyclerView(new BookChapterBinder(chapterItemListener, getMainActivity().realm), chapterCollections, layoutManager, new DefaultItemAnimator());
+            rvChapters.BindRecyclerView(new BookChapterBinder(chapterItemListener, getMainActivity().realm, detailEnt.getBookName()), chapterCollections, layoutManager, new DefaultItemAnimator());
+            if (chapterCollections.size() <= 0) {
+                chapterHeader.setVisibility(View.GONE);
+            } else {
+                chapterHeader.setVisibility(View.VISIBLE);
+            }
         } else {
             if (result.getTotalChapters() == 2) {
                 txtChaptersText.setText(String.format(Locale.ENGLISH, "%d %s", result.getTotalChapters() - 1, getDockActivity().getResources().getString(R.string.chapters)));
@@ -361,10 +372,14 @@ public class BookDetailFragment extends BaseFragment {
         btnAddFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    serviceHelper.enqueueCall(webService.AddBookToFavorite(bookID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                if (prefHelper.isGuest()) {
+                    showGuestMessage();
                 } else {
-                    serviceHelper.enqueueCall(webService.RemoveBookFromFavorite(bookID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                    if (b) {
+                        serviceHelper.enqueueCall(webService.AddBookToFavorite(bookID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                    } else {
+                        serviceHelper.enqueueCall(webService.RemoveBookFromFavorite(bookID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                    }
                 }
             }
         });
@@ -378,6 +393,10 @@ public class BookDetailFragment extends BaseFragment {
                 openPlayer(0);
                 break;
             case R.id.btn_rate:
+                if (prefHelper.isGuest()) {
+                    showGuestMessage();
+                    return;
+                }
                 if (detailEnt != null) {
                     helper = new DialogHelper(getDockActivity());
                     helper.initRatingDialog(new View.OnClickListener() {
@@ -400,6 +419,10 @@ public class BookDetailFragment extends BaseFragment {
             case R.id.btn_add_cart:
                 if (detailEnt != null) {
                     if (detailEnt.getIsPaid()) {
+                        if (prefHelper.isGuest()) {
+                            showGuestMessage();
+                            return;
+                        }
                         getMainActivity().realm.beginTransaction();
                         getMainActivity().realm.copyToRealm(detailEnt);
                         getMainActivity().realm.commitTransaction();

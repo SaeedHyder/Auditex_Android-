@@ -7,9 +7,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.UserModel;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.global.WebServiceConstants;
+import com.ingic.auditix.helpers.TokenUpdater;
 import com.ingic.auditix.ui.views.TitleBar;
+
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,6 +76,23 @@ public class AccessSelectionFragment extends BaseFragment {
         unbinder.unbind();
     }
 
+    @Override
+    public void ResponseSuccess(Object result, String Tag) {
+        switch (Tag){
+            case WebServiceConstants.GUEST_LOGIN:
+                UserModel user = (UserModel) result;
+                prefHelper.putUser(user);
+                prefHelper.setUserToken(user.getToken().getTokenType() + " " + user.getToken().getAccessToken());
+                prefHelper.setLoginStatus(true);
+                prefHelper.setGuestStatus(true);
+                TokenUpdater.getInstance().UpdateToken(getDockActivity(), user.getAccountID(), FirebaseInstanceId.getInstance().getToken(),
+                        prefHelper.getUserToken(),prefHelper.isGuest());
+                getDockActivity().popBackStackTillEntry(0);
+                getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), "HomeFragmnet");
+                break;
+        }
+    }
+
     @OnClick({R.id.btn_signin, R.id.btn_signup, R.id.btn_skip})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -81,7 +105,8 @@ public class AccessSelectionFragment extends BaseFragment {
             case R.id.btn_skip:
                 /*getDockActivity().popBackStackTillEntry(0);
                 getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), "HomeFragment");*/
-                willbeimplementedinfuture();
+                serviceHelper.enqueueCall(webService.guestRegistration(AppConstants.ANDROID, FirebaseInstanceId.getInstance().getToken(),
+                        true, false, false, FirebaseInstanceId.getInstance().getToken()), WebServiceConstants.GUEST_LOGIN);
                 break;
         }
     }

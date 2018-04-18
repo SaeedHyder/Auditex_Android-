@@ -3,7 +3,10 @@ package com.ingic.auditix.interfaces;
 import com.ingic.auditix.R;
 import com.ingic.auditix.activities.DockActivity;
 import com.ingic.auditix.entities.DownloadItemModel;
+import com.ingic.auditix.entities.PodcastDetailEnt;
+import com.ingic.auditix.entities.PodcastTrackEnt;
 import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.helpers.DateHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -39,14 +42,14 @@ public class DownloadListener extends FileDownloadListener {
         if (!getRealm().isInTransaction()) {
             DownloadItemModel object = getRealm()
                     .where(DownloadItemModel.class)
-                    .equalTo("downloadTag", (Integer) task.getTag()).findFirst();
+                    .equalTo("downloadTag", (String) task.getTag()).findFirst();
             getRealm().beginTransaction();
             if (object == null) {
                 object = getRealm().createObject(DownloadItemModel.class);
             }
 
             object.setDownloadID(task.getId());
-            object.setDownloadTag((Integer) task.getTag());
+            object.setDownloadTag((String) task.getTag());
             object.setDownloadedBytes(task.getSmallFileSoFarBytes());
             object.setTotalBytes(task.getSmallFileTotalBytes());
             object.setDownloadState(state);
@@ -61,7 +64,7 @@ public class DownloadListener extends FileDownloadListener {
         if (!getRealm().isInTransaction()) {
             DownloadItemModel object = getRealm()
                     .where(DownloadItemModel.class)
-                    .equalTo("downloadTag", (Integer) task.getTag()).findFirst();
+                    .equalTo("downloadTag", (String) task.getTag()).findFirst();
             if (object == null) {
                 return;
             }
@@ -123,6 +126,9 @@ public class DownloadListener extends FileDownloadListener {
         if (task.getListener() != this) {
             return;
         }
+        if (checkIsPodcast(task.getTag(R.integer.key_item_name))) {
+            addPodcastToRealm((PodcastDetailEnt) task.getTag(R.integer.key_item_name), task);
+        }
         if (listenerFragment != null) {
             removeTaskToRealm(task);
             listenerFragment.completed(task);
@@ -147,7 +153,7 @@ public class DownloadListener extends FileDownloadListener {
         if (listenerFragment != null) {
             removeTaskToRealm(task);
             listenerFragment.error(task, e);
-            UIHelper.showShortToastInCenter(context, String.format("%s %s", context.getResources().getString(R.string.download_error), task.getTag(context.getResources().getInteger(R.integer.key_item_name))));
+            UIHelper.showShortToastInCenter(context, String.format("%s %s", context.getResources().getString(R.string.download_error), task.getTag(R.integer.key_Download_failed)));
         }
     }
 
@@ -159,6 +165,25 @@ public class DownloadListener extends FileDownloadListener {
         if (listenerFragment != null) {
             listenerFragment.warn(task);
         }
+    }
+
+    private void addPodcastToRealm(PodcastDetailEnt object, BaseDownloadTask task) {
+        PodcastTrackEnt patsyObject = new PodcastTrackEnt();
+        getRealm().beginTransaction();
+        object.setDownloadedOn(DateHelper.getFormatedTodayDate());
+        if (object.getTrackList() != null) {
+            patsyObject.setId((String) task.getTag());
+            if (object.getTrackList().contains(patsyObject)) {
+                int index = object.getTrackList().indexOf(patsyObject);
+                object.getTrackList().get(index).setStatusState(AppConstants.DownloadStates.COMPLETE);
+            }
+        }
+        getRealm().copyToRealmOrUpdate(object);
+        getRealm().commitTransaction();
+    }
+
+    private boolean checkIsPodcast(Object object) {
+        return object instanceof PodcastDetailEnt;
     }
 
     private int getProgressPercentage(int soFarBytes, int totalBytes) {

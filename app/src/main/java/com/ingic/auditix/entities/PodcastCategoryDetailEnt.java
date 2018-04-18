@@ -44,6 +44,17 @@ public class PodcastCategoryDetailEnt {
     @SerializedName("FeedUrl")
     @Expose
     private String feedUrl;
+    @SerializedName("IsSubscribed")
+    @Expose
+    private Boolean IsSubscribed;
+
+    public Boolean getSubscribed() {
+        return IsSubscribed;
+    }
+
+    public void setSubscribed(Boolean subscribed) {
+        IsSubscribed = subscribed;
+    }
 
     public Integer getCollectionId() {
         return collectionId;

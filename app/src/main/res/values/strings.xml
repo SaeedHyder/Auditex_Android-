@@ -88,6 +88,7 @@
     <string name="connection_lost">No Internet Found</string>
     <integer name="key_recycler_position">101</integer>
     <integer name="key_recycler_object">102</integer>
+    <integer name="key_Download">102</integer>
     <integer name="key_view_ID">105</integer>
     <integer name="key_view_type">103</integer>
 
@@ -258,4 +259,5 @@
     <string name="news_detail">News Detail</string>
     <string name="mins">Mins</string>
     <string name="new_noteworthy"><![CDATA[New & Noteworthy]]></string>
+    <string name="guest_message">Please Sign in or Log in to Proceed!</string>
 </resources>

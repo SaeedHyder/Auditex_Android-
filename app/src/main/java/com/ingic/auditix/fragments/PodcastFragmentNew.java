@@ -5,14 +5,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.entities.PodcastCategoryHomeEnt;
 import com.ingic.auditix.entities.PodcastDetailHomeEnt;
 import com.ingic.auditix.entities.PodcastHomeEnt;
@@ -26,7 +27,7 @@ import com.ingic.auditix.interfaces.FilterDoneClickListener;
 import com.ingic.auditix.interfaces.LoadMoreListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.interfaces.ViewPagerFragmentLifecycleListener;
-import com.ingic.auditix.ui.binders.PodcastDefaultCategoryBinder;
+import com.ingic.auditix.ui.binders.PodcastCategoryBinder;
 import com.ingic.auditix.ui.binders.PodcastRecommendedBinder;
 import com.ingic.auditix.ui.binders.PodcastSubscriptionBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -40,6 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import droidninja.filepicker.utils.GridSpacingItemDecoration;
 
 /**
  * Created on 1/10/2018.
@@ -143,6 +145,20 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
     private boolean isOnCall = false;
     private ProgressDialog progressDialog;
     private boolean isFirstTime = false;
+    private RecyclerViewItemListener categoryListener = new RecyclerViewItemListener() {
+        @Override
+        public void onRecyclerItemButtonClicked(Object Ent, int position) {
+
+        }
+
+        @Override
+        public void onRecyclerItemClicked(Object Ent, int position) {
+            if (getMainActivity().filterFragment != null) {
+                getMainActivity().filterFragment.clearFilters();
+            }
+            getDockActivity().replaceDockableFragment(PodcastListByCategoryFragment.newInstance(((PodcastCategoriesEnt) Ent).getCategoryId()), PodcastListByCategoryFragment.TAG);
+        }
+    };
     //endregion
 
     //region Lifecycle Methods
@@ -170,20 +186,20 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
 
     public void setTitleBar(TitleBar titleBar) {
 
-        if (getMainActivity().filterFragment != null) {
+       /* if (getMainActivity().filterFragment != null) {
             getMainActivity().setRightSideFragment(getMainActivity().filterFragment);
             getMainActivity().filterFragment.setListener(this);
-        }
+        }*/
         titleBar.hideButtons();
         titleBar.setSubHeading(getDockActivity().getResources().getString(R.string.podcast));
         titleBar.showBackButton();
-        titleBar.showFilterButton(new View.OnClickListener() {
+        /*titleBar.showFilterButton(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getMainActivity().isNavigationGravityRight = true;
                 getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
             }
-        });
+        });*/
     }
 
     @Override
@@ -250,6 +266,9 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
             case WebServiceConstants.UNSUBSCRIBE_PODCAST:
                 serviceHelper.enqueueCall(webService.getSubscribePodcasts(prefHelper.getUserToken()), WebServiceConstants.GET_SUBSCRIBE_PODCASTS);
                 break;
+            case WebServiceConstants.GET_ALL_PODCAST_CATEGORIES:
+                bindDefaultPodcastView((ArrayList<PodcastCategoriesEnt>) result);
+                break;
         }
     }
 
@@ -294,10 +313,8 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         if (result.getDefaultCategories().size() <= 0 && result.getFeaturedCategories().size() <= 0) {
             canCallForMore = false;
         } else {
-            ArrayList<PodcastCategoryHomeEnt> featureList = new ArrayList<>();
-            featureList.addAll(result.getFeaturedCategories());
-            ArrayList<PodcastCategoryHomeEnt> defaultList = new ArrayList<>();
-            defaultList.addAll(result.getDefaultCategories());
+            ArrayList<PodcastCategoryHomeEnt> featureList = new ArrayList<>(result.getFeaturedCategories());
+            ArrayList<PodcastCategoryHomeEnt> defaultList = new ArrayList<>(result.getDefaultCategories());
             int recommenedCount = 0;
             int defaultCount = 0;
             for (PodcastCategoryHomeEnt ent : featureList) {
@@ -324,6 +341,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
             // bindPodcastList();
             serviceHelper.enqueueCall(webService.getDefaultPodcast(currentPageNumber, totalCount, categoriesIds, prefHelper.getUserToken()),
                     WebServiceConstants.GET_DEFAULT_PODCASTS, false);
+            serviceHelper.enqueueCall(webService.getAllPodcastCategories(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_PODCAST_CATEGORIES, false);
             isFirstTime = false;
         }
     }
@@ -338,7 +356,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
             }
             podcastSubscribeCollections.add(result.get(i));
         }
-        rvSubscribe.BindRecyclerView(new PodcastSubscriptionBinder(options, subscriptionItemLister), podcastSubscribeCollections,
+        rvSubscribe.BindRecyclerView(new PodcastSubscriptionBinder(options, subscriptionItemLister, prefHelper), podcastSubscribeCollections,
                 new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false),
                 new DefaultItemAnimator());
         if (podcastSubscribeCollections.size() <= 0) {
@@ -370,27 +388,16 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
             podcastDefaultCollections.addAll(ent.getPodcastdetails());
         }
         bindRecommendedPodcastView();
-        bindDefaultPodcastView();
+        // bindDefaultPodcastView();
     }
 
-    private void bindDefaultPodcastView() {
-        defaultLayoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
-        rvPodcastDefault.BindRecyclerView(new PodcastDefaultCategoryBinder(options, defaultCategoryItemLister), podcastDefaultCollections,
+    private void bindDefaultPodcastView(ArrayList<PodcastCategoriesEnt> results) {
+        defaultLayoutManager = new GridLayoutManager(getDockActivity(), 2, GridLayoutManager.VERTICAL, false);
+        rvPodcastDefault.BindRecyclerView(new PodcastCategoryBinder(options, categoryListener), results,
                 defaultLayoutManager, new DefaultItemAnimator());
-        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (v.getChildAt(v.getChildCount() - 1) != null) {
-                    if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight() - 500)) &&
-                            scrollY > oldScrollY) {
-                        if (podcastDefaultCollections.size() > 0)
-                            getPagedPodcast();
-                        //code to fetch more data for endless scrolling
-                    }
-                }
-            }
-        });
-        if (podcastDefaultCollections.size() <= 0) {
+        rvPodcastDefault.setHasFixedSize(true);
+        rvPodcastDefault.addItemDecoration(new GridSpacingItemDecoration(2, Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)), true));
+        if (results.size() <= 0) {
             txtDefaultNoData.setVisibility(View.VISIBLE);
             rvPodcastDefault.setVisibility(View.GONE);
         } else {
@@ -470,3 +477,31 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         }
     }
 }
+
+// IF We Ever Use List again
+   /* private void bindDefaultPodcastView() {
+        defaultLayoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
+        rvPodcastDefault.BindRecyclerView(new PodcastDefaultCategoryBinder(options, defaultCategoryItemLister), podcastDefaultCollections,
+                defaultLayoutManager, new DefaultItemAnimator());
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (v.getChildAt(v.getChildCount() - 1) != null) {
+                    if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight() - 500)) &&
+                            scrollY > oldScrollY) {
+                        if (podcastDefaultCollections.size() > 0)
+                            getPagedPodcast();
+                        //code to fetch more data for endless scrolling
+                    }
+                }
+            }
+        });
+        if (podcastDefaultCollections.size() <= 0) {
+            txtDefaultNoData.setVisibility(View.VISIBLE);
+            rvPodcastDefault.setVisibility(View.GONE);
+        } else {
+            txtDefaultNoData.setVisibility(View.GONE);
+            rvPodcastDefault.setVisibility(View.VISIBLE);
+        }
+    }
+    */

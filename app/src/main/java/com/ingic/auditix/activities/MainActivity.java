@@ -607,6 +607,26 @@ public class MainActivity extends DockActivity implements OnClickListener {
 
     }
 
+    public DrawerLayout getDrawerLayout() {
+        return drawerLayout;
+    }
+
+    public void closeDrawer() {
+        drawerLayout.closeDrawers();
+
+    }
+
+    public void lockDrawer() {
+        try {
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void releaseDrawer() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
 
     //endregion
 

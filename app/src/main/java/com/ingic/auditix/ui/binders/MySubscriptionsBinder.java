@@ -7,6 +7,8 @@ import android.widget.ImageView;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.SubscribePodcastEnt;
+import com.ingic.auditix.helpers.BasePreferenceHelper;
+import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.viewbinders.abstracts.RecyclerViewBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -24,10 +26,11 @@ public class MySubscriptionsBinder extends RecyclerViewBinder<SubscribePodcastEn
     private ImageLoader imageLoader;
     private DisplayImageOptions imageoptions;
     private RecyclerViewItemListener listener;
-
-    public MySubscriptionsBinder(DisplayImageOptions options, RecyclerViewItemListener listener) {
+    private BasePreferenceHelper prefHelper;
+    public MySubscriptionsBinder(DisplayImageOptions options, RecyclerViewItemListener listener, BasePreferenceHelper prefHelper) {
         super(R.layout.row_item_subscription);
         this.listener = listener;
+        this.prefHelper = prefHelper;
         imageLoader = ImageLoader.getInstance();
         imageoptions = options;
 
@@ -56,6 +59,10 @@ public class MySubscriptionsBinder extends RecyclerViewBinder<SubscribePodcastEn
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_subscribe:
+                if (prefHelper.isGuest()) {
+                    UIHelper.showShortToastInCenter(v.getContext(),v.getContext().getString(R.string.guest_message));
+                    return;
+                }
                 if (listener != null) {
                     listener.onRecyclerItemButtonClicked(v.getTag(R.integer.key_recycler_object),
                             (int) v.getTag(R.integer.key_recycler_position));

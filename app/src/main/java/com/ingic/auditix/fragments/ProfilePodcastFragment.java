@@ -17,7 +17,9 @@ import com.ingic.auditix.entities.CartEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.entities.SubscribePodcastEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
+import com.ingic.auditix.helpers.FileHelper;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.DownloadBinder;
 import com.ingic.auditix.ui.binders.PodcastSubscriptionBinder;
@@ -25,6 +27,7 @@ import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -91,6 +94,31 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
         }
     };
     private ArrayList<PodcastDetailEnt> downloadCollection;
+    private RecyclerViewItemListener downloadListner = new RecyclerViewItemListener() {
+        @Override
+        public void onRecyclerItemButtonClicked(Object Ent, int position) {
+            PodcastDetailEnt ent = (PodcastDetailEnt) Ent;
+            getMainActivity().onLoadingStarted();
+            if (FileHelper.deleteDirectory(new File(AppConstants.DOWNLOAD_PATH
+                    + File.separator
+                    + ent.getTitle()))) {
+                getMainActivity().realm.beginTransaction();
+                ent.deleteFromRealm();
+                getMainActivity().realm.commitTransaction();
+                downloadCollection.remove(position);
+                rvDownloads.notifyDataSetChanged();
+                getMainActivity().onLoadingFinished();
+            }
+
+
+        }
+
+        @Override
+        public void onRecyclerItemClicked(Object Ent, int position) {
+           getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance((PodcastDetailEnt) Ent), PodcastDetailFragment.TAG);
+
+        }
+    };
 
     public static ProfilePodcastFragment newInstance() {
         Bundle args = new Bundle();
@@ -124,6 +152,8 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
     }
 
 
+    private DisplayImageOptions options;
+
     private void bindSubscriptionList(ArrayList<SubscribePodcastEnt> result) {
         subscribePodcastcollection = new ArrayList<>(3);
         for (int i = 0; i < result.size(); i++) {
@@ -132,9 +162,9 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
             }
             subscribePodcastcollection.add(result.get(i));
         }
-        DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
+
         if (rvSubscribe != null) {
-            rvSubscribe.BindRecyclerView(new PodcastSubscriptionBinder(options, subscriptionItemLister), subscribePodcastcollection
+            rvSubscribe.BindRecyclerView(new PodcastSubscriptionBinder(options, subscriptionItemLister, prefHelper), subscribePodcastcollection
                     , new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false), new DefaultItemAnimator());
             if (subscribePodcastcollection.size() <= 0) {
                 txtSubscriptionNoData.setVisibility(View.VISIBLE);
@@ -197,6 +227,7 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //bindTabs();
+        options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
         RealmResults<PodcastDetailEnt> results = getMainActivity().realm.where(PodcastDetailEnt.class).findAll();
         bindSingleDownloadList(results);
 
@@ -263,7 +294,7 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
             layoutManager.setAutoMeasureEnabled(true);
             downloadCollection = new ArrayList<>(result.subList(0, result.size()));
-            rvDownloads.BindRecyclerView(new DownloadBinder(), downloadCollection, layoutManager, new DefaultItemAnimator());
+            rvDownloads.BindRecyclerView(new DownloadBinder(downloadListner, options), downloadCollection, layoutManager, new DefaultItemAnimator());
             rvDownloads.setNestedScrollingEnabled(false);
         } else {
             rvDownloads.setVisibility(View.GONE);

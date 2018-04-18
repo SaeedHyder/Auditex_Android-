@@ -34,7 +34,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +71,8 @@ public class PodcastDetailFragment extends BaseFragment {
     AnyTextView txtAboutText;
     @BindView(R.id.txt_narrator_intro_text)
     AnyTextView txtNarratorIntroText;
+    @BindView(R.id.txt_podcast_header)
+    AnyTextView txtPodcastHeader;
     @BindView(R.id.btn_add_favorite)
     ToggleButton btnAddFavorite;
     @BindView(R.id.btn_rate)
@@ -105,7 +106,7 @@ public class PodcastDetailFragment extends BaseFragment {
         @Override
         public void pending(final BaseDownloadTask task, int soFarBytes, int totalBytes) {
             if (podcastTrackEnts != null && rvEpisodes != null) {
-                patsyObject.setId((Integer) task.getTag());
+                patsyObject.setId((String) task.getTag());
                 if (podcastTrackEnts.contains(patsyObject)) {
                     int index = podcastTrackEnts.indexOf(patsyObject);
                     podcastTrackEnts.get(index).setStatusState(AppConstants.DownloadStates.PENDING);
@@ -127,7 +128,7 @@ public class PodcastDetailFragment extends BaseFragment {
         @Override
         public void progress(final BaseDownloadTask task, int progress) {
             if (podcastTrackEnts != null && rvEpisodes != null) {
-                patsyObject.setId((Integer) task.getTag());
+                patsyObject.setId((String) task.getTag());
                 if (podcastTrackEnts.contains(patsyObject)) {
                     int index = podcastTrackEnts.indexOf(patsyObject);
                     podcastTrackEnts.get(index).setStatusState(AppConstants.DownloadStates.DOWNLOADING);
@@ -141,7 +142,7 @@ public class PodcastDetailFragment extends BaseFragment {
         @Override
         public void completed(final BaseDownloadTask task) {
             if (podcastTrackEnts != null && rvEpisodes != null) {
-                patsyObject.setId((Integer) task.getTag());
+                patsyObject.setId((String) task.getTag());
                 if (podcastTrackEnts.contains(patsyObject)) {
                     int index = podcastTrackEnts.indexOf(patsyObject);
                     podcastTrackEnts.get(index).setStatusState(AppConstants.DownloadStates.COMPLETE);
@@ -154,7 +155,7 @@ public class PodcastDetailFragment extends BaseFragment {
         @Override
         public void error(final BaseDownloadTask task, Throwable e) {
             if (podcastTrackEnts != null && rvEpisodes != null) {
-                patsyObject.setId((Integer) task.getTag());
+                patsyObject.setId((String) task.getTag());
                 if (podcastTrackEnts.contains(patsyObject)) {
                     int index = podcastTrackEnts.indexOf(patsyObject);
                     podcastTrackEnts.get(index).setStatusState(AppConstants.DownloadStates.ERROR);
@@ -186,13 +187,10 @@ public class PodcastDetailFragment extends BaseFragment {
                     }
                 }
                 PodcastTrackEnt ent = (PodcastTrackEnt) Ent;
-                getMainActivity().realm.beginTransaction();
-                getMainActivity().realm.copyToRealmOrUpdate(podcastDetailEnt);
-                getMainActivity().realm.commitTransaction();
                 if (podcastDetailEnt.isEpisodeAdded()) {
-                    getDockActivity().addDownload(podcastDetailEnt.AudioUrl, podcastDetailEnt.getTitle() + File.separator + ent.getFileUrl(), ent.getId(), ent.getName());
+                    getDockActivity().addDownload(podcastDetailEnt.AudioUrl, ent.getFileUrl(), ent.getId(), ent.getName(), podcastDetailEnt.getTitle(), podcastDetailEnt);
                 } else {
-                    getDockActivity().addDownload(ent.getFileUrl(), podcastDetailEnt.getTitle() + File.separator + ent.getName(), ".mp3", ent.getId(), ent.getName());
+                    getDockActivity().addDownload(ent.getFileUrl(), ent.getName(), ".mp3", ent.getId(), ent.getName(), podcastDetailEnt.getTitle(), podcastDetailEnt);
                 }
             }
 
@@ -214,6 +212,19 @@ public class PodcastDetailFragment extends BaseFragment {
         fragment.setArguments(args);
         fragment.setTrackID(trackID);
         return fragment;
+    }
+
+    public static PodcastDetailFragment newInstance(PodcastDetailEnt detailEnt) {
+        Bundle args = new Bundle();
+
+        PodcastDetailFragment fragment = new PodcastDetailFragment();
+        fragment.setArguments(args);
+        fragment.setPodcastDetailEnt(detailEnt);
+        return fragment;
+    }
+
+    public void setPodcastDetailEnt(PodcastDetailEnt podcastDetailEnt) {
+        this.podcastDetailEnt = podcastDetailEnt;
     }
 
     @Override
@@ -303,10 +314,14 @@ public class PodcastDetailFragment extends BaseFragment {
                 }
             }
         });
+
         btnAddFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                serviceHelper.enqueueCall(webService.changeFavoriteStatus(trackID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                if (prefHelper.isGuest()) {
+                    showGuestMessage();
+                } else
+                    serviceHelper.enqueueCall(webService.changeFavoriteStatus(trackID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
             }
         });
     }
@@ -314,20 +329,25 @@ public class PodcastDetailFragment extends BaseFragment {
     private void bindEpisodeList() {
         result = new ArrayList<>();
         podcastTrackEnts = new ArrayList<>();
-
+        result.addAll(Utils.getPages(podcastDetailEnt.getTrackList(), 10));
+        if (result.size() > currentPageNumber) {
+            podcastTrackEnts.addAll(result.get(currentPageNumber));
+        }
         Thread t = new Thread() {
             public void run() {
-                result.addAll(Utils.getPages(podcastDetailEnt.getTrackList(), 10));
-                if (result.size() > currentPageNumber) {
-                    podcastTrackEnts.addAll(result.get(currentPageNumber));
-                }
+
             }
         };
         t.start();
 
         rvEpisodes.setNestedScrollingEnabled(false);
         layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
-        rvEpisodes.BindRecyclerView(new PodcastEpisodeBinder(episodeItemListener, getMainActivity().realm), podcastTrackEnts, layoutManager, new DefaultItemAnimator());
+        rvEpisodes.BindRecyclerView(new PodcastEpisodeBinder(episodeItemListener, getMainActivity().realm, podcastDetailEnt.getTitle()), podcastTrackEnts, layoutManager, new DefaultItemAnimator());
+        if (podcastTrackEnts.size()<=0){
+            txtPodcastHeader.setVisibility(View.GONE);
+        }else {
+            txtPodcastHeader.setVisibility(View.VISIBLE);
+        }
     }
 
     private void getNextPageItems(final Integer pageNumber) {
@@ -365,7 +385,11 @@ public class PodcastDetailFragment extends BaseFragment {
     }
 
     private void getDetails() {
-        serviceHelper.enqueueCall(webService.getPodcastDetailByTrack(trackID, prefHelper.getUserToken()), WebServiceConstants.GET_PODCAST_DETAIL);
+        if (podcastDetailEnt != null) {
+            bindDataToViews();
+        } else {
+            serviceHelper.enqueueCall(webService.getPodcastDetailByTrack(trackID, prefHelper.getUserToken()), WebServiceConstants.GET_PODCAST_DETAIL);
+        }
     }
 
     private void setupUIViews() {
@@ -388,6 +412,10 @@ public class PodcastDetailFragment extends BaseFragment {
 
                 break;
             case R.id.btn_rate:
+                if (prefHelper.isGuest()) {
+                    showGuestMessage();
+                    return;
+                }
                 if (podcastDetailEnt != null) {
                     helper = new DialogHelper(getDockActivity());
                     helper.initRatingDialog(new View.OnClickListener() {

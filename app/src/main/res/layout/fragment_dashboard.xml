@@ -123,7 +123,7 @@
         android:id="@+id/btn_cc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/credit_card"
+        android:src="@drawable/notification"
         app:layout_constraintBottom_toTopOf="@+id/button_upper"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/verticle_line"

@@ -71,7 +71,6 @@ public class NewsCategoryDetailFragment extends BaseFragment {
         fragment.setCategoryDetail(categoryDetail);
         return fragment;
     }
-
     public void setCategoryDetail(NewsCategoryEnt categoryDetail) {
         this.categoryDetail = categoryDetail;
     }
@@ -92,13 +91,13 @@ public class NewsCategoryDetailFragment extends BaseFragment {
                 break;
         }
     }
-
     @Override
     public void setTitleBar(TitleBar titleBar) {
         super.setTitleBar(titleBar);
         titleBar.hideButtons();
         titleBar.showBackButton();
         titleBar.addBackground();
+        // TODO: 4/17/18 Show Favorite Button
         titleBar.setSubHeading(getResString(R.string.news_detail));
     }
 
@@ -132,7 +131,15 @@ public class NewsCategoryDetailFragment extends BaseFragment {
         btnSubscribe.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                serviceHelper.enqueueCall(webService.subscribeNews(categoryDetail.getId(), prefHelper.getUserToken()), WebServiceConstants.SUBSCRIBE_NEWS);
+                if (prefHelper.isGuest()) {
+                    showGuestMessage();
+                } else {
+                    if (b) {
+                        serviceHelper.enqueueCall(webService.subscribeNews(categoryDetail.getId(), prefHelper.getUserToken()), WebServiceConstants.SUBSCRIBE_NEWS);
+                    } else {
+                        serviceHelper.enqueueCall(webService.unsubscribeNews(categoryDetail.getId(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_NEWS);
+                    }
+                }
             }
         });
     }

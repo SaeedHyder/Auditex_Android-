@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/nineoldandroids-library-2.4.0" />
             <option value="$PROJECT_DIR$/pageindicatorview" />
+            <option value="$PROJECT_DIR$/swipe-reveal-layout" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

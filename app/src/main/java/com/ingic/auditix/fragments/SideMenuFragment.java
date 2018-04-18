@@ -15,7 +15,6 @@ import com.ingic.auditix.R;
 import com.ingic.auditix.entities.NavigationEnt;
 import com.ingic.auditix.entities.UserModel;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
-import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.DialogHelper;
 import com.ingic.auditix.ui.adapters.ArrayListAdapter;
@@ -150,7 +149,7 @@ public class SideMenuFragment extends BaseFragment {
         navigationEnts.add(new NavigationEnt(R.drawable.notifications_grey, getResources().getString(R.string.notification), prefHelper.getNotificationCount()));
         navigationEnts.add(new NavigationEnt(R.drawable.settings, getResources().getString(R.string.settings), 0));
         navigationEnts.add(new NavigationEnt(R.drawable.about, getResources().getString(R.string.about), 0));
-        navigationEnts.add(new NavigationEnt(R.drawable.logout_grey, getResources().getString(R.string.logout), 0));
+        navigationEnts.add(new NavigationEnt(R.drawable.logout_grey, prefHelper.isGuest() ? getResString(R.string.login) : getResString(R.string.logout), 0));
         bindview();
     }
 
@@ -165,8 +164,16 @@ public class SideMenuFragment extends BaseFragment {
                 if (navigationEnts.get(position).getTitle().equals(getString(R.string.home))) {
                     getMainActivity().closeDrawer();
                 } else if (navigationEnts.get(position).getTitle().equals(getString(R.string.dashboard))) {
+                    if (prefHelper.isGuest()) {
+                        showGuestMessage();
+                        return;
+                    }
                     getDockActivity().replaceDockableFragment(DashboardFragment.newInstance(), "DashboardFragment");
                 } else if (navigationEnts.get(position).getTitle().equals(getString(R.string.notification))) {
+                    if (prefHelper.isGuest()) {
+                        showGuestMessage();
+                        return;
+                    }
                     getDockActivity().replaceDockableFragment(NotificationsFragment.newInstance(), NotificationsFragment.class.getSimpleName());
                 } else if (navigationEnts.get(position).getTitle().equals(getResources().getString(R.string.settings))) {
                     getDockActivity().replaceDockableFragment(SettingsFragment.newInstance(), SettingsFragment.TAG);
@@ -177,8 +184,8 @@ public class SideMenuFragment extends BaseFragment {
                     logoutdialog.initlogout(R.layout.dialog_logout, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                           // File dir = new File(AppConstants.DOWNLOAD_PATH);
-                           // DeleteRecursive(dir);
+                            // File dir = new File(AppConstants.DOWNLOAD_PATH);
+                            // DeleteRecursive(dir);
                             getMainActivity().hideBottomPlayer();
                             prefHelper.setLoginStatus(false);
                             getDockActivity().popBackStackTillEntry(0);
@@ -193,6 +200,12 @@ public class SideMenuFragment extends BaseFragment {
                     });
                     logoutdialog.setCancelable(false);
                     logoutdialog.showDialog();
+                }else if (navigationEnts.get(position).getTitle().equals(getResources().getString(R.string.login))) {
+                    getMainActivity().hideBottomPlayer();
+                    prefHelper.setLoginStatus(false);
+                    prefHelper.setGuestStatus(false);
+                    getDockActivity().popBackStackTillEntry(0);
+                    getDockActivity().replaceDockableFragment(AccessSelectionFragment.newInstance(), "AccessSelectionFragment");
                 }
             }
         });

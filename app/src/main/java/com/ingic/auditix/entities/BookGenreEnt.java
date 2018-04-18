@@ -10,16 +10,16 @@ import com.google.gson.annotations.SerializedName;
 public class BookGenreEnt {
     @SerializedName("GenreID")
     @Expose
-    private Integer GenreID;
+    private String GenreID;
     @SerializedName("GenreName")
     @Expose
     private String GenreName;
 
-    public Integer getGenreID() {
+    public String getGenreID() {
         return GenreID;
     }
 
-    public void setGenreID(Integer genreID) {
+    public void setGenreID(String genreID) {
         GenreID = genreID;
     }
 

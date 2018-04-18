@@ -29,7 +29,7 @@ public class BookDetailEnt extends RealmObject{
     private String narratorName;
     @SerializedName("Rating")
     @Expose
-    private Integer rating;
+    private Float rating;
     @SerializedName("Genre")
     @Expose
     private String genre;
@@ -99,11 +99,11 @@ public class BookDetailEnt extends RealmObject{
         this.narratorName = narratorName;
     }
 
-    public Integer getRating() {
+    public Float getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Float rating) {
         this.rating = rating;
     }
 

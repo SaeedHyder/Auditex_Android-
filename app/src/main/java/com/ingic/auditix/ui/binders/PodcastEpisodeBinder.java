@@ -26,11 +26,13 @@ import io.realm.Realm;
 public class PodcastEpisodeBinder extends RecyclerViewBinder<PodcastTrackEnt> implements View.OnClickListener {
     private RecyclerViewItemListener listener;
     private Realm realm;
+    private String parentFolderName = "";
 
-    public PodcastEpisodeBinder(RecyclerViewItemListener listener, Realm realm) {
+    public PodcastEpisodeBinder(RecyclerViewItemListener listener, Realm realm, String parentFolderName) {
         super(R.layout.row_item_podcast_episodes_download);
         this.listener = listener;
         this.realm = realm;
+        this.parentFolderName = parentFolderName;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class PodcastEpisodeBinder extends RecyclerViewBinder<PodcastTrackEnt> im
     public void bindView(final PodcastTrackEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
         holder.txtTitle.setText(entity.getName() + "");
-        holder.txt_position.setText(context.getResources().getString(R.string.episode) + " " + (position+1));
+        holder.txt_position.setText(context.getResources().getString(R.string.episode) + " " + (position + 1));
         holder.btnDownload.setTag(R.integer.key_recycler_object, entity);
         holder.btnDownload.setTag(R.integer.key_recycler_position, position);
         holder.btnDownload.setOnClickListener(this);
@@ -105,7 +107,7 @@ public class PodcastEpisodeBinder extends RecyclerViewBinder<PodcastTrackEnt> im
         return realm;
     }
 
-    private DownloadItemModel getObjectfromRealm(Integer chapterID) {
+    private DownloadItemModel getObjectfromRealm(String chapterID) {
         return getRealm()
                 .where(DownloadItemModel.class)
                 .equalTo("downloadTag", chapterID).findFirst();
@@ -113,7 +115,7 @@ public class PodcastEpisodeBinder extends RecyclerViewBinder<PodcastTrackEnt> im
 
 
     private boolean isAlreadyDownloaded(String audioUrl) {
-        return new File(AppConstants.DOWNLOAD_PATH + File.separator + audioUrl
+        return new File(AppConstants.DOWNLOAD_PATH + File.separator + parentFolderName + File.separator + audioUrl
                 .replaceAll("\\s+", "")
                 .replaceAll("\\\\", "")
                 .replaceAll("/", "") + ".mp3")

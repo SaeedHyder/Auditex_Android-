@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import droidninja.filepicker.utils.GridSpacingItemDecoration;
 
@@ -53,15 +54,16 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
     NestedScrollView parentScroll;
     Unbinder unbinder;
     DisplayImageOptions options;
+    ArrayList<NewsCategoryEnt> subscriptionCollection;
     private RecyclerViewItemListener newSubscriptionListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
-
+            serviceHelper.enqueueCall(webService.unsubscribeNews(((NewsCategoryEnt) Ent).getNewsCategoryId(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_NEWS);
         }
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-
+            getDockActivity().replaceDockableFragment(NewsCategoryDetailFragment.newInstance((NewsCategoryEnt) Ent), NewsCategoryDetailFragment.TAG);
         }
     };
     private RecyclerViewItemListener newCategoriesListener = new RecyclerViewItemListener() {
@@ -72,7 +74,7 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(NewsCategoryDetailFragment.newInstance((NewsCategoryEnt) Ent),NewsCategoryDetailFragment.TAG);
+            getDockActivity().replaceDockableFragment(NewsCategoryDetailFragment.newInstance((NewsCategoryEnt) Ent), NewsCategoryDetailFragment.TAG);
         }
     };
 
@@ -104,6 +106,12 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
             case WebServiceConstants.GET_ALL_NEWS_CATEGORIES:
                 bindNewsCategories((ArrayList<NewsCategoryEnt>) result);
                 break;
+            case WebServiceConstants.GET_ALL_NEWS_SUBSCRIBE:
+                getAllSubscribeNews((ArrayList<NewsCategoryEnt>) result);
+                break;
+            case WebServiceConstants.UNSUBSCRIBE_NEWS:
+                serviceHelper.enqueueCall(webService.getAllSubscribeNews(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_NEWS_SUBSCRIBE);
+                break;
         }
     }
 
@@ -125,11 +133,11 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
-        getAllSubscribeNews();
         getNewsCategories();
 //        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
 
     }
+
     private void bindNewsCategories(ArrayList<NewsCategoryEnt> result) {
         if (result.size() <= 0) {
             txtNewsNoData.setVisibility(View.VISIBLE);
@@ -145,24 +153,28 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
         rvCategories.setNestedScrollingEnabled(false);
     }
 
-    private void getAllSubscribeNews() {
-        ArrayList<String> dummyCollection = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            dummyCollection.add("");
-        }
+    private void getAllSubscribeNews(ArrayList<NewsCategoryEnt> results) {
+        if (results.size() > 2)
+            subscriptionCollection = new ArrayList<>(results.subList(0, 2));
+        else
+            subscriptionCollection = new ArrayList<>(results);
+
         rvSubscribe.BindRecyclerView(new NewsSubscriptionBinder(options,
-                        newSubscriptionListener), dummyCollection, new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false)
+                        newSubscriptionListener, prefHelper), subscriptionCollection, new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false)
                 , new DefaultItemAnimator());
-        if (dummyCollection.size() <= 0) {
+        if (subscriptionCollection.size() <= 0) {
             txtSubscriptionNoData.setVisibility(View.VISIBLE);
             rvSubscribe.setVisibility(View.GONE);
+            btnSubscriptionSeeall.setVisibility(View.INVISIBLE);
         } else {
             txtSubscriptionNoData.setVisibility(View.GONE);
             rvSubscribe.setVisibility(View.VISIBLE);
+            btnSubscriptionSeeall.setVisibility(View.VISIBLE);
         }
     }
 
     private void getNewsCategories() {
+        serviceHelper.enqueueCall(webService.getAllSubscribeNews(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_NEWS_SUBSCRIBE);
         serviceHelper.enqueueCall(webService.getAllNewsCategories(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_NEWS_CATEGORIES);
     }
 
@@ -173,5 +185,11 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
 
     @Override
     public void onResumeFragment(Context context, BasePreferenceHelper preferenceHelper) {
+    }
+
+
+    @OnClick(R.id.btn_subscription_seeall)
+    public void onViewClicked() {
+        getDockActivity().replaceDockableFragment(NewsSubscriptionLIstFragment.newInstance(), NewsSubscriptionLIstFragment.TAG);
     }
 }

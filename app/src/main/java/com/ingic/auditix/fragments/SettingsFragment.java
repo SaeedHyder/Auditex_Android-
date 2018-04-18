@@ -95,19 +95,32 @@ public class SettingsFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_account:
+                if (prefHelper.isGuest()) {
+                    showGuestMessage();
+                    return;
+                }
                 getDockActivity().replaceDockableFragment(EditProfileFragment.newInstance(), EditProfileFragment.TAG);
                 break;
             case R.id.btn_payment_details:
-                getDockActivity().replaceDockableFragment(PaymentDetailsFragment.newInstance(), PaymentDetailsFragment.TAG);
+                if (prefHelper.isGuest()) {
+                    showGuestMessage();
+                    return;
+                }
+                willbeimplementedinfuture();
+                //getDockActivity().replaceDockableFragment(PaymentDetailsFragment.newInstance(), PaymentDetailsFragment.TAG);
                 break;
             case R.id.btn_new_episodes:
                 getDockActivity().replaceDockableFragment(NewEpisodesFragment.newInstance(), NewEpisodesFragment.TAG);
                 break;
             case R.id.btn_played_episodes:
-                UIHelper.showShortToastInCenter(getDockActivity(),"Comming Soon");
+                UIHelper.showShortToastInCenter(getDockActivity(),"Coming Soon!");
                 // getDockActivity().replaceDockableFragment(PlayedEpisodesFragment.newInstance(), PlayedEpisodesFragment.TAG);
                 break;
             case R.id.btn_notifications:
+                if (prefHelper.isGuest()) {
+                    showGuestMessage();
+                    return;
+                }
                 getDockActivity().replaceDockableFragment(NotificationsFragment.newInstance(), NotificationsFragment.TAG);
                 break;
             case R.id.btn_privacy_policy:

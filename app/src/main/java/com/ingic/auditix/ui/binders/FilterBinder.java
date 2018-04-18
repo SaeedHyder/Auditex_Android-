@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
  */
 
 public class FilterBinder extends RecyclerViewBinder<FilterEnt> {
-    private ArrayList<Integer> filterCheckIDs;
+    private ArrayList<String> filterCheckIDs;
 
     public FilterBinder() {
         super(R.layout.row_item_filter_child_check);
