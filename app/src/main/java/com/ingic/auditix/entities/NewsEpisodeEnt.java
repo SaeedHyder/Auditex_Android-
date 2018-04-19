@@ -54,6 +54,26 @@ public class NewsEpisodeEnt {
     private String source_text_id;
     @SerializedName("channel_text_id")
     private String channel_text_id;
+    @SerializedName("IsFavourite")
+    private boolean IsFavourite;
+    @SerializedName("IsSubscribed")
+    private boolean IsSubscribed;
+
+    public boolean isFavourite() {
+        return IsFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        IsFavourite = favourite;
+    }
+
+    public boolean isSubscribed() {
+        return IsSubscribed;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        IsSubscribed = subscribed;
+    }
 
     public String get_index() {
         return _index;

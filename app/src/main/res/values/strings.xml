@@ -260,4 +260,5 @@
     <string name="mins">Mins</string>
     <string name="new_noteworthy"><![CDATA[New & Noteworthy]]></string>
     <string name="guest_message">Please Sign in or Log in to Proceed!</string>
+    <string name="by_location">By Location:</string>
 </resources>

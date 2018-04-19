@@ -94,6 +94,7 @@ public class BooksFilterFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        txtTitle.setText(getResString(R.string.by_genre));
         if (bookFilters == null && binder == null) {
             serviceHelper.enqueueCall(webService.getAllBooksFilters(null, prefHelper.getUserToken()), WebServiceConstants.GET_ALL_BOOKS_FILTER, false);
         } else {

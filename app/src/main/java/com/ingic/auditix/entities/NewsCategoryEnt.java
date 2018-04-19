@@ -28,6 +28,26 @@ public class NewsCategoryEnt {
     private boolean Deleted;
     @SerializedName("InActive")
     private boolean InActive;
+    @SerializedName("IsNewsSubscribed")
+    private boolean IsNewsSubscribed;
+    @SerializedName("IsFavoriteNews")
+    private boolean IsFavoriteNews;
+
+    public boolean isNewsSubscribed() {
+        return IsNewsSubscribed;
+    }
+
+    public void setNewsSubscribed(boolean newsSubscribed) {
+        IsNewsSubscribed = newsSubscribed;
+    }
+
+    public boolean isFavoriteNews() {
+        return IsFavoriteNews;
+    }
+
+    public void setFavoriteNews(boolean favoriteNews) {
+        IsFavoriteNews = favoriteNews;
+    }
 
     public int getNewsCategoryId() {
         return NewsCategoryId;

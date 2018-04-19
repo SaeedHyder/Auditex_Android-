@@ -24,6 +24,7 @@ import com.ingic.auditix.helpers.InternetHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.helpers.Utils;
 import com.ingic.auditix.interfaces.DownloadListenerFragment;
+import com.ingic.auditix.interfaces.FavoriteCheckChangeListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.PodcastEpisodeBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -172,6 +173,30 @@ public class PodcastDetailFragment extends BaseFragment {
             task.getAutoRetryTimes();
         }
     };
+    private DialogHelper helper;
+    private LinearLayoutManager layoutManager;
+    private CompoundButton.OnCheckedChangeListener favoriteCheckListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (prefHelper.isGuest()) {
+                showGuestMessage();
+            } else {
+                if (getMainActivity().getPlayerFragment() != null)
+                    getMainActivity().getPlayerFragment().onFavoriteCheckChange(isChecked,trackID);
+                serviceHelper.enqueueCall(webService.changeFavoriteStatus(trackID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+            }
+        }
+    };
+    private FavoriteCheckChangeListener favoritePlayerCheckChangeListener = new FavoriteCheckChangeListener() {
+        @Override
+        public void onFavoriteCheckChange(boolean check,int ID) {
+            if (ID==trackID) {
+                btnAddFavorite.setOnCheckedChangeListener(null);
+                btnAddFavorite.setChecked(check);
+                btnAddFavorite.setOnCheckedChangeListener(favoriteCheckListener);
+            }
+        }
+    };
     private RecyclerViewItemListener episodeItemListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
@@ -202,8 +227,6 @@ public class PodcastDetailFragment extends BaseFragment {
 
         }
     };
-    private DialogHelper helper;
-    private LinearLayoutManager layoutManager;
 
     public static PodcastDetailFragment newInstance(Integer trackID) {
         Bundle args = new Bundle();
@@ -315,15 +338,7 @@ public class PodcastDetailFragment extends BaseFragment {
             }
         });
 
-        btnAddFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (prefHelper.isGuest()) {
-                    showGuestMessage();
-                } else
-                    serviceHelper.enqueueCall(webService.changeFavoriteStatus(trackID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
-            }
-        });
+        btnAddFavorite.setOnCheckedChangeListener(favoriteCheckListener);
     }
 
     private void bindEpisodeList() {
@@ -343,9 +358,9 @@ public class PodcastDetailFragment extends BaseFragment {
         rvEpisodes.setNestedScrollingEnabled(false);
         layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
         rvEpisodes.BindRecyclerView(new PodcastEpisodeBinder(episodeItemListener, getMainActivity().realm, podcastDetailEnt.getTitle()), podcastTrackEnts, layoutManager, new DefaultItemAnimator());
-        if (podcastTrackEnts.size()<=0){
+        if (podcastTrackEnts.size() <= 0) {
             txtPodcastHeader.setVisibility(View.GONE);
-        }else {
+        } else {
             txtPodcastHeader.setVisibility(View.VISIBLE);
         }
     }
@@ -378,7 +393,6 @@ public class PodcastDetailFragment extends BaseFragment {
         setupUIViews();
         getDetails();
     }
-
 
     private void setTrackID(Integer trackID) {
         this.trackID = trackID;
@@ -448,7 +462,7 @@ public class PodcastDetailFragment extends BaseFragment {
                 getMainActivity().filterFragment.clearFilters();
             }
             getMainActivity().showBottomPlayer(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST, null, null,
-                    startingIndex);
+                    startingIndex, favoritePlayerCheckChangeListener);
           /*  getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST, null,null,
                     startingIndex), PlayerFragment.TAG);*/
         }

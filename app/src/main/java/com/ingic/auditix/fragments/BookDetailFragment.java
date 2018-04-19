@@ -22,6 +22,7 @@ import com.ingic.auditix.helpers.DialogHelper;
 import com.ingic.auditix.helpers.InternetHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.interfaces.DownloadListenerFragment;
+import com.ingic.auditix.interfaces.FavoriteCheckChangeListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.BookChapterBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -157,6 +158,33 @@ public class BookDetailFragment extends BaseFragment {
             task.getAutoRetryTimes();
         }
     };
+    private DialogHelper helper;
+    private CompoundButton.OnCheckedChangeListener favoriteCheckChange = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            if (prefHelper.isGuest()) {
+                showGuestMessage();
+            } else {
+                if (getMainActivity().getPlayerFragment() != null)
+                    getMainActivity().getPlayerFragment().onFavoriteCheckChange(b,bookID);
+                if (b) {
+                    serviceHelper.enqueueCall(webService.AddBookToFavorite(bookID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                } else {
+                    serviceHelper.enqueueCall(webService.RemoveBookFromFavorite(bookID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                }
+            }
+        }
+    };
+    private FavoriteCheckChangeListener favoritePlayerCheckChangeListener = new FavoriteCheckChangeListener() {
+        @Override
+        public void onFavoriteCheckChange(boolean check,int ID) {
+            if (ID == bookID) {
+                btnAddFavorite.setOnCheckedChangeListener(null);
+                btnAddFavorite.setChecked(check);
+                btnAddFavorite.setOnCheckedChangeListener(favoriteCheckChange);
+            }
+        }
+    };
     private RecyclerViewItemListener chapterItemListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
@@ -181,7 +209,6 @@ public class BookDetailFragment extends BaseFragment {
 
         }
     };
-    private DialogHelper helper;
 
     public static BookDetailFragment newInstance(int bookId) {
         Bundle args = new Bundle();
@@ -369,20 +396,7 @@ public class BookDetailFragment extends BaseFragment {
             titleBar.setSubHeading(result.getBookName());
             titleBar.invalidate();
         }
-        btnAddFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (prefHelper.isGuest()) {
-                    showGuestMessage();
-                } else {
-                    if (b) {
-                        serviceHelper.enqueueCall(webService.AddBookToFavorite(bookID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
-                    } else {
-                        serviceHelper.enqueueCall(webService.RemoveBookFromFavorite(bookID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
-                    }
-                }
-            }
-        });
+        btnAddFavorite.setOnCheckedChangeListener(favoriteCheckChange);
 
     }
 
@@ -444,7 +458,7 @@ public class BookDetailFragment extends BaseFragment {
        /*     getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, bookID, AppConstants.TAB_BOOKS, detailEnt,
                     null, startingIndex), PlayerFragment.TAG);*/
             getMainActivity().showBottomPlayer(null, bookID, AppConstants.TAB_BOOKS, detailEnt,
-                    null, startingIndex);
+                    null, startingIndex, favoritePlayerCheckChangeListener);
         }
     }
 }

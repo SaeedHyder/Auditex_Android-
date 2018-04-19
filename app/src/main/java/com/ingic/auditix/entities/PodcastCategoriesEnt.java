@@ -19,6 +19,18 @@ public class PodcastCategoriesEnt {
     @Expose
     private String title;
 
+    public String getImagePath() {
+        return ImagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        ImagePath = imagePath;
+    }
+
+    @SerializedName("ImagePath")
+    @Expose
+    private String ImagePath;
+
     public Integer getCategoryId() {
         return categoryId;
     }

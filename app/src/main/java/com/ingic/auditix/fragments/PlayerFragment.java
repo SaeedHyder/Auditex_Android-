@@ -38,6 +38,7 @@ import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.InternetHelper;
 import com.ingic.auditix.helpers.UIHelper;
+import com.ingic.auditix.interfaces.FavoriteCheckChangeListener;
 import com.ingic.auditix.interfaces.PlayerItemChangeListener;
 import com.ingic.auditix.interfaces.TrackListItemListener;
 import com.ingic.auditix.media.MediaPlayerHolder;
@@ -62,7 +63,7 @@ import butterknife.Unbinder;
 /**
  * Created on 12/27/2017.
  */
-public class PlayerFragment extends BaseFragment implements TrackListItemListener {
+public class PlayerFragment extends BaseFragment implements TrackListItemListener, FavoriteCheckChangeListener {
 
     //region Global Variables
     public static final String TAG = "PlayerFragment";
@@ -138,17 +139,69 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
 
     private int startingIndex = 0;
     private PlayerItemChangeListener itemChangeListener;
+    private FavoriteCheckChangeListener checkChangeListener;
+    private CompoundButton.OnCheckedChangeListener podcastFavoriteCheckListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (prefHelper.isGuest()) {
+                showGuestMessage();
+            } else {
+                serviceHelper.enqueueCall(webService.changeFavoriteStatus(ID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                if (checkChangeListener != null) {
+                    checkChangeListener.onFavoriteCheckChange(isChecked, ID);
+                }
+            }
+        }
+    };
+    private CompoundButton.OnCheckedChangeListener bookFavoriteListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (prefHelper.isGuest()) {
+                showGuestMessage();
+            } else {
+                if (isChecked) {
+                    serviceHelper.enqueueCall(webService.AddBookToFavorite(ID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                } else {
+                    serviceHelper.enqueueCall(webService.RemoveBookFromFavorite(ID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                }
+                if (checkChangeListener != null) {
+                    checkChangeListener.onFavoriteCheckChange(isChecked, ID);
+                }
+            }
+        }
+    };
+    private CompoundButton.OnCheckedChangeListener newsFavoriteListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (prefHelper.isGuest()) {
+                showGuestMessage();
+            } else {
+                if (isChecked) {
+                    serviceHelper.enqueueCall(webService.favoriteNews(ID, prefHelper.getUserToken()), WebServiceConstants.FAVORITE_NEWS);
+                } else {
+                    serviceHelper.enqueueCall(webService.unFavoriteNews(ID, prefHelper.getUserToken()), WebServiceConstants.UNFAVORITE_NEWS);
+                }
+                if (checkChangeListener != null) {
+                    checkChangeListener.onFavoriteCheckChange(isChecked, ID);
+                }
+            }
+        }
+    };
 
-    //endregion
-    //region Fragment Lifecycles
     public static PlayerFragment newInstance(PodcastDetailEnt podcastDetail, Integer ID, String playerType,
-                                             BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex) {
+                                             BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
         Bundle args = new Bundle();
 
         PlayerFragment fragment = new PlayerFragment();
         fragment.setArguments(args);
-        fragment.setContent(podcastDetail, ID, playerType, bookDetailEnt, newsEpisodeEnt, startingIndex);
+        fragment.setContent(podcastDetail, ID, playerType, bookDetailEnt, newsEpisodeEnt, startingIndex, checkChangeListener);
         return fragment;
+    }
+
+    //endregion
+
+    public void setCheckChangeListener(FavoriteCheckChangeListener checkChangeListener) {
+        this.checkChangeListener = checkChangeListener;
     }
 
     @Override
@@ -194,40 +247,20 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     }
 
     private void setHeadBar() {
+        if (getChildFragmentManager().findFragmentById(R.id.items) != null) {
+            getChildFragmentManager().beginTransaction().
+                    remove(getChildFragmentManager().findFragmentById(R.id.items)).commit();
+        }
         if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
             btnFavorite.setChecked(podcastDetailEnt.isFavorite());
-
-            btnFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (prefHelper.isGuest()) {
-                        showGuestMessage();
-                    } else
-                        serviceHelper.enqueueCall(webService.changeFavoriteStatus(ID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
-                }
-            });
-
-
+            btnFavorite.setOnCheckedChangeListener(podcastFavoriteCheckListener);
             EpisodeListingFragment fragment = new EpisodeListingFragment();
             fragment.setListItemListener(this);
             setItemChangeListener(fragment);
             fragment.setTrackList(podcastDetailEnt.getTrackList());
             setEpisodeFragment(fragment);
-            /*titleBar.showListingFragment(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getMainActivity().isNavigationGravityRight = true;
-                    getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
-                }
-            });*/
             if (itemChangeListener != null) {
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        itemChangeListener.onItemChanged(startingIndex);
-                    }
-                }, 1000);
+                callForItemChange();
             }
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
             if (bookDetailEnt.getIsPurchased()) {
@@ -236,58 +269,26 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 setItemChangeListener(fragment);
                 fragment.setTrackList(new ArrayList<>(bookDetailEnt.getChapters().getChapter().subList(0, bookDetailEnt.getChapters().getChapter().size())));
                 setEpisodeFragment(fragment);
-                /*titleBar.showListingFragment(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getMainActivity().isNavigationGravityRight = true;
-                        getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
-                    }
-                });*/
                 if (itemChangeListener != null) {
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            itemChangeListener.onItemChanged(startingIndex);
-                        }
-                    }, 1000);
+                    callForItemChange();
                 }
             }
             btnFavorite.setChecked(bookDetailEnt.getIsFavorite());
-            btnFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (prefHelper.isGuest()) {
-                        showGuestMessage();
-                    } else {
-                        if (isChecked) {
-                            serviceHelper.enqueueCall(webService.AddBookToFavorite(ID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
-                        } else {
-                            serviceHelper.enqueueCall(webService.RemoveBookFromFavorite(ID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
-                        }
-                    }
-                }
-            });
+            btnFavorite.setOnCheckedChangeListener(bookFavoriteListener);
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
-            if (getChildFragmentManager().findFragmentById(R.id.items) != null) {
-                getChildFragmentManager().beginTransaction().
-                        remove(getChildFragmentManager().findFragmentById(R.id.items)).commit();
-            }
-            btnFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (prefHelper.isGuest()) {
-                        showGuestMessage();
-                    } else {
-                        if (isChecked) {
-                            serviceHelper.enqueueCall(webService.favoriteNews(ID, prefHelper.getUserToken()), WebServiceConstants.FAVORITE_NEWS);
-                        } else {
-                            serviceHelper.enqueueCall(webService.unFavoriteNews(ID, prefHelper.getUserToken()), WebServiceConstants.UNFAVORITE_NEWS);
-                        }
-                    }
-                }
-            });
+            btnFavorite.setChecked(newsEpisodeEnt.isFavourite());
+            btnFavorite.setOnCheckedChangeListener(newsFavoriteListener);
         }
+    }
+
+    private void callForItemChange() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                itemChangeListener.onItemChanged(startingIndex);
+            }
+        }, 1000);
     }
 
     private void setEpisodeFragment(BaseFragment fragment) {
@@ -302,15 +303,16 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         this.itemChangeListener = itemChangeListener;
     }
 
-    public void setContent(PodcastDetailEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex) {
+    public void setContent(PodcastDetailEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
         this.podcastDetailEnt = podcastDetail;
         this.ID = trackID;
         this.playerType = playerType;
         this.bookDetailEnt = bookDetailEnt;
         this.newsEpisodeEnt = newsEpisodeEnt;
         this.startingIndex = startingIndex;
+        this.checkChangeListener = checkChangeListener;
     }
-    //endregion
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -372,7 +374,6 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
                 float offset = Math.abs((slideOffset - 1));
-                Log.e(TAG, "onPanelSlide: offset :  " + offset);
                 containerPlayer.setAlpha(offset);
                 titleBarView.setAlpha(slideOffset);
             }
@@ -410,7 +411,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         } else if (type.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
             setupUIViewsNews(newsEpisodeEnt);
         }
-
+        hasPlaylistComplete = false;
         txtPlayingItemAlbum.setSelected(true);
         txtPlayingItemName.setSelected(true);
         txtItemName.setSelected(true);
@@ -721,6 +722,26 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 if (itemChangeListener != null) {
                     itemChangeListener.onItemChanged(index);
                 }
+            }
+        }
+    }
+
+    @Override
+    public void onFavoriteCheckChange(boolean check, int ID) {
+        if (ID == this.ID) {
+            if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
+                btnFavorite.setOnCheckedChangeListener(null);
+                btnFavorite.setChecked(check);
+                btnFavorite.setOnCheckedChangeListener(podcastFavoriteCheckListener);
+            } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
+                btnFavorite.setOnCheckedChangeListener(null);
+                btnFavorite.setChecked(check);
+                btnFavorite.setOnCheckedChangeListener(bookFavoriteListener);
+            } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
+                btnFavorite.setOnCheckedChangeListener(null);
+                btnFavorite.setChecked(check);
+                Log.e(TAG, "onFavoriteCheckChange: Fron Players");
+                btnFavorite.setOnCheckedChangeListener(newsFavoriteListener);
             }
         }
     }

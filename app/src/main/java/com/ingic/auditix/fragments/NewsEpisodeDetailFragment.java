@@ -48,7 +48,6 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
     DisplayImageOptions options;
     private int startingIndex = 0;
     private int newsCategoryID = 0;
-
     public static NewsEpisodeDetailFragment newInstance(NewsEpisodeEnt data, int newsCategoryID) {
         Bundle args = new Bundle();
 
@@ -133,7 +132,7 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
     @OnClick(R.id.btn_play)
     public void onViewClicked() {
         getMainActivity().showBottomPlayer(null, newsCategoryID,
-                AppConstants.TAB_NEWS, null, episodeData, startingIndex);
+                AppConstants.TAB_NEWS, null, episodeData, startingIndex,null);
         /*getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, 0,
                 AppConstants.TAB_NEWS, null, episodeData, startingIndex), PlayerFragment.TAG);*/
 

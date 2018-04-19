@@ -63,7 +63,7 @@ public class ProfileLibraryFragment extends BaseFragment {
                     detailEnt.getChapters().getChapter().remove(0);
                 }
                 getMainActivity().showBottomPlayer(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt,
-                        null,0);
+                        null,0,null);
                /* getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt,
                         null,0), PlayerFragment.TAG);*/
             }

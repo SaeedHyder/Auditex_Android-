@@ -42,6 +42,7 @@ import com.ingic.auditix.helpers.ScreenHelper;
 import com.ingic.auditix.helpers.ServiceHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.helpers.Utilities;
+import com.ingic.auditix.interfaces.FavoriteCheckChangeListener;
 import com.ingic.auditix.interfaces.ImageSetter;
 import com.ingic.auditix.interfaces.webServiceResponseLisener;
 import com.ingic.auditix.residemenu.ResideMenu;
@@ -105,6 +106,10 @@ public class MainActivity extends DockActivity implements OnClickListener {
     private String mBackgroundFilename;
     private Bitmap background;
     private PlayerFragment playerFragment;
+
+    public PlayerFragment getPlayerFragment() {
+        return playerFragment;
+    }
 
     public View getDrawerView() {
         return getLayoutInflater().inflate(getSideMenuFrameLayoutId(), null);
@@ -446,7 +451,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
                 if (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED) {
                     slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 } else {
-                    if (imageAdvertise.getVisibility() != View.VISIBLE){
+                    if (imageAdvertise.getVisibility() != View.VISIBLE) {
                         super.onBackPressed();
                     }
                 }
@@ -483,9 +488,9 @@ public class MainActivity extends DockActivity implements OnClickListener {
     }
 
     public void showBottomPlayer(PodcastDetailEnt podcastDetail, Integer ID, String playerType,
-                                 BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex) {
+                                 BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
         playerFragment.resetPlayer();
-        playerFragment.setContent(podcastDetail, ID, playerType, bookDetailEnt, newsEpisodeEnt, startingIndex);
+        playerFragment.setContent(podcastDetail, ID, playerType, bookDetailEnt, newsEpisodeEnt, startingIndex, checkChangeListener);
         playerFragment.startPlaying();
         slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, Math.round(getResources().getDimension(R.dimen.x50)));
@@ -602,13 +607,11 @@ public class MainActivity extends DockActivity implements OnClickListener {
         this.imageSetter = imageSetter;
     }
 
-    @Override
-    public void onClick(View view) {
-
-    }
-
     public DrawerLayout getDrawerLayout() {
         return drawerLayout;
+    }    @Override
+    public void onClick(View view) {
+
     }
 
     public void closeDrawer() {
@@ -627,6 +630,8 @@ public class MainActivity extends DockActivity implements OnClickListener {
     public void releaseDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
+
+
 
     //endregion
 

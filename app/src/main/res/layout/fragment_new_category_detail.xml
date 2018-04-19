@@ -48,10 +48,10 @@
 
                 <ToggleButton
                     android:id="@+id/btn_subscribe"
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/x160"
                     android:layout_height="@dimen/x30"
                     android:layout_gravity="start|bottom"
-                    android:layout_marginTop="@dimen/x10"
+                    android:layout_marginTop="@dimen/x5"
                     android:background="@drawable/button_orange"
                     android:paddingEnd="@dimen/x10"
                     android:paddingStart="@dimen/x10"
@@ -59,8 +59,23 @@
                     android:textOn="@string/unsubscribe"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="@+id/btn_add_favorite"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/txt_title"/>
+                <ToggleButton
+                    android:id="@+id/btn_add_favorite"
+                    android:layout_width="@dimen/x160"
+                    android:layout_height="@dimen/x30"
+                    android:layout_marginTop="@dimen/x5"
+                    android:paddingEnd="@dimen/x10"
+                    android:paddingStart="@dimen/x10"
+                    android:background="@drawable/button_orange"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btn_subscribe"
+                    android:textOff="@string/add_favorite"
+                    android:textOn="@string/remove_favorite"/>
             </android.support.constraint.ConstraintLayout>
 
         </LinearLayout>

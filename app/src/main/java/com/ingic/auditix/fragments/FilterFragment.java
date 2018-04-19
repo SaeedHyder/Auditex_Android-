@@ -88,7 +88,7 @@ public class FilterFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        txtTitle.setText(getResString(R.string.by_location));
         if (child1Collection == null && binder == null) {
             serviceHelper.enqueueCall(webService.getAllFilter(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FILTER, false);
         } else {
