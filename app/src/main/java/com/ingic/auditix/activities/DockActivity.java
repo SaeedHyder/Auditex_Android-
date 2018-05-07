@@ -209,6 +209,9 @@ public abstract class DockActivity extends AppCompatActivity implements
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                    if ((DockActivity.this)instanceof MainActivity){
+                        ((MainActivity)DockActivity.this).hideBottomPlayer();
+                    }
                             DockActivity.this.finish();
 
                         }

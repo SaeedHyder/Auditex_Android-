@@ -383,7 +383,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
         mContext = this;
         params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         Log.i("Screen Density", ScreenHelper.getDensity(this) + "");
-
+        slidingLayout.setAnchorPoint(0);
         sideMenuType = SideMenuChooser.DRAWER.getValue();
         sideMenuDirection = SideMenuDirection.LEFT.getValue();
 

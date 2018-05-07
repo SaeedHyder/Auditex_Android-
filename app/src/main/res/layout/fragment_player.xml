@@ -3,7 +3,9 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:tools="http://schemas.android.com/tools"
               android:background="@drawable/bg"
+              android:id="@+id/background"
               android:orientation="vertical">
 
     <RelativeLayout
@@ -29,7 +31,7 @@
                 android:id="@+id/img_player_cover"
                 android:layout_width="@dimen/x40"
                 android:layout_height="@dimen/x40"
-                android:src="@drawable/dummyalbum"/>
+                tools:src="@drawable/dummyalbum"/>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -48,7 +50,7 @@
                     android:layout_marginStart="@dimen/x5"
                     android:ellipsize="marquee"
                     android:singleLine="true"
-                    android:text="@string/lorem_ipsum"
+                    tools:text="@string/lorem_ipsum"
                     android:textColor="@color/white"
                     android:textSize="@dimen/x14"
                     app:typeface="@string/font_normal"/>
@@ -61,7 +63,7 @@
                     android:layout_marginStart="@dimen/x5"
                     android:ellipsize="marquee"
                     android:singleLine="true"
-                    android:text="@string/lorem_ipsum"
+                    tools:text="@string/lorem_ipsum"
                     android:textColor="@color/white"
                     android:textSize="@dimen/x12"
                     app:typeface="@string/font_normal"/>
@@ -151,6 +153,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         >
 
         <RelativeLayout
@@ -203,7 +206,7 @@
                                 android:layout_marginStart="@dimen/x5"
                                 android:ellipsize="marquee"
                                 android:singleLine="true"
-                                android:text="@string/lorem_ipsum"
+                                tools:text="@string/lorem_ipsum"
                                 android:textColor="@color/app_font_black"
                                 android:textSize="@dimen/x13"
                                 app:typeface="@string/font_normal"/>
@@ -216,7 +219,7 @@
                                 android:layout_marginStart="@dimen/x5"
                                 android:ellipsize="marquee"
                                 android:singleLine="true"
-                                android:text="@string/lorem_ipsum"
+                                tools:text="@string/lorem_ipsum"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/x15"
                                 app:typeface="@string/font_normal"/>
@@ -574,7 +577,7 @@
             android:layout_marginBottom="@dimen/x15"
             android:layout_marginTop="@dimen/x5"
             android:scaleType="fitXY"
-            android:src="@drawable/dummyalbum"
+            tools:src="@drawable/dummyalbum"
             app:layout_constraintBottom_toTopOf="@+id/horizontal_down_guide"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

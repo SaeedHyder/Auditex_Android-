@@ -1,7 +1,6 @@
 package com.ingic.auditix.fragments;
 
 import android.os.Bundle;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
@@ -11,9 +10,7 @@ import android.view.ViewGroup;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.PodcastCategoryDetailEnt;
-import com.ingic.auditix.entities.PodcastCategoryHomeEnt;
 import com.ingic.auditix.entities.PodcastCategoryListEnt;
-import com.ingic.auditix.entities.PodcastDetailHomeEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.FilterDoneClickListener;
@@ -71,10 +68,6 @@ public class PodcastListByCategoryFragment extends BaseFragment implements Filte
         }
     };
 
-    private void openPodcastDetail(Integer trackid) {
-        getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(trackid), "PodcastDetailFragment");
-    }
-
     public static PodcastListByCategoryFragment newInstance(int categorID) {
         Bundle args = new Bundle();
 
@@ -82,6 +75,10 @@ public class PodcastListByCategoryFragment extends BaseFragment implements Filte
         fragment.setArguments(args);
         fragment.setmCategoryID(categorID);
         return fragment;
+    }
+
+    private void openPodcastDetail(Integer trackid) {
+        getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(trackid), "PodcastDetailFragment");
     }
 
     @Override
@@ -93,17 +90,16 @@ public class PodcastListByCategoryFragment extends BaseFragment implements Filte
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_podcast_by_category, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        serviceHelper.enqueueCall(webService.getPodcastsByCategory(mCategoryID, totalCount, categoriesIds, currentOffset, prefHelper.getUserToken()),
-                WebServiceConstants.GET_ALL_PODCAST_BY_CATEGORIES);
+    public void ResponseSuccess(Object result, String Tag) {
+        switch (Tag) {
+            case WebServiceConstants.GET_ALL_PODCAST_BY_CATEGORIES:
+                bindDefaultPodcastView(((ArrayList<PodcastCategoryListEnt>) result).get(0));
+                break;
+            case WebServiceConstants.GET_PAGED_PODCAST:
+                isOnCall = false;
+                bindPagedPodcastList(((ArrayList<PodcastCategoryListEnt>) result).get(0));
+                break;
+        }
     }
 
     @Override
@@ -127,16 +123,23 @@ public class PodcastListByCategoryFragment extends BaseFragment implements Filte
     }
 
     @Override
-    public void ResponseSuccess(Object result, String Tag) {
-        switch (Tag) {
-            case WebServiceConstants.GET_ALL_PODCAST_BY_CATEGORIES:
-                bindDefaultPodcastView(((ArrayList<PodcastCategoryListEnt>)result).get(0));
-                break;
-            case WebServiceConstants.GET_PAGED_PODCAST:
-                isOnCall = false;
-                bindPagedPodcastList(((ArrayList<PodcastCategoryListEnt>)result).get(0));
-                break;
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_podcast_by_category, container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        serviceHelper.enqueueCall(webService.getPodcastsByCategory(mCategoryID, totalCount, categoriesIds, currentOffset, prefHelper.getUserToken()),
+                WebServiceConstants.GET_ALL_PODCAST_BY_CATEGORIES);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     private void getPagedPodcast() {
@@ -167,7 +170,7 @@ public class PodcastListByCategoryFragment extends BaseFragment implements Filte
         podcastDefaultCollections = new ArrayList<>(result.getResults());
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
         defaultLayoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
-        rvPodcast.BindRecyclerView(new PodcastDefaultCategoryBinder(options, defaultCategoryItemLister,prefHelper), podcastDefaultCollections,
+        rvPodcast.BindRecyclerView(new PodcastDefaultCategoryBinder(options, defaultCategoryItemLister, prefHelper), podcastDefaultCollections,
                 defaultLayoutManager, new DefaultItemAnimator());
         rvPodcast.getAdapter().setOnLoadMoreListener(new LoadMoreListener() {
             @Override
@@ -185,14 +188,11 @@ public class PodcastListByCategoryFragment extends BaseFragment implements Filte
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    @Override
     public void onDoneFiltering(String filterIDs) {
-        categoriesIds = filterIDs;
+        if (filterIDs.equalsIgnoreCase("")) {
+            categoriesIds = "US";
+        } else
+            categoriesIds = filterIDs;
         serviceHelper.enqueueCall(webService.getPodcastsByCategory(mCategoryID, totalCount, categoriesIds, currentOffset, prefHelper.getUserToken()),
                 WebServiceConstants.GET_ALL_PODCAST_BY_CATEGORIES);
     }

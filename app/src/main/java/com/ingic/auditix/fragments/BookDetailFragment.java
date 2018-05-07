@@ -40,6 +40,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -89,16 +90,26 @@ public class BookDetailFragment extends BaseFragment {
     private TitleBar titleBar;
     private BooksChapterItemEnt patsyObject = new BooksChapterItemEnt();
     private ArrayList<BooksChapterItemEnt> chapterCollections;
+    private void findAndUpdateDownloadState(int State, int Progress) {
+        if (chapterCollections.contains(patsyObject)) {
+            int index = chapterCollections.indexOf(patsyObject);
+            chapterCollections.get(index).setStatusState(State);
+            chapterCollections.get(index).setDownloadProgress(Progress);
+            rvChapters.notifyItemChanged(index);
+        }
+    }
+
     private DownloadListenerFragment fileDownloadListener = new DownloadListenerFragment() {
         @Override
         public void pending(final BaseDownloadTask task, int soFarBytes, int totalBytes) {
             if (chapterCollections != null && rvChapters != null) {
                 patsyObject.setChapterID((String) task.getTag());
-                if (chapterCollections.contains(patsyObject)) {
+                findAndUpdateDownloadState(AppConstants.DownloadStates.PENDING,0);
+               /* if (chapterCollections.contains(patsyObject)) {
                     int index = chapterCollections.indexOf(patsyObject);
                     chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.PENDING);
                     rvChapters.notifyItemChanged(index);
-                }
+                }*/
 
             }
         }
@@ -116,12 +127,13 @@ public class BookDetailFragment extends BaseFragment {
         public void progress(final BaseDownloadTask task, int progress) {
             if (chapterCollections != null && rvChapters != null) {
                 patsyObject.setChapterID((String) task.getTag());
-                if (chapterCollections.contains(patsyObject)) {
+                findAndUpdateDownloadState(AppConstants.DownloadStates.DOWNLOADING,progress);
+               /* if (chapterCollections.contains(patsyObject)) {
                     int index = chapterCollections.indexOf(patsyObject);
                     chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.DOWNLOADING);
                     chapterCollections.get(index).setDownloadProgress(progress);
                     rvChapters.notifyItemChanged(index);
-                }
+                }*/
             }
         }
 
@@ -129,11 +141,12 @@ public class BookDetailFragment extends BaseFragment {
         public void completed(final BaseDownloadTask task) {
             if (chapterCollections != null && rvChapters != null) {
                 patsyObject.setChapterID((String) task.getTag());
-                if (chapterCollections.contains(patsyObject)) {
+                findAndUpdateDownloadState(AppConstants.DownloadStates.COMPLETE,0);
+                /*if (chapterCollections.contains(patsyObject)) {
                     int index = chapterCollections.indexOf(patsyObject);
                     chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.COMPLETE);
                     rvChapters.notifyItemChanged(index);
-                }
+                }*/
             }
 
         }
@@ -142,13 +155,14 @@ public class BookDetailFragment extends BaseFragment {
         public void error(final BaseDownloadTask task, Throwable e) {
             if (chapterCollections != null && rvChapters != null) {
                 patsyObject.setChapterID((String) task.getTag());
-                if (chapterCollections.contains(patsyObject)) {
+                findAndUpdateDownloadState(AppConstants.DownloadStates.ERROR,0);
+                /*if (chapterCollections.contains(patsyObject)) {
                     int index = chapterCollections.indexOf(patsyObject);
                     chapterCollections.get(index).setStatusState(AppConstants.DownloadStates.ERROR);
                     rvChapters.notifyItemChanged(index);
-                   /* UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.download_error) + " "
-                            + getDockActivity().getResources().getString(R.string.chapters) + " " + chapterCollections.get(index).getChapterNumber());*/
-                }
+                   *//* UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.download_error) + " "
+                            + getDockActivity().getResources().getString(R.string.chapters) + " " + chapterCollections.get(index).getChapterNumber());*//*
+                }*/
 
             }
         }
@@ -164,9 +178,10 @@ public class BookDetailFragment extends BaseFragment {
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             if (prefHelper.isGuest()) {
                 showGuestMessage();
+                btnAddFavorite.setChecked(!b);
             } else {
                 if (getMainActivity().getPlayerFragment() != null)
-                    getMainActivity().getPlayerFragment().onFavoriteCheckChange(b,bookID);
+                    getMainActivity().getPlayerFragment().onFavoriteCheckChange(b, bookID);
                 if (b) {
                     serviceHelper.enqueueCall(webService.AddBookToFavorite(bookID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
                 } else {
@@ -177,7 +192,7 @@ public class BookDetailFragment extends BaseFragment {
     };
     private FavoriteCheckChangeListener favoritePlayerCheckChangeListener = new FavoriteCheckChangeListener() {
         @Override
-        public void onFavoriteCheckChange(boolean check,int ID) {
+        public void onFavoriteCheckChange(boolean check, int ID) {
             if (ID == bookID) {
                 btnAddFavorite.setOnCheckedChangeListener(null);
                 btnAddFavorite.setChecked(check);
@@ -192,6 +207,10 @@ public class BookDetailFragment extends BaseFragment {
                 //Case For Play Button Clicked
                 openPlayer(position);
             } else {
+                if (prefHelper.isGuest()) {
+                    showGuestMessage();
+                    return;
+                }
                 if (!prefHelper.isDownloadOnAll()) {
                     if (InternetHelper.isConnectedOnMobile(getDockActivity())) {
                         UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.network_mobile_error));
@@ -283,6 +302,8 @@ public class BookDetailFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         serviceHelper.enqueueCall(webService.getBookDetails(this.bookID, prefHelper.getUserToken()), WebServiceConstants.GET_BOOK_DETAIL);
         getDockActivity().setFileDownloadListener(fileDownloadListener);
+        if (getMainActivity().getPlayerFragment() != null)
+            getMainActivity().getPlayerFragment().setCheckChangeListener(favoritePlayerCheckChangeListener);
         if (detailEnt != null) {
             if (detailEnt.getIsPurchased())
                 try {
@@ -432,13 +453,14 @@ public class BookDetailFragment extends BaseFragment {
                 break;
             case R.id.btn_add_cart:
                 if (detailEnt != null) {
+                    if (prefHelper.isGuest()) {
+                        showGuestMessage();
+                        return;
+                    }
                     if (detailEnt.getIsPaid()) {
-                        if (prefHelper.isGuest()) {
-                            showGuestMessage();
-                            return;
-                        }
+
                         getMainActivity().realm.beginTransaction();
-                        getMainActivity().realm.copyToRealm(detailEnt);
+                        getMainActivity().realm.copyToRealmOrUpdate(detailEnt);
                         getMainActivity().realm.commitTransaction();
                         btnAddCart.setVisibility(View.GONE);
                         UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.add_cart_toast));

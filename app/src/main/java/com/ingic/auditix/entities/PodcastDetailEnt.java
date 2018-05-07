@@ -17,6 +17,9 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class PodcastDetailEnt extends RealmObject {
+    @SerializedName("TrackId")
+    @Expose
+    private Integer TrackId;
     @SerializedName("WowzaURL")
     @Expose
     public String WowzaURL;
@@ -25,13 +28,13 @@ public class PodcastDetailEnt extends RealmObject {
     public String AudioUrl;
     @SerializedName("WowzaPort")
     @Expose
-    public String WowzaPort;
+    private String WowzaPort;
     @SerializedName("WowzaAppName")
     @Expose
-    public String WowzaAppName;
+    private String WowzaAppName;
     @SerializedName("IsEpisodeAdded")
     @Expose
-    public boolean IsEpisodeAdded;
+    private boolean IsEpisodeAdded;
     @PrimaryKey
     @SerializedName("Title")
     @Expose
@@ -67,6 +70,10 @@ public class PodcastDetailEnt extends RealmObject {
     @Expose
     private RealmList<PodcastTrackEnt> trackList = null;
     private String downloadedOn;
+
+    public Integer getTrackId() {
+        return TrackId;
+    }
 
     public String getAudioUrl() {
         return AudioUrl;

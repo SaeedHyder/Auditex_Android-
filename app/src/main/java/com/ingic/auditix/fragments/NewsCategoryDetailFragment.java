@@ -30,7 +30,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.ingic.auditix.global.WebServiceConstants.FAVORITE_NEWS;
 import static com.ingic.auditix.global.WebServiceConstants.GET_ALL_NEWS_BY_CATEGORIES;
+import static com.ingic.auditix.global.WebServiceConstants.UNFAVORITE_NEWS;
 
 /**
  * Created on 3/15/2018.
@@ -78,6 +80,7 @@ public class NewsCategoryDetailFragment extends BaseFragment implements Compound
 
 
     };
+
     public static NewsCategoryDetailFragment newInstance(NewsCategoryEnt categoryDetail) {
         Bundle args = new Bundle();
 
@@ -105,6 +108,14 @@ public class NewsCategoryDetailFragment extends BaseFragment implements Compound
             case GET_ALL_NEWS_BY_CATEGORIES:
                 bindData((ArrayList<NewsEpisodeEnt>) result);
                 break;
+            case FAVORITE_NEWS:
+                categoryDetail.setFavoriteNews(true);
+                getAllNews();
+                break;
+            case UNFAVORITE_NEWS:
+                categoryDetail.setFavoriteNews(false);
+                getAllNews();
+                break;
         }
     }
 
@@ -121,11 +132,11 @@ public class NewsCategoryDetailFragment extends BaseFragment implements Compound
         ImageLoader.getInstance().displayImage(categoryDetail.getSourceImageUrl(), imgItemPic, options);
         txtTitle.setText(categoryDetail.getSourceName());
         if (result.size() <= 0) {
-            setSubscribeFavoriteToggle(categoryDetail.isFavoriteNews(),categoryDetail.isNewsSubscribed());
+            setSubscribeFavoriteToggle(categoryDetail.isFavoriteNews(), categoryDetail.isNewsSubscribed());
             txtEpisodesNoData.setVisibility(View.VISIBLE);
             rvEpisodes.setVisibility(View.GONE);
         } else {
-            setSubscribeFavoriteToggle(result.get(0).isFavourite(),result.get(0).isSubscribed());
+            setSubscribeFavoriteToggle(result.get(0).isFavourite(), result.get(0).isSubscribed());
             //titleBar.showFavoriteButton(result.get(0).isFavourite(), newFavoriteListener);
             txtEpisodesNoData.setVisibility(View.GONE);
             rvEpisodes.setVisibility(View.VISIBLE);
@@ -136,6 +147,8 @@ public class NewsCategoryDetailFragment extends BaseFragment implements Compound
     }
 
     private void setSubscribeFavoriteToggle(boolean favoriteToggle, boolean subscribeToggle) {
+        btnSubscribe.setOnCheckedChangeListener(null);
+        btnAddFavorite.setOnCheckedChangeListener(null);
         btnAddFavorite.setChecked(favoriteToggle);
         btnSubscribe.setChecked(subscribeToggle);
         btnSubscribe.setOnCheckedChangeListener(this);
@@ -153,7 +166,7 @@ public class NewsCategoryDetailFragment extends BaseFragment implements Compound
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
-        serviceHelper.enqueueCall(webService.getAllNewsByCategory(categoryDetail.getId(), prefHelper.getUserToken()), WebServiceConstants.GET_ALL_NEWS_BY_CATEGORIES);
+        getAllNews();
         if (getMainActivity().getPlayerFragment() != null)
             getMainActivity().getPlayerFragment().setCheckChangeListener(playerNewsFavoriteListener);
     }
@@ -164,30 +177,41 @@ public class NewsCategoryDetailFragment extends BaseFragment implements Compound
         unbinder.unbind();
     }
 
+    private void getAllNews() {
+        if (categoryDetail.getId() == 0) {
+            serviceHelper.enqueueCall(webService.getAllNewsByCategory(categoryDetail.getNewsCategoryId(), prefHelper.getUserToken()), WebServiceConstants.GET_ALL_NEWS_BY_CATEGORIES);
+        } else {
+            serviceHelper.enqueueCall(webService.getAllNewsByCategory(categoryDetail.getId(), prefHelper.getUserToken()), WebServiceConstants.GET_ALL_NEWS_BY_CATEGORIES);
+        }
+    }
+
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        int ID = (categoryDetail.getId() != 0) ? categoryDetail.getId() : categoryDetail.getNewsCategoryId();
         switch (buttonView.getId()) {
             case R.id.btn_subscribe:
                 if (prefHelper.isGuest()) {
                     showGuestMessage();
+                    btnSubscribe.setChecked(!isChecked);
                 } else {
                     if (isChecked) {
-                        serviceHelper.enqueueCall(webService.subscribeNews(categoryDetail.getId(), prefHelper.getUserToken()), WebServiceConstants.SUBSCRIBE_NEWS);
+                        serviceHelper.enqueueCall(webService.subscribeNews(ID, prefHelper.getUserToken()), WebServiceConstants.SUBSCRIBE_NEWS);
                     } else {
-                        serviceHelper.enqueueCall(webService.unsubscribeNews(categoryDetail.getId(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_NEWS);
+                        serviceHelper.enqueueCall(webService.unsubscribeNews(ID, prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_NEWS);
                     }
                 }
                 break;
             case R.id.btn_add_favorite:
                 if (prefHelper.isGuest()) {
                     showGuestMessage();
+                    btnAddFavorite.setChecked(!isChecked);
                 } else {
                     if (getMainActivity().getPlayerFragment() != null)
                         getMainActivity().getPlayerFragment().onFavoriteCheckChange(isChecked, categoryDetail.getId());
                     if (isChecked) {
-                        serviceHelper.enqueueCall(webService.favoriteNews(categoryDetail.getId(), prefHelper.getUserToken()), WebServiceConstants.FAVORITE_NEWS);
+                        serviceHelper.enqueueCall(webService.favoriteNews(ID, prefHelper.getUserToken()), FAVORITE_NEWS);
                     } else {
-                        serviceHelper.enqueueCall(webService.unFavoriteNews(categoryDetail.getId(), prefHelper.getUserToken()), WebServiceConstants.UNFAVORITE_NEWS);
+                        serviceHelper.enqueueCall(webService.unFavoriteNews(ID, prefHelper.getUserToken()), UNFAVORITE_NEWS);
                     }
                 }
                 break;

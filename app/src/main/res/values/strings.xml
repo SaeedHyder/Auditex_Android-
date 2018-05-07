@@ -211,7 +211,7 @@
     <string name="playlist_complete">Playlist Complete</string>
     <string name="item_remove_favorite">Podcast has been removed as favorite</string>
     <string name="terms_condition">Terms and Condition</string>
-    <string name="i_agree">I Agress</string>
+    <string name="i_agree">I Agree</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="about_us">About Us</string>
     <string name="my_account">My Account</string>
@@ -261,4 +261,5 @@
     <string name="new_noteworthy"><![CDATA[New & Noteworthy]]></string>
     <string name="guest_message">Please Sign in or Log in to Proceed!</string>
     <string name="by_location">By Location:</string>
+    <string name="advertisement_message">Please wait while the advertisement is being played</string>
 </resources>

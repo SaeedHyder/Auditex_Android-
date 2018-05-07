@@ -145,6 +145,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (prefHelper.isGuest()) {
                 showGuestMessage();
+                btnFavorite.setChecked(!isChecked);
             } else {
                 serviceHelper.enqueueCall(webService.changeFavoriteStatus(ID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
                 if (checkChangeListener != null) {
@@ -158,6 +159,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (prefHelper.isGuest()) {
                 showGuestMessage();
+                btnFavorite.setChecked(!isChecked);
             } else {
                 if (isChecked) {
                     serviceHelper.enqueueCall(webService.AddBookToFavorite(ID, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
@@ -175,6 +177,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (prefHelper.isGuest()) {
                 showGuestMessage();
+                btnFavorite.setChecked(!isChecked);
             } else {
                 if (isChecked) {
                     serviceHelper.enqueueCall(webService.favoriteNews(ID, prefHelper.getUserToken()), WebServiceConstants.FAVORITE_NEWS);
@@ -246,7 +249,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         }
     }
 
-    private void setHeadBar() {
+    private void setHeader() {
         if (getChildFragmentManager().findFragmentById(R.id.items) != null) {
             getChildFragmentManager().beginTransaction().
                     remove(getChildFragmentManager().findFragmentById(R.id.items)).commit();
@@ -339,7 +342,8 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     public void onDestroyView() {
         super.onDestroyView();
         getMainActivity().clearFlagKeepScreenOn();
-        mPlayerAdapter.release();
+        if (mPlayerAdapter != null)
+            mPlayerAdapter.release();
         unbinder.unbind();
     }
 
@@ -351,7 +355,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     }
 
     public void startPlaying() {
-        setHeadBar();
+        setHeader();
         getMainActivity().setFlagKeepScreenOn();
         if (InternetHelper.CheckInternetConectivityandShowToast(getDockActivity())) {
             playAdvertisement();
@@ -391,6 +395,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                         pbBottomBuffering.setVisibility(View.GONE);*/
                         break;
                     case ANCHORED:
+                        getMainActivity().mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                         break;
                     case COLLAPSED:
                         btnFavorite.setVisibility(View.GONE);
@@ -528,7 +533,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
 
     }
 
-    @OnClick({R.id.btn_volume, R.id.btn_backward, R.id.btn_play, R.id.btn_forward, R.id.btnLeft, R.id.btn_player_play, R.id.btn_close})
+    @OnClick({R.id.btn_volume, R.id.btn_backward, R.id.btn_play, R.id.btn_forward, R.id.btnLeft, R.id.btn_player_play, R.id.btn_close, R.id.container_player, R.id.background})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_volume:
@@ -728,7 +733,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
 
     @Override
     public void onFavoriteCheckChange(boolean check, int ID) {
-        if (ID == this.ID) {
+        if (this.ID != null && ID == this.ID) {
             if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
                 btnFavorite.setOnCheckedChangeListener(null);
                 btnFavorite.setChecked(check);

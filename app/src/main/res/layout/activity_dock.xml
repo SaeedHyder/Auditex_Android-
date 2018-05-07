@@ -21,6 +21,7 @@
             sothree:umanoOverlay="true"
             sothree:umanoPanelHeight="@dimen/x50"
             sothree:umanoParallaxOffset="100dp"
+            sothree:umanoAnchorPoint="0"
             sothree:umanoShadowHeight="4dp">
 
             <RelativeLayout
@@ -91,7 +92,7 @@
             android:layout_centerInParent="true"
             android:layout_marginStart="@dimen/x20"
             android:layout_marginEnd="@dimen/x20"
-            android:text="Please wait while the advetisement is being played"
+            android:text="@string/advertisement_message"
             android:textColor="@color/white"
             android:textSize="@dimen/x16"
             android:textStyle="bold"/>

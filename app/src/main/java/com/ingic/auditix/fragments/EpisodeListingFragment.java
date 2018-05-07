@@ -1,6 +1,7 @@
 package com.ingic.auditix.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.Realm;
 
 /**
  * Created on 1/17/2018.
@@ -46,12 +48,17 @@ public class EpisodeListingFragment extends BaseFragment implements PlayerItemCh
         }
 
         @Override
-        public void onRecyclerItemClicked(Object Ent, int position) {
+        public void onRecyclerItemClicked(final Object Ent, int position) {
             if (listItemListener != null) {
-                trackList.get(previousSelected).setSelected(false);
+                setTrackSelected(previousSelected,false);
                 rvEpisode.notifyItemChanged(previousSelected);
-                PodcastTrackEnt ent = (PodcastTrackEnt) Ent;
-                ent.setSelected(true);
+                getMainActivity().realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        PodcastTrackEnt ent = (PodcastTrackEnt) Ent;
+                        ent.setSelected(true);
+                    }
+                });
                 rvEpisode.notifyItemChanged(position);
                 previousSelected = position;
                 listItemListener.onTrackSelected(position);
@@ -98,12 +105,20 @@ public class EpisodeListingFragment extends BaseFragment implements PlayerItemCh
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        trackList.get(previousSelected).setSelected(true);
+        setTrackSelected(previousSelected,true);
         getMainActivity().mSlidingLayout.setScrollableView(rvEpisode);
         rvEpisode.setNestedScrollingEnabled(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
         rvEpisode.BindRecyclerView(new PodcastEpisodeListingBinder(episodeItemListener), trackList, layoutManager, new DefaultItemAnimator());
 
+    }
+    private void setTrackSelected(final int position, final boolean isSelected){
+        getMainActivity().realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(@NonNull Realm realm) {
+                trackList.get(position).setSelected(isSelected);
+            }
+        });
     }
 
     @Override
@@ -115,9 +130,9 @@ public class EpisodeListingFragment extends BaseFragment implements PlayerItemCh
     @Override
     public void onItemChanged(int position) {
         if (rvEpisode != null) {
-            trackList.get(previousSelected).setSelected(false);
+            setTrackSelected(previousSelected,false);
             rvEpisode.notifyItemChanged(previousSelected);
-            trackList.get(position).setSelected(true);
+            setTrackSelected(position,true);
             rvEpisode.notifyItemChanged(position);
             previousSelected = position;
         }

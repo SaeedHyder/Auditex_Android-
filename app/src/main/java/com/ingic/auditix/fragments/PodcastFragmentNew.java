@@ -99,7 +99,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
             SubscribePodcastEnt ent = (SubscribePodcastEnt) Ent;
-            openPodcastDetail(ent.getTrackId());
+            openPodcastDetail(ent.getTrackId() );
 
         }
     };
@@ -335,7 +335,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         if (prefHelper == null) {
             isFirstTime = true;
         } else {
-            categoriesIds = getMainActivity().filterFragment.getFiltersList();
+            //categoriesIds = getMainActivity().filterFragment.getFiltersList();
             showProgressDialog();
             serviceHelper.enqueueCall(webService.getSubscribePodcasts(prefHelper.getUserToken()), WebServiceConstants.GET_SUBSCRIBE_PODCASTS, false);
             // bindPodcastList();

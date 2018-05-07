@@ -61,8 +61,14 @@ public class PodcastEpisodeBinder extends RecyclerViewBinder<PodcastTrackEnt> im
         } else if (entity.getStatusState() != AppConstants.DownloadStates.DOWNLOADING) {
             final DownloadItemModel downloadItem = getObjectfromRealm(entity.getId());
             if (downloadItem != null) {
-                entity.setStatusState(downloadItem.getDownloadState());
-                entity.setDownloadProgress(downloadItem.getDownloadProgress());
+                getRealm().executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        entity.setStatusState(downloadItem.getDownloadState());
+                        entity.setDownloadProgress(downloadItem.getDownloadProgress());
+                    }
+                });
+
             }
         }
         int status = entity.getStatusState();

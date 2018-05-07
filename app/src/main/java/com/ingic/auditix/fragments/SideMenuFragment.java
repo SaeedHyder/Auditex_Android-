@@ -79,7 +79,6 @@ public class SideMenuFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView();
         attachDataToViews();
 
 
@@ -93,6 +92,7 @@ public class SideMenuFragment extends BaseFragment {
     }
 
     private void attachDataToViews() {
+        initView();
         UserModel user = prefHelper.getUser();
         if (user != null) {
             txtUsername.setText(user.getFullName());
@@ -135,6 +135,7 @@ public class SideMenuFragment extends BaseFragment {
                 .async()
                 .from(image)
                 .into(imgUserBlur);*/
+      if (imgUserBlur!=null)
         imgUserBlur.setImageBitmap(image);
     }
 

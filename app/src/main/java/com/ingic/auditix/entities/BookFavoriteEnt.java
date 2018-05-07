@@ -25,7 +25,7 @@ public class BookFavoriteEnt {
     private String narratorName;
     @SerializedName("Rating")
     @Expose
-    private Integer rating;
+    private Double rating;
     @SerializedName("Genre")
     @Expose
     private String genre;
@@ -92,11 +92,11 @@ public class BookFavoriteEnt {
         this.authorName = authorName;
     }
 
-    public Integer getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 

@@ -1,6 +1,7 @@
 package com.ingic.auditix.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +43,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.Realm;
 
 /**
  * Created on 12/27/2017.
@@ -108,11 +110,12 @@ public class PodcastDetailFragment extends BaseFragment {
         public void pending(final BaseDownloadTask task, int soFarBytes, int totalBytes) {
             if (podcastTrackEnts != null && rvEpisodes != null) {
                 patsyObject.setId((String) task.getTag());
-                if (podcastTrackEnts.contains(patsyObject)) {
+                findAndUpdateDownloadState(AppConstants.DownloadStates.PENDING,0);
+               /* if (podcastTrackEnts.contains(patsyObject)) {
                     int index = podcastTrackEnts.indexOf(patsyObject);
                     podcastTrackEnts.get(index).setStatusState(AppConstants.DownloadStates.PENDING);
                     rvEpisodes.notifyItemChanged(index);
-                }
+                }*/
 
             }
         }
@@ -130,12 +133,13 @@ public class PodcastDetailFragment extends BaseFragment {
         public void progress(final BaseDownloadTask task, int progress) {
             if (podcastTrackEnts != null && rvEpisodes != null) {
                 patsyObject.setId((String) task.getTag());
-                if (podcastTrackEnts.contains(patsyObject)) {
+                findAndUpdateDownloadState(AppConstants.DownloadStates.DOWNLOADING,progress);
+                /*if (podcastTrackEnts.contains(patsyObject)) {
                     int index = podcastTrackEnts.indexOf(patsyObject);
                     podcastTrackEnts.get(index).setStatusState(AppConstants.DownloadStates.DOWNLOADING);
                     podcastTrackEnts.get(index).setDownloadProgress(progress);
                     rvEpisodes.notifyItemChanged(index);
-                }
+                }*/
 
             }
         }
@@ -144,11 +148,12 @@ public class PodcastDetailFragment extends BaseFragment {
         public void completed(final BaseDownloadTask task) {
             if (podcastTrackEnts != null && rvEpisodes != null) {
                 patsyObject.setId((String) task.getTag());
-                if (podcastTrackEnts.contains(patsyObject)) {
+                findAndUpdateDownloadState(AppConstants.DownloadStates.COMPLETE,0);
+               /* if (podcastTrackEnts.contains(patsyObject)) {
                     int index = podcastTrackEnts.indexOf(patsyObject);
                     podcastTrackEnts.get(index).setStatusState(AppConstants.DownloadStates.COMPLETE);
                     rvEpisodes.notifyItemChanged(index);
-                }
+                }*/
             }
 
         }
@@ -157,13 +162,14 @@ public class PodcastDetailFragment extends BaseFragment {
         public void error(final BaseDownloadTask task, Throwable e) {
             if (podcastTrackEnts != null && rvEpisodes != null) {
                 patsyObject.setId((String) task.getTag());
-                if (podcastTrackEnts.contains(patsyObject)) {
+                findAndUpdateDownloadState(AppConstants.DownloadStates.ERROR,0);
+               /* if (podcastTrackEnts.contains(patsyObject)) {
                     int index = podcastTrackEnts.indexOf(patsyObject);
                     podcastTrackEnts.get(index).setStatusState(AppConstants.DownloadStates.ERROR);
                     rvEpisodes.notifyItemChanged(index);
-                   /* UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.download_error)
-                            + podcastTrackEnts.get(index).getName());*/
-                }
+                   *//* UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.download_error)
+                            + podcastTrackEnts.get(index).getName());*//*
+                }*/
 
             }
         }
@@ -180,17 +186,18 @@ public class PodcastDetailFragment extends BaseFragment {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (prefHelper.isGuest()) {
                 showGuestMessage();
+                btnAddFavorite.setChecked(!isChecked);
             } else {
                 if (getMainActivity().getPlayerFragment() != null)
-                    getMainActivity().getPlayerFragment().onFavoriteCheckChange(isChecked,trackID);
-                serviceHelper.enqueueCall(webService.changeFavoriteStatus(trackID, isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
+                    getMainActivity().getPlayerFragment().onFavoriteCheckChange(isChecked, podcastDetailEnt.getTrackId());
+                serviceHelper.enqueueCall(webService.changeFavoriteStatus(podcastDetailEnt.getTrackId(), isChecked, prefHelper.getUserToken()), WebServiceConstants.ADD_FAVORITE);
             }
         }
     };
     private FavoriteCheckChangeListener favoritePlayerCheckChangeListener = new FavoriteCheckChangeListener() {
         @Override
-        public void onFavoriteCheckChange(boolean check,int ID) {
-            if (ID==trackID) {
+        public void onFavoriteCheckChange(boolean check, int ID) {
+            if (ID == podcastDetailEnt.getTrackId()) {
                 btnAddFavorite.setOnCheckedChangeListener(null);
                 btnAddFavorite.setChecked(check);
                 btnAddFavorite.setOnCheckedChangeListener(favoriteCheckListener);
@@ -204,6 +211,10 @@ public class PodcastDetailFragment extends BaseFragment {
                 //Case For Play Button Clicked
                 openPlayer(position);
             } else {
+                if (prefHelper.isGuest()) {
+                    showGuestMessage();
+                    return;
+                }
                 //Case For Download Button Clicked
                 if (!prefHelper.isDownloadOnAll()) {
                     if (InternetHelper.isConnectedOnMobile(getDockActivity())) {
@@ -246,6 +257,20 @@ public class PodcastDetailFragment extends BaseFragment {
         return fragment;
     }
 
+    private void findAndUpdateDownloadState(final int State, final int Progress) {
+        if (podcastTrackEnts.contains(patsyObject)) {
+            final int index = podcastTrackEnts.indexOf(patsyObject);
+            getMainActivity().realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(@NonNull Realm realm) {
+                    podcastTrackEnts.get(index).setStatusState(State);
+                    podcastTrackEnts.get(index).setDownloadProgress(Progress);
+                }
+            });
+            rvEpisodes.notifyItemChanged(index);
+        }
+    }
+
     public void setPodcastDetailEnt(PodcastDetailEnt podcastDetailEnt) {
         this.podcastDetailEnt = podcastDetailEnt;
     }
@@ -272,7 +297,13 @@ public class PodcastDetailFragment extends BaseFragment {
                 }
                 break;
             case WebServiceConstants.ADD_FAVORITE:
-                podcastDetailEnt.setFavorite(btnAddFavorite.isChecked());
+                getMainActivity().realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        podcastDetailEnt.setFavorite(btnAddFavorite.isChecked());
+                    }
+                });
+
                 if (btnAddFavorite.isChecked()) {
                     UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.item_added_favorite));
                 } else {
@@ -392,6 +423,8 @@ public class PodcastDetailFragment extends BaseFragment {
         getDockActivity().setFileDownloadListener(fileDownloadListener);
         setupUIViews();
         getDetails();
+        if (getMainActivity().getPlayerFragment() != null)
+            getMainActivity().getPlayerFragment().setCheckChangeListener(favoritePlayerCheckChangeListener);
     }
 
     private void setTrackID(Integer trackID) {
@@ -414,7 +447,7 @@ public class PodcastDetailFragment extends BaseFragment {
     }
 
     @OnClick({R.id.btn_play, R.id.btn_download, R.id.btn_rate, R.id.btn_player_play, R.id.btn_player_forward})
-    public void onViewClicked(View view) {
+    public void ReReredsfdsfsdfdsfonViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_play:
                 openPlayer(0);
@@ -435,7 +468,7 @@ public class PodcastDetailFragment extends BaseFragment {
                     helper.initRatingDialog(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            serviceHelper.enqueueCall(webService.ratePodcast(trackID, helper.getDialogRating(),
+                            serviceHelper.enqueueCall(webService.ratePodcast(podcastDetailEnt.getTrackId(), helper.getDialogRating(),
                                     prefHelper.getUserToken()), WebServiceConstants.RATE_PODCAST);
                             helper.hideDialog();
                         }
@@ -461,7 +494,7 @@ public class PodcastDetailFragment extends BaseFragment {
             if (getMainActivity().filterFragment != null) {
                 getMainActivity().filterFragment.clearFilters();
             }
-            getMainActivity().showBottomPlayer(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST, null, null,
+            getMainActivity().showBottomPlayer(podcastDetailEnt, podcastDetailEnt.getTrackId(), AppConstants.TAB_PODCAST, null, null,
                     startingIndex, favoritePlayerCheckChangeListener);
           /*  getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(podcastDetailEnt, trackID, AppConstants.TAB_PODCAST, null,null,
                     startingIndex), PlayerFragment.TAG);*/
