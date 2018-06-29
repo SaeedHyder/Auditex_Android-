@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -30,6 +31,13 @@ public class OKHttpClientCreator {
 
     public static OkHttpClient createCustomInterceptorClient(Context context) {
         OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+        builder.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request().newBuilder().addHeader("Accept-Encoding", "identity").build();
+                return chain.proceed(request);
+            }
+        });
         builder.readTimeout(60, TimeUnit.SECONDS);
         builder.connectTimeout(60, TimeUnit.SECONDS);
         builder.addNetworkInterceptor(new CustomInterceptor(progressListener));
