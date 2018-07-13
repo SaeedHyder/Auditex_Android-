@@ -11,13 +11,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'realm-android'
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.ingic.auditix"
         minSdkVersion 19
-        targetSdkVersion 22
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         // Enabling multidex support.
@@ -37,6 +37,11 @@ android {
         }
     }
 
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 afterEvaluate {
     tasks.matching {
@@ -51,102 +56,65 @@ afterEvaluate {
 }
 repositories {
     jcenter()
-
     maven { url "https://maven.google.com" }
     maven { url 'https://jitpack.io' }
-
-    /*flatDir {
-        dirs 'libs'
-    }*/
     maven { url 'https://maven.fabric.io/public' }
 }
-ext.supportLibraryVersion = "26.1.0"
+ext.supportLibraryVersion = "27.1.1"
 ext.exoPlayerVersion = "2.6.1"
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-
-    //    compile 'com.google.guava:guava:20.0'
-    compile "com.android.support:animated-vector-drawable:$supportLibraryVersion"
-    compile "com.android.support:mediarouter-v7:$supportLibraryVersion"
-    compile "com.android.support:support-v4:$supportLibraryVersion"
-    compile "com.android.support:design:$supportLibraryVersion"
-    compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
-    compile "com.google.android.exoplayer:extension-okhttp:$exoPlayerVersion"
-    compile 'com.dinuscxj:circleprogressbar:1.1.1'
-    compile('cn.dreamtobe.filedownloader:filedownloader-okhttp3-connection:1.1.0') {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+    implementation "com.android.support:animated-vector-drawable:$supportLibraryVersion"
+    implementation "com.android.support:mediarouter-v7:$supportLibraryVersion"
+    implementation "com.android.support:support-v4:$supportLibraryVersion"
+    implementation "com.android.support:design:$supportLibraryVersion"
+    implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
+    implementation "com.android.support:cardview-v7:$supportLibraryVersion"
+    implementation "com.google.android.exoplayer:extension-okhttp:$exoPlayerVersion"
+    implementation 'com.dinuscxj:circleprogressbar:1.1.1'
+    implementation('cn.dreamtobe.filedownloader:filedownloader-okhttp3-connection:1.1.0') {
         exclude module: 'okhttp'
         exclude group: 'com.liulishuo.filedownloader', module: 'library'
     }
-    compile 'com.liulishuo.filedownloader:library:1.7.1'
-
+    implementation 'com.liulishuo.filedownloader:library:1.7.1'
     //RecyclerView
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
-
-    //    compile 'com.google.android.gms:play-services:11.8.0'
-    compile 'com.google.android.gms:play-services-plus:11.8.0'
-    compile 'com.google.android.gms:play-services-auth:11.8.0'
-
-    //    compile 'com.google.android.gms:play-services-maps:11.8.0'
-
-    //    compile 'com.google.android.gms:play-services-places:11.8.0'
-
-    //    compile 'com.google.firebase:firebase-appindexing:11.8.0'
-    compile('com.andreabaccega:android-form-edittext:1.2.1@aar') {
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
+    implementation 'com.google.android.gms:play-services-plus:11.8.0'
+    implementation 'com.google.android.gms:play-services-auth:11.8.0'
+    implementation('com.andreabaccega:android-form-edittext:1.2.1@aar') {
         exclude module: 'design'
     }
-    compile 'com.android.support:multidex:1.0.1'
-
-    //    compile 'io.realm:realm-android:0.90.0'
-    compile project(':pageindicatorview')
-    //compile project(':swipe-reveal-layout')
-    compile project(':commons-lang3-3.1')
-
-    //    compile 'se.emilsjolander:stickylistheaders:2.7.0'
-
+    implementation 'com.android.support:multidex:1.0.1'
+    implementation project(':pageindicatorview')
+    implementation project(':commons-lang3-3.1')
     //For ButterKnife
-    compile 'com.jakewharton:butterknife:8.5.1'
+    implementation 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-
     //For Facebook
-    compile 'com.facebook.android:facebook-android-sdk:4.5.0'
-
+    implementation 'com.facebook.android:facebook-android-sdk:4.5.0'
     //For Circular Image View
-    compile 'de.hdodenhof:circleimageview:1.3.0'
-
-    //    compile 'com.devbrackets.android:exomedia:4.1.0'
-
-    //    compile 'com.squareup:otto:1.3.8'
-
-    //    compile 'com.makeramen:roundedimageview:2.2.1'
-
-    //    compile 'com.squareup:otto:1.3.8'
-
+    implementation 'de.hdodenhof:circleimageview:1.3.0'
     //For retorfit
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-    compile 'com.google.code.gson:gson:2.6.2'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile project(':nineoldandroids-library-2.4.0')
-    compile project(':library')
-    compile 'com.google.firebase:firebase-messaging:11.8.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-
-    //    compile 'com.eftimoff:android-viewpager-transformers:1.0.1@aar'
-    compile 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
-
-    //    compile 'jp.wasabeef:blurry:2.1.1'
-    compile 'com.droidninja:filepicker:2.1.1'
-    compile 'com.github.bumptech.glide:glide:4.0.0'
-   // compile 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation project(':nineoldandroids-library-2.4.0')
+    implementation project(':library')
+    implementation 'com.google.firebase:firebase-messaging:11.8.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
+    implementation 'com.droidninja:filepicker:2.1.1'
+    implementation 'com.github.bumptech.glide:glide:4.0.0'
     implementation 'com.google.api-client:google-api-client:1.22.0'
     implementation 'com.google.api-client:google-api-client-android:1.22.0'
     implementation 'com.google.apis:google-api-services-people:v1-rev4-1.22.0'
-    compile 'id.zelory:compressor:2.1.0'
-    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
+    implementation 'id.zelory:compressor:2.1.0'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
         transitive = true;
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    implementation "com.android.support:cardview-v7:$supportLibraryVersion"
+    implementation 'com.hbb20:ccp:2.2.2'
 }
 apply plugin: 'com.google.gms.google-services'

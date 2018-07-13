@@ -13,6 +13,7 @@ import com.ingic.auditix.entities.NewsEpisodeEnt;
 import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.entities.PodcastCategoryListEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
+import com.ingic.auditix.entities.PodcastEpisodeEnt;
 import com.ingic.auditix.entities.PodcastFavoriteEnt;
 import com.ingic.auditix.entities.PodcastHomeEnt;
 import com.ingic.auditix.entities.PodcastLocationEnt;
@@ -50,7 +51,9 @@ public interface WebService {
                                                   @Field("Password") String password,
                                                   @Field("ConfirmPassword") String confirmPassword,
                                                   @Field("DOB") String dob,
-                                                  @Field("Gender") int gender);
+                                                  @Field("Gender") int gender,
+                                                  @Field("Country") String Country,
+                                                  @Field("PhoneNo") String PhoneNo);
 
     @FormUrlEncoded
     @POST("SocialLogin")
@@ -78,6 +81,7 @@ public interface WebService {
 
     @GET("ValidateCode")
     Call<ResponseWrapper<UserModel>> ResetPassword(@Query("Email") String email, @Query("Code") String code);
+
     @FormUrlEncoded
     @POST("GuestRegistration")
     Call<ResponseWrapper<UserModel>> guestRegistration(@Field("DeviceName") String DeviceName,
@@ -86,6 +90,16 @@ public interface WebService {
                                                        @Field("IsPlayStore") boolean IsPlayStore,
                                                        @Field("IsProduction") boolean IsProduction,
                                                        @Field("AuthToken") String AuthToken);
+
+    @FormUrlEncoded
+    @POST("ResendSMSCode")
+    Call<ResponseWrapper> resendSMSCode(@Field("PhoneNo") String PhoneNo,
+                                        @Header(WebServiceConstants.HEADER_KEY) String AuthToken);
+
+    @FormUrlEncoded
+    @POST("VerifySMSCode")
+    Call<ResponseWrapper> verifySMSCode(@Field("Code") String Code,
+                                        @Header(WebServiceConstants.HEADER_KEY) String AuthToken);
     //endregion
 
     //region Notification Module
@@ -111,12 +125,12 @@ public interface WebService {
     //endregion
 
     //region Podcast Module
-    @GET("GetPodCastByCategoryIdCountryCsv")
-    Call<ResponseWrapper<ArrayList<PodcastCategoryListEnt>>> getPodcastsByCategory(@Query("categoryId") Integer categoryId,
-                                                                                   @Query("limit") Integer limit,
-                                                                                   @Query("countryCode") String countryCode,
-                                                                                   @Query("offset") Integer offset,
-                                                                                   @Header(WebServiceConstants.HEADER_KEY) String header);
+    @GET("GetPodCastByCategoryId")
+    Call<ResponseWrapper<PodcastCategoryListEnt>> getPodcastsByCategory(@Query("categoryId") Integer categoryId,
+                                                                        @Query("limit") Integer limit,
+                                                                        @Query("countryCode") String countryCode,
+                                                                        @Query("offset") Integer offset,
+                                                                        @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("GetDefaultPodCast")
     Call<ResponseWrapper<PodcastHomeEnt>> getDefaultPodcast(@Query("pageNumber") Integer pageNumber, @Query("totalCount") Integer totalCount, @Query("categoriesIds") String categoriesIds,
@@ -124,10 +138,16 @@ public interface WebService {
 
     @GET("GetPodcastFeedByTrackId")
     Call<ResponseWrapper<PodcastDetailEnt>> getPodcastDetailByTrack(@Query("trackId") Integer trackId,
+                                                                    @Query("categoryId") Integer categoryId,
                                                                     @Header(WebServiceConstants.HEADER_KEY) String header);
+
+    @GET("GetPodcastEpisodesByPodcastID")
+    Call<ResponseWrapper<ArrayList<PodcastEpisodeEnt>>> getPodcastEpisodesByPodcastID(@Query("PodcastID") Integer PodcastID,
+                                                                           @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("SubscribePodcast")
     Call<ResponseWrapper> subscribePodcast(@Query("trackId") Integer trackId,
+                                           @Query("CategoryId") Integer CategoryId,
                                            @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("UnSubscribePodcast")
@@ -194,6 +214,9 @@ public interface WebService {
     @GET("GetAllGenre")
     Call<ResponseWrapper<ArrayList<BookGenreEnt>>> getAllBooksFilters(@Query("culture") String culture, @Header(WebServiceConstants.HEADER_KEY) String header);
 
+    @GET("GetListeningEventPodcast")
+    Call<ResponseWrapper<ArrayList<PodcastEpisodeEnt>>> getNewAndNoteworthy(@Header(WebServiceConstants.HEADER_KEY) String header);
+
     @GET("MyLibraryBooks")
     Call<ResponseWrapper<ArrayList<BookDetailEnt>>> getLibraryBooks(@Query("PageNo") Integer pageNumber,
                                                                     @Query("PageSize") Integer pageSize,
@@ -208,10 +231,10 @@ public interface WebService {
 
     //region Search
     @GET("GetSearch")
-    Call<ResponseWrapper<ArrayList<SearchEnt>>> getSearchItem(@Query("pageNumber") Integer pageNumber,
-                                                              @Query("totalCount") Integer totalCount,
-                                                              @Query("Text") String Text,
-                                                              @Header(WebServiceConstants.HEADER_KEY) String header);
+    Call<ResponseWrapper<SearchEnt>> getSearchItem(@Query("pageNumber") Integer pageNumber,
+                                                   @Query("totalCount") Integer totalCount,
+                                                   @Query("Text") String Text,
+                                                   @Header(WebServiceConstants.HEADER_KEY) String header);
 
     //endregion
 
@@ -247,6 +270,7 @@ public interface WebService {
 
     @GET("GetAllNewsSubscriptions")
     Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllSubscribeNews(@Header(WebServiceConstants.HEADER_KEY) String userToken);
+
     @GET("GetAllFavoriteNews")
     Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllFavoriteNews(@Header(WebServiceConstants.HEADER_KEY) String userToken);
 

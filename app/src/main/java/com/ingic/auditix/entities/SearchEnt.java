@@ -2,90 +2,42 @@ package com.ingic.auditix.entities;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * Created on 3/13/2018.
  */
 
 public class SearchEnt {
 
-    @SerializedName("ID")
-    private int ID;
-    @SerializedName("Name")
-    private String Name;
-    @SerializedName("NarratedBy")
-    private String NarratedBy;
-    @SerializedName("Genre")
-    private String Genre;
-    @SerializedName("Description")
-    private String Description;
-    @SerializedName("ImageUrl")
-    private String ImageUrl;
-    @SerializedName("Type")
-    private String Type;
-    @SerializedName("BaseUrl")
-    private String BaseUrl;
+    @SerializedName("Podcasts")
+    private ArrayList<PodcastDetailHomeEnt> Podcasts;
+    @SerializedName("Books")
+    private ArrayList<BookDetailEnt> Books;
+    @SerializedName("News")
+    private ArrayList<NewsCategoryEnt> News;
 
-    public int getID() {
-        return ID;
+    public ArrayList<PodcastDetailHomeEnt> getPodcasts() {
+        return Podcasts;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setPodcasts(ArrayList<PodcastDetailHomeEnt> podcasts) {
+        Podcasts = podcasts;
     }
 
-    public String getName() {
-        return Name;
+    public ArrayList<BookDetailEnt> getBooks() {
+        return Books;
     }
 
-    public void setName(String Name) {
-        this.Name = Name;
+    public void setBooks(ArrayList<BookDetailEnt> books) {
+        Books = books;
     }
 
-    public String getNarratedBy() {
-        return NarratedBy;
+    public ArrayList<NewsCategoryEnt> getNews() {
+        return News;
     }
 
-    public void setNarratedBy(String NarratedBy) {
-        this.NarratedBy = NarratedBy;
-    }
-
-    public String getGenre() {
-        return Genre;
-    }
-
-    public void setGenre(String Genre) {
-        this.Genre = Genre;
-    }
-
-    public String getDescription() {
-        return Description;
-    }
-
-    public void setDescription(String Description) {
-        this.Description = Description;
-    }
-
-    public String getImageUrl() {
-        return ImageUrl;
-    }
-
-    public void setImageUrl(String ImageUrl) {
-        this.ImageUrl = ImageUrl;
-    }
-
-    public String getType() {
-        return Type;
-    }
-
-    public void setType(String Type) {
-        this.Type = Type;
-    }
-
-    public String getBaseUrl() {
-        return BaseUrl;
-    }
-
-    public void setBaseUrl(String BaseUrl) {
-        this.BaseUrl = BaseUrl;
+    public void setNews(ArrayList<NewsCategoryEnt> news) {
+        News = news;
     }
 }

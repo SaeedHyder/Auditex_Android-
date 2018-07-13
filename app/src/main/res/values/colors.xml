@@ -61,4 +61,5 @@
     <color name="gp_button_color">#D6492F</color>
     <color name="google_color">#D6492F</color>
     <color name="seekbar_progress">#D6492F</color>
+    <color name="player_gray">#363636</color>
 </resources>

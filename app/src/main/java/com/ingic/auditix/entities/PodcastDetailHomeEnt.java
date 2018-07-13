@@ -34,7 +34,7 @@ public class PodcastDetailHomeEnt {
     private String imageUrl;
     @SerializedName("Rating")
     @Expose
-    private Integer rating;
+    private Float rating;
     @SerializedName("EpisodeCount")
     @Expose
     private Integer episodeCount;
@@ -68,13 +68,105 @@ public class PodcastDetailHomeEnt {
     @SerializedName("InActive")
     @Expose
     private Boolean inActive;
+    @SerializedName("Description")
+    @Expose
+    private String description;
+    @SerializedName("IsEpisodesAdded")
+    @Expose
+    private Boolean isEpisodesAdded;
+    @SerializedName("CountryId")
+    @Expose
+    private Integer countryId;
+    @SerializedName("IsFavorite")
+    @Expose
+    private Boolean isFavorite;
+    @SerializedName("PodcastCategory")
+    @Expose
+    private Object podcastCategory;
+    @SerializedName("AutoDownload")
+    @Expose
+    private Boolean autoDownload;
+    @SerializedName("IsRated")
+    @Expose
+    private Boolean isRated;
+    @SerializedName("NotificationEnabled")
+    @Expose
+    private Boolean notificationEnabled;
 
-    public Boolean isSubscribed() {
+    public Boolean getSubscribed() {
         return IsSubscribed;
     }
 
     public void setSubscribed(Boolean subscribed) {
         IsSubscribed = subscribed;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getEpisodesAdded() {
+        return isEpisodesAdded;
+    }
+
+    public void setEpisodesAdded(Boolean episodesAdded) {
+        isEpisodesAdded = episodesAdded;
+    }
+
+    public Integer getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(Integer countryId) {
+        this.countryId = countryId;
+    }
+
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public Object getPodcastCategory() {
+        return podcastCategory;
+    }
+
+    public void setPodcastCategory(Object podcastCategory) {
+        this.podcastCategory = podcastCategory;
+    }
+
+    public Boolean getAutoDownload() {
+        return autoDownload;
+    }
+
+    public void setAutoDownload(Boolean autoDownload) {
+        this.autoDownload = autoDownload;
+    }
+
+    public Boolean getRated() {
+        return isRated;
+    }
+
+    public void setRated(Boolean rated) {
+        isRated = rated;
+    }
+
+    public Boolean getNotificationEnabled() {
+        return notificationEnabled;
+    }
+
+    public void setNotificationEnabled(Boolean notificationEnabled) {
+        this.notificationEnabled = notificationEnabled;
+    }
+
+    public Boolean isSubscribed() {
+        return IsSubscribed;
     }
 
     public Integer getPodcastId() {
@@ -141,11 +233,11 @@ public class PodcastDetailHomeEnt {
         this.imageUrl = imageUrl;
     }
 
-    public Integer getRating() {
+    public Float getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Float rating) {
         this.rating = rating;
     }
 

@@ -59,7 +59,7 @@ public class PodcastDetailEnt extends RealmObject {
     private String Genre;
     @SerializedName("Rating")
     @Expose
-    private Integer Rating;
+    private Float Rating;
     @SerializedName("IsSubscribed")
     @Expose
     private boolean IsSubscribed;
@@ -123,11 +123,11 @@ public class PodcastDetailEnt extends RealmObject {
         IsEpisodeAdded = episodeAdded;
     }
 
-    public Integer getRating() {
+    public Float getRating() {
         return Rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Float rating) {
         Rating = rating;
     }
 
@@ -180,7 +180,7 @@ public class PodcastDetailEnt extends RealmObject {
     }
 
     public String getImage() {
-        return image;
+        return "http://auditix.stagingic.com/"+image;
     }
 
     public void setImage(String image) {

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/x10">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/x7"
+            android:layout_marginStart="@dimen/x7">
+
+            <ImageView
+                android:id="@+id/img_item_pic"
+                android:layout_width="@dimen/x110"
+                android:layout_height="@dimen/x110"
+                android:layout_marginEnd="@dimen/x5"
+                android:contentDescription="@string/profile"
+                android:src="@drawable/com_facebook_profile_picture_blank_square"/>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/txt_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="@dimen/x5"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textColor="@color/app_font_black"
+                    android:textSize="@dimen/x15"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typeface="@string/font_bold"/>
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/txt_narrator"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="@dimen/x5"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text="@string/narrator"
+                    android:textColor="@color/app_font_black"
+                    android:textSize="@dimen/x13"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_title"
+                    app:typeface="@string/font_normal"/>
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/txt_narrator_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="@dimen/x5"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="@color/app_font_gray"
+                    android:textSize="@dimen/x13"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_play"
+                    app:layout_constraintStart_toEndOf="@+id/txt_narrator"
+                    app:layout_constraintTop_toBottomOf="@id/txt_title"
+                    app:typeface="@string/font_normal"/>
+
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/txt_duration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="@dimen/x5"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text="@string/duration"
+                    android:textColor="@color/app_font_black"
+                    android:textSize="@dimen/x13"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_narrator"
+                    app:typeface="@string/font_normal"/>
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/txt_duration_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="@dimen/x5"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text="105 mins"
+                    android:textColor="@color/app_font_gray"
+                    android:textSize="@dimen/x13"
+                    app:layout_constraintStart_toEndOf="@+id/txt_duration"
+                    app:layout_constraintTop_toBottomOf="@id/txt_narrator_text"
+                    app:typeface="@string/font_normal"/>
+
+
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="@dimen/x10"
+            android:background="@color/app_gray"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/x5">
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/btnPlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="start"
+                android:layout_toStartOf="@+id/btn_play"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/play"
+                android:textAllCaps="true"
+                android:textColor="@color/app_orange"
+                android:textSize="@dimen/x15"
+                app:typeface="@string/font_normal"
+                />
+
+            <ImageView
+                android:id="@+id/btn_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/play1"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/app_gray"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/x5">
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/btnDownloadEpisode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="start"
+                android:layout_toStartOf="@+id/btnDownload"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/download_episode"
+                android:textAllCaps="true"
+                android:textColor="@color/app_orange"
+                android:textSize="@dimen/x15"
+                app:typeface="@string/font_normal"
+                />
+
+            <ImageView
+                android:id="@+id/btnDownload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/download"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/app_gray"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/x5">
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/btnShareEpisode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="start"
+                android:layout_toStartOf="@+id/btnShare"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/share_episode"
+                android:textAllCaps="true"
+                android:textColor="@color/app_orange"
+                android:textSize="@dimen/x15"
+                app:typeface="@string/font_normal"
+                />
+
+            <ImageView
+                android:id="@+id/btnShare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/share_orange"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/app_gray"/>
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="@dimen/x10"
+            android:maxLines="1"
+            android:text="@string/about"
+            android:textAllCaps="true"
+            android:textColor="@color/app_font_black"
+            android:textSize="@dimen/x16"
+            android:textStyle="bold"
+            app:typeface="@string/font_normal"/>
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_about_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x5"
+            android:gravity="start"
+            android:scrollbars="vertical"
+            android:text="@string/lorem_ipsum"
+            android:textColor="@color/app_font_gray"
+            android:textSize="@dimen/x13"
+            app:typeface="@string/font_normal"/>
+
+    </LinearLayout>
+</LinearLayout>

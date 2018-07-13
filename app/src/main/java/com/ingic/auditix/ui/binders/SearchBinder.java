@@ -39,7 +39,7 @@ public class SearchBinder extends RecyclerViewBinder<SearchEnt> implements View.
     @Override
     public void bindView(SearchEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
-        imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, options);
+        /*imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, options);
         holder.txtTitle.setText(entity.getName() + "");
         holder.txtNarratorText.setText(entity.getNarratedBy() + "");
         if (entity.getNarratedBy() == null) {
@@ -48,7 +48,7 @@ public class SearchBinder extends RecyclerViewBinder<SearchEnt> implements View.
         } else {
             holder.txtNarrator.setVisibility(View.VISIBLE);
             holder.txtNarratorText.setVisibility(View.VISIBLE);
-        }
+        }*/
         holder.itemView.setTag(R.integer.key_recycler_object, entity);
         holder.itemView.setTag(R.integer.key_recycler_position, position);
         holder.itemView.setOnClickListener(this);

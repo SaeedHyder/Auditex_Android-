@@ -25,14 +25,15 @@ import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.CMSEnt;
 import com.ingic.auditix.entities.NewsEpisodeEnt;
+import com.ingic.auditix.entities.PlayerPodcatsEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
-import com.ingic.auditix.fragments.BooksFilterFragment;
-import com.ingic.auditix.fragments.FilterFragment;
-import com.ingic.auditix.fragments.HomeFragment;
-import com.ingic.auditix.fragments.LanguageSelectionFragment;
-import com.ingic.auditix.fragments.NotificationsFragment;
-import com.ingic.auditix.fragments.PlayerFragment;
-import com.ingic.auditix.fragments.SideMenuFragment;
+import com.ingic.auditix.fragments.books.BooksFilterFragment;
+import com.ingic.auditix.fragments.podcast.FilterFragment;
+import com.ingic.auditix.fragments.standard.HomeFragment;
+import com.ingic.auditix.fragments.standard.LanguageSelectionFragment;
+import com.ingic.auditix.fragments.dashboard.NotificationsFragment;
+import com.ingic.auditix.fragments.player.PlayerFragment;
+import com.ingic.auditix.fragments.standard.SideMenuFragment;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.SideMenuChooser;
 import com.ingic.auditix.global.SideMenuDirection;
@@ -487,7 +488,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
         imageAdvertise.setVisibility(View.GONE);
     }
 
-    public void showBottomPlayer(PodcastDetailEnt podcastDetail, Integer ID, String playerType,
+    public void showBottomPlayer(PlayerPodcatsEnt podcastDetail, Integer ID, String playerType,
                                  BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
         playerFragment.resetPlayer();
         playerFragment.setContent(podcastDetail, ID, playerType, bookDetailEnt, newsEpisodeEnt, startingIndex, checkChangeListener);

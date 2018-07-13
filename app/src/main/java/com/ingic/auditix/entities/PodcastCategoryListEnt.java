@@ -14,12 +14,12 @@ import java.util.List;
  */
 
 public class PodcastCategoryListEnt {
-    @SerializedName("resultCount")
+    @SerializedName("TotalCount")
     @Expose
     private Integer resultCount;
-    @SerializedName("results")
+    @SerializedName("podcastListResultlist")
     @Expose
-    private ArrayList<PodcastCategoryDetailEnt> results = null;
+    private ArrayList<PodcastDetailHomeEnt> results = null;
 
     public Integer getResultCount() {
         return resultCount;
@@ -29,11 +29,11 @@ public class PodcastCategoryListEnt {
         this.resultCount = resultCount;
     }
 
-    public ArrayList<PodcastCategoryDetailEnt> getResults() {
+    public ArrayList<PodcastDetailHomeEnt> getResults() {
         return results;
     }
 
-    public void setResults(ArrayList<PodcastCategoryDetailEnt> results) {
+    public void setResults(ArrayList<PodcastDetailHomeEnt> results) {
         this.results = results;
     }
 

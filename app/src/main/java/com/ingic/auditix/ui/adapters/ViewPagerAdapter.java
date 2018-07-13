@@ -4,11 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.transition.ChangeBounds;
-import android.transition.Slide;
-import android.view.Gravity;
 
-import com.ingic.auditix.R;
-import com.ingic.auditix.fragments.WalkThroughItemFragment;
+import com.ingic.auditix.fragments.standard.WalkThroughItemFragment;
 
 import java.util.ArrayList;
 

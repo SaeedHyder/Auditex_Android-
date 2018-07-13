@@ -73,6 +73,8 @@ public class ServiceHelper<T> {
                     Log.e(ServiceHelper.class.getSimpleName() + " by tag: " + tag, t.toString());
                 }
             });
+        }else {
+            serviceResponseLisener.ResponseFailure(tag);
         }
     }
 
@@ -117,6 +119,8 @@ public class ServiceHelper<T> {
                     Log.e(ServiceHelper.class.getSimpleName() + " by tag: " + tag, t.toString());
                 }
             });
+        }else {
+            serviceResponseLisener.ResponseFailure(tag);
         }
     }
 }

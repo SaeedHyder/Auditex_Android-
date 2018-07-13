@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/orange_top_circle"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/audio_icon"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/x40"
+        android:layout_marginStart="@dimen/x40"
+        android:layout_marginTop="@dimen/x20"
+        android:layout_weight="0.7"
+        android:orientation="vertical">
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/x3"
+            android:layout_marginStart="@dimen/x3"
+            android:layout_marginTop="@dimen/x10"
+            android:gravity="start"
+            android:text="@string/reset_code_head"
+            android:textColor="@color/app_font_gray"
+            android:textSize="@dimen/x17"
+            app:typeface="@string/font_normal"/>
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x5"
+            android:gravity="start"
+            android:text="@string/reset_code_message_mobile"
+            android:textColor="@color/app_font_gray"
+            android:textSize="@dimen/x13"
+            app:typeface="@string/font_normal"/>
+
+        <com.ingic.auditix.ui.views.PinEntryEditText
+            android:id="@+id/txt_pin_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@null"
+            android:cursorVisible="false"
+            android:digits="1234567890"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:maxLength="4"
+
+            android:padding="10dp"
+            android:textColor="@color/black"
+            android:textIsSelectable="false"
+            android:textSize="20sp"
+            android:visibility="visible"
+            app:pinLineColors="@color/app_orange"/>
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x40"
+            android:layout_marginTop="@dimen/x10"
+            android:background="@drawable/button_orange"
+            android:text="@string/submit"
+            android:textAllCaps="false"
+            android:textColor="@color/white"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x10"
+                android:gravity="start"
+                android:text="@string/reset_code_question"
+                android:textColor="@color/app_font_gray"
+                android:textSize="@dimen/x14"
+                app:typeface="@string/font_normal"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/btnResentCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/x3"
+                android:layout_marginTop="@dimen/x10"
+                android:gravity="start"
+                android:alpha="0.5"
+                android:text="@string/reset_code"
+                android:textColor="@color/black"
+                android:textSize="@dimen/x15"
+                app:typeface="@string/font_bold"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

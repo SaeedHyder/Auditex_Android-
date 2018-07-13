@@ -4,8 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:orientation="vertical"
     android:padding="@dimen/x10">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,22 +46,172 @@
             android:layout_marginEnd="@dimen/x10"
             android:src="@drawable/search_orange"/>
     </LinearLayout>
-    <com.ingic.auditix.ui.views.AnyTextView
-        android:id="@+id/txt_no_data"
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/no_data_available"
-        android:textColor="@color/dark_grey"
-        android:textSize="@dimen/x15"
-        android:visibility="gone"
-        app:typeface="@string/font_normal"
+        android:fillViewport="true">
 
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <com.ingic.auditix.ui.views.CustomRecyclerView
-        android:id="@+id/rv_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            <FrameLayout
+                android:id="@+id/newsheader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/x10">
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/x10"
+                    android:maxLines="1"
+                    android:text="@string/news"
+                    android:textAllCaps="true"
+                    android:textColor="@color/app_font_black"
+                    android:textSize="@dimen/x16"
+                    android:textStyle="bold"
+                    app:typeface="@string/font_bold"/>
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/btnNewsSeeAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:maxLines="1"
+                    android:text="@string/see_all"
+                    android:textColor="@color/app_title_orange"
+                    android:textSize="@dimen/x14"
+                    android:textStyle="bold"
+                    app:typeface="@string/font_normal"/>
+            </FrameLayout>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txtNewsNoData"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x100"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/no_data_available"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/x15"
+                android:visibility="gone"
+                app:typeface="@string/font_normal"
+
+                />
+
+            <com.ingic.auditix.ui.views.CustomRecyclerView
+                android:id="@+id/rvNews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+            <!--Podcast-->
+            <FrameLayout
+                android:id="@+id/podcastheader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/x10">
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/x10"
+                    android:maxLines="1"
+                    android:text="@string/podcast_channel"
+                    android:textAllCaps="true"
+                    android:textColor="@color/app_font_black"
+                    android:textSize="@dimen/x16"
+                    android:textStyle="bold"
+                    app:typeface="@string/font_bold"/>
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/btnPodcastSeeAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:maxLines="1"
+                    android:text="@string/see_all"
+                    android:textColor="@color/app_title_orange"
+                    android:textSize="@dimen/x14"
+                    android:textStyle="bold"
+                    app:typeface="@string/font_normal"/>
+            </FrameLayout>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txtPodcastNoData"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x100"
+
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/no_data_available"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/x15"
+                android:visibility="gone"
+                app:typeface="@string/font_normal"
+
+                />
+
+            <com.ingic.auditix.ui.views.CustomRecyclerView
+                android:id="@+id/rvPodcast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <!--Books-->
+            <FrameLayout
+                android:id="@+id/booksheader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/x10">
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/x10"
+                    android:maxLines="1"
+                    android:text="@string/books"
+                    android:textAllCaps="true"
+                    android:textColor="@color/app_font_black"
+                    android:textSize="@dimen/x16"
+                    android:textStyle="bold"
+                    app:typeface="@string/font_bold"/>
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:id="@+id/btnBooksSeeAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:maxLines="1"
+                    android:text="@string/see_all"
+                    android:textColor="@color/app_title_orange"
+                    android:textSize="@dimen/x14"
+                    android:textStyle="bold"
+                    app:typeface="@string/font_normal"/>
+            </FrameLayout>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txtBooksNoData"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x100"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/no_data_available"
+                android:textColor="@color/dark_grey"
+                android:textSize="@dimen/x15"
+                android:visibility="gone"
+                app:typeface="@string/font_normal"
+
+                />
+
+            <com.ingic.auditix.ui.views.CustomRecyclerView
+                android:id="@+id/rvBooks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

@@ -14,15 +14,15 @@
 
         <ImageView
             android:id="@+id/txt_item_image"
-            android:layout_width="@dimen/x140"
-            android:layout_height="@dimen/x140"
+            android:layout_width="@dimen/x100"
+            android:layout_height="@dimen/x100"
             android:scaleType="fitXY"
             android:src="@drawable/dummyalbum"
             />
 
         <com.ingic.auditix.ui.views.AnyTextView
             android:id="@+id/txt_item_text"
-            android:layout_width="@dimen/x140"
+            android:layout_width="@dimen/x100"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/x5"
             android:ellipsize="end"
@@ -30,7 +30,7 @@
             android:singleLine="true"
             android:text="Barbarasdhahsdgshasdsadagdsagdasgdjasgdas"
             android:textColor="@color/black"
-            android:textSize="@dimen/x16"
+            android:textSize="@dimen/x15"
             app:typeface="@string/font_normal"/>
     </LinearLayout>
 </FrameLayout>

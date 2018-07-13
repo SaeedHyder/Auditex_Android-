@@ -121,6 +121,7 @@
     <string name="submit">Submit</string>
     <string name="reset_code_head">Enter Reset Code</string>
     <string name="reset_code_message">Reset code has been sent to your email.</string>
+    <string name="reset_code_message_mobile">Verification code has been sent to your Mobile.</string>
     <string name="reset_code">Reset Code</string>
     <string name="reset_code_question">Didn\'t get a code yet ?</string>
     <string name="verification_code_error">Empty Vari</string>
@@ -136,7 +137,7 @@
     <string name="enter_FullName">Name cannot be Empty</string>
     <string name="sign_up_selection">Sign Up</string>
     <string name="home">Home</string>
-    <string name="podcast">Podcast</string>
+    <string name="podcast">Podcasts</string>
     <string name="news">News</string>
     <string name="dashboard">My Dashboard</string>
     <string name="logout">Log Out</string>
@@ -201,6 +202,7 @@
     <string name="downloaded_on">Downloaded On :</string>
     <string name="server_response_error">Something went wrong</string>
     <string name="resend_code_message">New Code has been send to your Email</string>
+    <string name="resend_code_message_mobile">New Code has been send.</string>
     <string name="edit_profile_message">Changes Saved</string>
     <string name="rating_submit_message">Rating Submitted</string>
     <string name="item_added_favorite">Podcast has been selected as favorite</string>
@@ -262,4 +264,12 @@
     <string name="guest_message">Please Sign in or Log in to Proceed!</string>
     <string name="by_location">By Location:</string>
     <string name="advertisement_message">Please wait while the advertisement is being played</string>
+    <string name="country">Country</string>
+    <string name="invalid_phone_number">Invalid Phone Number</string>
+    <string name="phone">Phone</string>
+    <string name="play">Play</string>
+    <string name="download_episode">Download Episode</string>
+    <string name="share_episode">Share Episode</string>
+    <string name="podcast_channel">Podcast Channels</string>
+    <string name="seconds">Seconds</string>
 </resources>

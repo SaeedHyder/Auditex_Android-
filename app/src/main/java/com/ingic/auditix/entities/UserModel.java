@@ -64,6 +64,116 @@ public class UserModel {
     @SerializedName("InActive")
     @Expose
     private Boolean inActive;
+    @SerializedName("ResetInfo")
+    @Expose
+    private Object resetInfo;
+    @SerializedName("IsGuest")
+    @Expose
+    private Boolean isGuest;
+    @SerializedName("Country")
+    @Expose
+    private String country;
+    @SerializedName("PhoneNo")
+    @Expose
+    private String phoneNo;
+    @SerializedName("IsVerified")
+    @Expose
+    private Boolean isVerified;
+    @SerializedName("VerificationCode")
+    @Expose
+    private String verificationCode;
+    @SerializedName("AccountType")
+    @Expose
+    private Integer accountType;
+    @SerializedName("UserType")
+    @Expose
+    private Integer userType;
+    @SerializedName("AccountDescription")
+    @Expose
+    private Object accountDescription;
+    @SerializedName("CommaSeperatedCategoryIds")
+    @Expose
+    private Object commaSeperatedCategoryIds;
+
+    public Object getResetInfo() {
+        return resetInfo;
+    }
+
+    public void setResetInfo(Object resetInfo) {
+        this.resetInfo = resetInfo;
+    }
+
+    public Boolean getGuest() {
+        return isGuest;
+    }
+
+    public void setGuest(Boolean guest) {
+        isGuest = guest;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getPhoneNo() {
+        return phoneNo;
+    }
+
+    public void setPhoneNo(String phoneNo) {
+        this.phoneNo = phoneNo;
+    }
+
+    public Boolean getVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(Boolean verified) {
+        isVerified = verified;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public Integer getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(Integer accountType) {
+        this.accountType = accountType;
+    }
+
+    public Integer getUserType() {
+        return userType;
+    }
+
+    public void setUserType(Integer userType) {
+        this.userType = userType;
+    }
+
+    public Object getAccountDescription() {
+        return accountDescription;
+    }
+
+    public void setAccountDescription(Object accountDescription) {
+        this.accountDescription = accountDescription;
+    }
+
+    public Object getCommaSeperatedCategoryIds() {
+        return commaSeperatedCategoryIds;
+    }
+
+    public void setCommaSeperatedCategoryIds(Object commaSeperatedCategoryIds) {
+        this.commaSeperatedCategoryIds = commaSeperatedCategoryIds;
+    }
 
     public Integer getAccountID() {
         return accountID;

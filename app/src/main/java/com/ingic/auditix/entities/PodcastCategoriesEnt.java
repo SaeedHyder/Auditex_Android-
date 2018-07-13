@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class PodcastCategoriesEnt {
 
-    @SerializedName("CategoryId")
+    @SerializedName("PodcastCategoryId")
     @Expose
     private Integer categoryId;
     @SerializedName("Title")

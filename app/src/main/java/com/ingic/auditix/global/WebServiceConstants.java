@@ -29,6 +29,7 @@ public class WebServiceConstants {
     public static final String UNSUBSCRIBE_PODCAST = "UNSUBSCRIBE_PODCAST";
     public static final String RATE_PODCAST = "RATE_PODCAST";
     public static final String GET_SUBSCRIBE_PODCASTS = "GET_SUBSCRIBE_PODCASTS";
+    public static final String GET_NEW_NOTEWORTHY_PODCASTS_EPISODES = "GET_SUBSCRIBE_PODCASTS";
     public static final String GET_UNREAD_NOTIFICATION_COUNT = "GET_UNREAD_NOTIFICATION_COUNT";
     public static final String GET_ALL_NOTIFICATION = "GET_ALL_NOTIFICATION";
     public static final String GET_DEFAULT_PODCASTS = "GET_DEFAULT_PODCASTS";
@@ -64,4 +65,7 @@ public class WebServiceConstants {
     public static final String GET_ALL_NEWS_SUBSCRIBE = "GET_ALL_NEWS_SUBSCRIBE";
     public static final String UNSUBSCRIBE_NEWS = "UNSUBSCRIBE_NEWS";
     public static final String GUEST_LOGIN = "GuestRegistration";
+    public static final String RESENT_SMS_CODE = "RESENT_SMS_CODE";
+    public static final String SUBMIT_SMS_CODE = "SUBMIT_SMS_CODE";
+    public static final String GET_PODCAST_EPISODE_DETAIL = "GET_PODCAST_EPISODE_DETAIL";
 }
