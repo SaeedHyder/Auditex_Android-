@@ -32,13 +32,13 @@ import com.ingic.auditix.entities.BookChaptersEnt;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.BooksChapterItemEnt;
 import com.ingic.auditix.entities.NewsEpisodeEnt;
+import com.ingic.auditix.entities.PlayerNewsEnt;
 import com.ingic.auditix.entities.PlayerPodcatsEnt;
 import com.ingic.auditix.entities.PodcastEpisodeEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.fragments.books.BookChaptersListingFragment;
 import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
-import com.ingic.auditix.helpers.InternetHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.interfaces.FavoriteCheckChangeListener;
 import com.ingic.auditix.interfaces.PlayerItemChangeListener;
@@ -142,7 +142,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     private boolean hasPlaylistComplete = false;
     private ArrayList<PlayListModel> mUserPlaylist;
     private PlayerPodcatsEnt podcastDetailEnt;
-    private NewsEpisodeEnt newsEpisodeEnt;
+    private PlayerNewsEnt newsEpisodeEnt;
     private BookDetailEnt bookDetailEnt;
     private Integer ID;
     private String playerType = "";
@@ -195,7 +195,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     //endregion
 
     public static PlayerFragment newInstance(PlayerPodcatsEnt podcastDetail, Integer ID, String playerType,
-                                             BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
+                                             BookDetailEnt bookDetailEnt, PlayerNewsEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
         Bundle args = new Bundle();
 
         PlayerFragment fragment = new PlayerFragment();
@@ -204,7 +204,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         return fragment;
     }
 
-    public void setContent(PlayerPodcatsEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
+    public void setContent(PlayerPodcatsEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt, PlayerNewsEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
         this.podcastDetailEnt = podcastDetail;
         this.ID = trackID;
         this.playerType = playerType;
@@ -230,28 +230,35 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
 
     }
 
-    private void setupUIViewsNews(NewsEpisodeEnt ent) {
+    private void setupUIViewsNews(PlayerNewsEnt ent) {
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
-        ImageLoader.getInstance().displayImage(ent.getImage_url(), imgItemCover, options);
-        ImageLoader.getInstance().displayImage(ent.getImage_url(), imgItemPic, options);
-        ImageLoader.getInstance().displayImage(ent.getImage_url(), imgPlayerCover, options);
-        txtTitle.setText(ent.getTitle() + "");
+        ImageLoader.getInstance().displayImage(ent.getDetailEnt().getImageUrl(), imgItemCover, options);
+        ImageLoader.getInstance().displayImage(ent.getDetailEnt().getImageUrl(), imgItemPic, options);
+        ImageLoader.getInstance().displayImage(ent.getDetailEnt().getImageUrl(), imgPlayerCover, options);
+        txtTitle.setText(ent.getDetailEnt() + "");
         sbProgress.setPadding(0, 0, 0, 0);
-        txtDuration.setVisibility(View.VISIBLE);
-        txtDurationText.setVisibility(View.VISIBLE);
-        txtDurationText.setText(getBookDurationText(ent.getDuration()));
+        txtDuration.setVisibility(View.INVISIBLE);
+        txtDurationText.setVisibility(View.INVISIBLE);
+        // txtDurationText.setText(getBookDurationText(ent.getDuration()));
+        bindNewsPlaylist(newsEpisodeEnt.getNewsepisodeslist());
+
+    }
+
+    private void bindNewsPlaylist(ArrayList<NewsEpisodeEnt> tracklist) {
         initializePlaybackController();
         initializeSeekbar();
         mUserPlaylist = new ArrayList<>();
-        String path = AppConstants.DOWNLOAD_PATH + File.separator + ent.get_id() + File.separator + ent.getTitle().replaceAll("\\s+", "") + ".mp3";
-        if (new File(path).exists()) {
-            mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path, false));
-        } else {
-            mUserPlaylist.add(new PlayListModel("", ent.getAudio_link(), false));
+        for (NewsEpisodeEnt tracks : tracklist
+                ) {
+            String path = AppConstants.DOWNLOAD_PATH + File.separator + newsEpisodeEnt.getDetailEnt().getName() + File.separator + (tracks.getEpisodetitle() + "" + tracks.getNewsepisodeid()).replaceAll("\\s+", "") + ".mp3";
+            if (new File(path).exists()) {
+                mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path, false));
+            } else {
+                mUserPlaylist.add(new PlayListModel("", tracks.getFilepath(), false));
+            }
         }
         mPlayerAdapter.loadPlayList(mUserPlaylist, startingIndex);
         setItemName(startingIndex);
-
 
     }
 
@@ -302,13 +309,12 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         }
         for (BooksChapterItemEnt tracks : chapters.getChapter()
                 ) {
-            String path = AppConstants.DOWNLOAD_PATH + File.separator + bookDetailEnt.getBookName() + File.separator + tracks.getAudioUrl().replaceAll("\\s+", "");
+            String path = AppConstants.DOWNLOAD_PATH + File.separator + bookDetailEnt.getBookName() + File.separator + tracks.getChapterID().replaceAll("\\s+", "");
             if (new File(path).exists()) {
-                mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path, false));
+                mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path , false));
 
             } else {
-                mUserPlaylist.add(new PlayListModel("", String.format("%s:%s/%s/mp3:%s/playlist.m3u8", chapters.getWowzaURL(), chapters.getWowzaPort(),
-                        chapters.getWowzaAppName(), tracks.getAudioUrl()), false));
+                mUserPlaylist.add(new PlayListModel("", tracks.getFilePath(), false));
             }
 
         }
@@ -370,7 +376,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             }
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
             if (index < mUserPlaylist.size()) {
-                setNameOnTextViews(newsEpisodeEnt.getTitle(), newsEpisodeEnt.getSource_name());
+                setNameOnTextViews(newsEpisodeEnt.getNewsepisodeslist().get(index).getEpisodetitle(), newsEpisodeEnt.getDetailEnt().getName());
                 if (itemChangeListener != null) {
                     itemChangeListener.onItemChanged(index);
                 }
@@ -470,7 +476,8 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             btnFavorite.setChecked(bookDetailEnt.getIsFavorite());
             btnFavorite.setOnCheckedChangeListener(bookFavoriteListener);
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
-            btnFavorite.setChecked(newsEpisodeEnt.isFavourite());
+            // TODO: 7/16/18 favorite for News
+            //  btnFavorite.setChecked(newsEpisodeEnt.isFavourite());
             btnFavorite.setOnCheckedChangeListener(newsFavoriteListener);
         }
     }
@@ -520,11 +527,11 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     public void startPlaying() {
         setHeader();
         getMainActivity().setFlagKeepScreenOn();
-        if (InternetHelper.CheckInternetConectivityandShowToast(getDockActivity())) {
+       /* if (InternetHelper.CheckInternetConectivityandShowToast(getDockActivity())) {
             playAdvertisement();
-        } else {
-            bindScreenData();
-        }
+        } else {*/
+        bindScreenData();
+        //}
 
     }
 
@@ -553,7 +560,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                     case DRAGGING:
                         break;
                     case EXPANDED:
-                        btnFavorite.setVisibility(View.VISIBLE);
+                        btnFavorite.setVisibility(View.INVISIBLE);
                       /*  btnPlayerPlay.setVisibility(View.GONE);
                         pbBottomBuffering.setVisibility(View.GONE);*/
                         break;

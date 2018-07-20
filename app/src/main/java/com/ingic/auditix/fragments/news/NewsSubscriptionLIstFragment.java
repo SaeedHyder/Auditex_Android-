@@ -1,6 +1,7 @@
 package com.ingic.auditix.fragments.news;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
@@ -38,7 +39,7 @@ public class NewsSubscriptionLIstFragment extends BaseFragment {
     private RecyclerViewItemListener newSubscriptionListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
-            serviceHelper.enqueueCall(webService.unsubscribeNews(((NewsCategoryEnt) Ent).getNewsCategoryId(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_NEWS);
+            serviceHelper.enqueueCall(webService.unsubscribeNews(((NewItemDetailEnt) Ent).getNewsID(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_NEWS);
         }
 
         @Override
@@ -76,14 +77,14 @@ public class NewsSubscriptionLIstFragment extends BaseFragment {
     public void ResponseSuccess(Object result, String Tag) {
         switch (Tag) {
             case WebServiceConstants.GET_ALL_NEWS_SUBSCRIBE:
-                bindNewsCategories((ArrayList<NewsCategoryEnt>) result);
+                bindNewsCategories((ArrayList<NewItemDetailEnt>) result);
                 break;
             case WebServiceConstants.UNSUBSCRIBE_NEWS:
                 serviceHelper.enqueueCall(webService.getAllSubscribeNews(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_NEWS_SUBSCRIBE);
                 break;
         }
     }
-    private void bindNewsCategories(ArrayList<NewsCategoryEnt> result) {
+    private void bindNewsCategories(ArrayList<NewItemDetailEnt> result) {
         if (result.size() <= 0) {
             txtNoData.setVisibility(View.VISIBLE);
             rvNews.setVisibility(View.GONE);

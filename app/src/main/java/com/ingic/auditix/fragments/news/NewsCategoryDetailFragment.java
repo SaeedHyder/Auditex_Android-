@@ -64,7 +64,7 @@ public class NewsCategoryDetailFragment extends BaseFragment implements Compound
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(NewsEpisodeDetailFragment.newInstance((NewsEpisodeEnt) Ent, categoryDetail.getId()), NewsEpisodeDetailFragment.TAG);
+            //getDockActivity().replaceDockableFragment(NewsEpisodeDetailFragment.newInstance((NewsEpisodeEnt) Ent, categoryDetail.getId()), NewsEpisodeDetailFragment.TAG);
         }
     };
 
@@ -136,7 +136,7 @@ public class NewsCategoryDetailFragment extends BaseFragment implements Compound
             txtEpisodesNoData.setVisibility(View.VISIBLE);
             rvEpisodes.setVisibility(View.GONE);
         } else {
-            setSubscribeFavoriteToggle(result.get(0).isFavourite(), result.get(0).isSubscribed());
+            //setSubscribeFavoriteToggle(result.get(0).isFavourite(), result.get(0).isSubscribed());
             //titleBar.showFavoriteButton(result.get(0).isFavourite(), newFavoriteListener);
             txtEpisodesNoData.setVisibility(View.GONE);
             rvEpisodes.setVisibility(View.VISIBLE);

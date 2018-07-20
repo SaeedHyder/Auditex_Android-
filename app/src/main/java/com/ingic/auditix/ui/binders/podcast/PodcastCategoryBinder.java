@@ -46,6 +46,7 @@ public class PodcastCategoryBinder extends RecyclerViewBinder<PodcastCategoriesE
         }
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(holder.txtItemImage.getLayoutParams());
         layoutParams.height = itemWidth;
+        holder.txtItemText.setSelected(true);
         holder.txtItemImage.setLayoutParams(layoutParams);
         holder.itemView.setTag(R.integer.key_recycler_object, entity);
         holder.itemView.setTag(R.integer.key_recycler_position, position);

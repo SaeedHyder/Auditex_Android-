@@ -2,6 +2,7 @@ package com.ingic.auditix.ui.binders.books;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ingic.auditix.R;
@@ -25,7 +26,7 @@ public class AllBooksBinder extends RecyclerViewBinder<BookDetailEnt> implements
     private RecyclerViewItemListener listener;
 
     public AllBooksBinder(DisplayImageOptions options, RecyclerViewItemListener listener) {
-        super(R.layout.row_item_book_home_all_items);
+        super(R.layout.row_item_podcast_new_noteworthy);
         this.options = options;
         this.listener = listener;
         imageLoader = ImageLoader.getInstance();
@@ -39,16 +40,9 @@ public class AllBooksBinder extends RecyclerViewBinder<BookDetailEnt> implements
     @Override
     public void bindView(BookDetailEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
-        imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, options);
-        holder.txtTitle.setText(entity.getBookName() + "");
-        holder.txtAuthorText.setText(entity.getAuthorName() + "");
-        holder.txtNarratorText.setText(entity.getNarratorName() + "");
-        holder.txtGenreText.setText(entity.getGenre() + "");
-        if (entity.getPrice() == 0) {
-            holder.txtPrice.setVisibility(View.GONE);
-        } else {
-            holder.txtPrice.setText("$ " + entity.getPrice() + "");
-        }
+        imageLoader.displayImage(entity.getImageUrl(), holder.txtItemImage, options);
+        holder.txtItemText.setText(entity.getBookName() + "");
+        holder.btnSubscribe.setVisibility(View.GONE);
         holder.itemView.setTag(R.integer.key_recycler_object, entity);
         holder.itemView.setTag(R.integer.key_recycler_position, position);
         holder.itemView.setOnClickListener(this);
@@ -62,19 +56,14 @@ public class AllBooksBinder extends RecyclerViewBinder<BookDetailEnt> implements
         }
     }
 
-    static class ViewHolder extends RecyclerViewBinder.BaseViewHolder {
-        @BindView(R.id.img_item_pic)
-        ImageView imgItemPic;
-        @BindView(R.id.txt_title)
-        AnyTextView txtTitle;
-        @BindView(R.id.txt_narrator_text)
-        AnyTextView txtNarratorText;
-        @BindView(R.id.txt_author_text)
-        AnyTextView txtAuthorText;
-        @BindView(R.id.txt_genre_text)
-        AnyTextView txtGenreText;
-        @BindView(R.id.txt_price)
-        AnyTextView txtPrice;
+
+    static class ViewHolder extends BaseViewHolder {
+        @BindView(R.id.txt_item_image)
+        ImageView txtItemImage;
+        @BindView(R.id.txt_item_text)
+        AnyTextView txtItemText;
+        @BindView(R.id.btn_subscribe)
+        Button btnSubscribe;
 
         ViewHolder(View view) {
             super(view);

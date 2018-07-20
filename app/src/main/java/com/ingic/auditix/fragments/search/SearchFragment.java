@@ -161,8 +161,10 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
     private void bindPodcastSearch(ArrayList<PodcastDetailHomeEnt> podcasts) {
         if (podcasts.size() <= 0) {
             txtPodcastNoData.setVisibility(View.VISIBLE);
+            btnPodcastSeeAll.setVisibility(View.GONE);
             rvPodcast.setVisibility(View.GONE);
         } else {
+            btnPodcastSeeAll.setVisibility(View.VISIBLE);
             txtPodcastNoData.setVisibility(View.GONE);
             rvPodcast.setVisibility(View.VISIBLE);
         }
@@ -171,9 +173,12 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
 
     private void bindBooksSearch(ArrayList<BookDetailEnt> bookDetailEnts) {
         if (bookDetailEnts.size() <= 0) {
+            btnBooksSeeAll.setVisibility(View.VISIBLE);
+
             txtBooksNoData.setVisibility(View.VISIBLE);
             rvBooks.setVisibility(View.GONE);
         } else {
+            btnBooksSeeAll.setVisibility(View.VISIBLE);
             txtBooksNoData.setVisibility(View.GONE);
             rvBooks.setVisibility(View.VISIBLE);
         }
@@ -183,9 +188,11 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
 
     private void bindNewsSearch(ArrayList<NewsCategoryEnt> newsCategoryEnts) {
         if (newsCategoryEnts.size() <= 0) {
+            btnNewsSeeAll.setVisibility(View.VISIBLE);
             txtNewsNoData.setVisibility(View.VISIBLE);
             rvNews.setVisibility(View.GONE);
         } else {
+            btnNewsSeeAll.setVisibility(View.VISIBLE);
             txtNewsNoData.setVisibility(View.GONE);
             rvNews.setVisibility(View.VISIBLE);
         }

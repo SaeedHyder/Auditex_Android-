@@ -12,6 +12,7 @@ import com.ingic.auditix.entities.PlayerPodcatsEnt;
 import com.ingic.auditix.entities.PodcastEpisodeEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.FavoriteCheckChangeListener;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.TitleBar;
@@ -127,6 +128,7 @@ public class PodcastEpisodeDetailFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        serviceHelper.enqueueCall(webService.addListeningEventPodcast(podcastEpisodeEnt.getPodcastId(),podcastEpisodeEnt.getPodcastEpisodeID(),prefHelper.getUserToken()), WebServiceConstants.ADD_TO_LISTENING_LIBRARY);
         txtAboutText.setMovementMethod(new ScrollingMovementMethod());
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
         if (podcastEpisodeEnt.getPodcast() != null) {
@@ -147,12 +149,12 @@ public class PodcastEpisodeDetailFragment extends BaseFragment {
                     if (isFromChannel) {
                         if (podcastEpisodeCollection != null) {
                             startingIndex = podcastEpisodeCollection.indexOf(podcastEpisodeEnt);
-                           // openPlayer(new PlayerPodcatsEnt(podcastEpisodeEnt.getPodcast(), podcastEpisodeCollection), startingIndex);
+                            openPlayer(new PlayerPodcatsEnt(podcastEpisodeEnt.getPodcast(), podcastEpisodeCollection), startingIndex);
                         }
                     } else {
                         ArrayList<PodcastEpisodeEnt> podcastEpisodeEntArrayList = new ArrayList<>();
                         podcastEpisodeEntArrayList.add(podcastEpisodeEnt);
-                       // openPlayer(new PlayerPodcatsEnt(podcastEpisodeEnt.getPodcast(), podcastEpisodeEntArrayList), startingIndex);
+                        openPlayer(new PlayerPodcatsEnt(podcastEpisodeEnt.getPodcast(), podcastEpisodeEntArrayList), startingIndex);
                     }
                 }
                 break;

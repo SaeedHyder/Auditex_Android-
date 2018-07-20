@@ -2,6 +2,8 @@ package com.ingic.auditix.interfaces;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.activities.DockActivity;
+import com.ingic.auditix.entities.BookDetailEnt;
+import com.ingic.auditix.entities.BooksChapterItemEnt;
 import com.ingic.auditix.entities.DownloadItemModel;
 import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.entities.PodcastTrackEnt;
@@ -11,6 +13,8 @@ import com.ingic.auditix.helpers.UIHelper;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 
+import java.util.Objects;
+
 import io.realm.Realm;
 
 /**
@@ -19,6 +23,7 @@ import io.realm.Realm;
 
 public class DownloadListener extends FileDownloadListener {
     private DownloadListenerFragment listenerFragment;
+
     private Realm realm;
     private DockActivity context;
 
@@ -129,6 +134,9 @@ public class DownloadListener extends FileDownloadListener {
         if (checkIsPodcast(task.getTag(R.integer.key_item_name))) {
             addPodcastToRealm((PodcastDetailEnt) task.getTag(R.integer.key_item_name), task);
         }
+        if (checkIsBook(task.getTag(R.integer.key_item_name))) {
+            addBookToRealm((BookDetailEnt) task.getTag(R.integer.key_item_name), task);
+        }
         if (listenerFragment != null) {
             removeTaskToRealm(task);
             listenerFragment.completed(task);
@@ -152,6 +160,7 @@ public class DownloadListener extends FileDownloadListener {
         }
         if (listenerFragment != null) {
             removeTaskToRealm(task);
+            e.fillInStackTrace();
             listenerFragment.error(task, e);
             UIHelper.showShortToastInCenter(context, String.format("%s %s", context.getResources().getString(R.string.download_error), task.getTag(R.integer.key_Download_failed)));
         }
@@ -182,11 +191,31 @@ public class DownloadListener extends FileDownloadListener {
         getRealm().commitTransaction();
     }
 
+    private void addBookToRealm(BookDetailEnt object, BaseDownloadTask task) {
+        BooksChapterItemEnt patsyObject = new BooksChapterItemEnt();
+        getRealm().beginTransaction();
+        object.setDownloadedOn(DateHelper.getFormatedTodayDate());
+        if (object.getChapters().getChapter() != null) {
+            patsyObject.setChapterID((String) task.getTag());
+            if (object.getChapters().getChapter().contains(patsyObject)) {
+                int index = object.getChapters().getChapter().indexOf(patsyObject);
+                Objects.requireNonNull(object.getChapters().getChapter().get(index)).setStatusState(AppConstants.DownloadStates.COMPLETE);
+            }
+        }
+        getRealm().copyToRealmOrUpdate(object);
+        getRealm().commitTransaction();
+    }
+
     private boolean checkIsPodcast(Object object) {
         return object instanceof PodcastDetailEnt;
+    }
+
+    private boolean checkIsBook(Object object) {
+        return object instanceof BookDetailEnt;
     }
 
     private int getProgressPercentage(int soFarBytes, int totalBytes) {
         return Math.round(((soFarBytes * 100.0f) / totalBytes));
     }
+
 }

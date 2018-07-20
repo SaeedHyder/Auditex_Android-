@@ -166,7 +166,7 @@
                 android:button="@drawable/checkbox_favorite"
                 android:paddingBottom="@dimen/x5"
                 android:paddingTop="@dimen/x5"
-                android:visibility="visible"/>
+                android:visibility="invisible"/>
         </RelativeLayout>
 
         <LinearLayout

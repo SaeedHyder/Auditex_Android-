@@ -40,11 +40,11 @@ public class NewsEpisodesBinder extends RecyclerViewBinder<NewsEpisodeEnt> imple
     @Override
     public void bindView(NewsEpisodeEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
-        imageLoader.displayImage(entity.getImage_url(), holder.imgItemPic, options);
+        //imageLoader.displayImage(entity.getImage_url(), holder.imgItemPic, options);
         holder.txtTitle.setEllipsize(TextUtils.TruncateAt.END);
         holder.txtTitle.setMaxLines(2);
-        holder.txtTitle.setText(entity.getTitle() + "");
-        holder.txtDurationText.setText(getDurationText(entity.getDuration()));
+        holder.txtTitle.setText(entity.getEpisodetitle() + "");
+        holder.txtDurationText.setText(getDurationText(entity.getFileduration()));
         holder.itemView.setTag(R.integer.key_recycler_object, entity);
         holder.itemView.setTag(R.integer.key_recycler_position, position);
         holder.itemView.setOnClickListener(this);

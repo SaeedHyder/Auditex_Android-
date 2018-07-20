@@ -7,7 +7,6 @@ import android.widget.ImageView;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.NewItemDetailEnt;
-import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
@@ -20,16 +19,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created on 4/13/18.
+ * Created on 7/14/18.
  */
-public class NewsSubscriptionListBinder extends RecyclerViewBinder<NewItemDetailEnt> implements View.OnClickListener {
+public class NewsCategoryListingBinder extends RecyclerViewBinder<NewItemDetailEnt> implements View.OnClickListener {
 
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private RecyclerViewItemListener listener;
     private BasePreferenceHelper prefHelper;
 
-    public NewsSubscriptionListBinder(DisplayImageOptions options, RecyclerViewItemListener listener, BasePreferenceHelper prefHelper) {
+    public NewsCategoryListingBinder(DisplayImageOptions options, RecyclerViewItemListener listener, BasePreferenceHelper prefHelper) {
         super(R.layout.row_item_news_subscription_list);
         this.prefHelper = prefHelper;
         this.imageLoader = ImageLoader.getInstance();
@@ -47,6 +46,12 @@ public class NewsSubscriptionListBinder extends RecyclerViewBinder<NewItemDetail
         ViewHolder holder = (ViewHolder) viewHolder;
         imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, options);
         holder.txtTitle.setText(entity.getName() + "");
+        holder.txtNarratorText.setText(entity.getNarratorName() + "");
+        if (entity.getSubscribed()) {
+            holder.btnSubscribe.setText(R.string.unsubscribe);
+        } else {
+            holder.btnSubscribe.setText(R.string.subscribe);
+        }
         holder.btnSubscribe.setTag(R.integer.key_recycler_object, entity);
         holder.btnSubscribe.setTag(R.integer.key_recycler_position, position);
         holder.btnSubscribe.setOnClickListener(this);
@@ -60,7 +65,7 @@ public class NewsSubscriptionListBinder extends RecyclerViewBinder<NewItemDetail
         switch (v.getId()) {
             case R.id.btn_subscribe:
                 if (prefHelper.isGuest()) {
-                    UIHelper.showShortToastInCenter(v.getContext(),v.getContext().getString(R.string.guest_message));
+                    UIHelper.showShortToastInCenter(v.getContext(), v.getContext().getString(R.string.guest_message));
                     return;
                 }
                 if (listener != null) {

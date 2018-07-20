@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
 import com.ingic.auditix.helpers.UIHelper;
@@ -22,7 +23,7 @@ import butterknife.ButterKnife;
  * Created on 3/14/2018.
  */
 
-public class NewsSubscriptionBinder extends RecyclerViewBinder<NewsCategoryEnt> implements View.OnClickListener {
+public class NewsSubscriptionBinder extends RecyclerViewBinder<NewItemDetailEnt> implements View.OnClickListener {
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private RecyclerViewItemListener listener;
@@ -42,10 +43,10 @@ public class NewsSubscriptionBinder extends RecyclerViewBinder<NewsCategoryEnt> 
     }
 
     @Override
-    public void bindView(NewsCategoryEnt entity, int position, Object viewHolder, Context context) {
+    public void bindView(NewItemDetailEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
-        imageLoader.displayImage(entity.getSourceImageUrl(), holder.txtItemImage, options);
-        holder.txtItemText.setText(entity.getSourceName() + "");
+        imageLoader.displayImage(entity.getImageUrl(), holder.txtItemImage, options);
+        holder.txtItemText.setText(entity.getName() + "");
         holder.btnSubscribe.setTag(R.integer.key_recycler_object, entity);
         holder.btnSubscribe.setTag(R.integer.key_recycler_position, position);
         holder.btnSubscribe.setOnClickListener(this);

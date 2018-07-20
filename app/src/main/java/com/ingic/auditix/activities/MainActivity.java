@@ -25,6 +25,7 @@ import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.CMSEnt;
 import com.ingic.auditix.entities.NewsEpisodeEnt;
+import com.ingic.auditix.entities.PlayerNewsEnt;
 import com.ingic.auditix.entities.PlayerPodcatsEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.fragments.books.BooksFilterFragment;
@@ -489,7 +490,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
     }
 
     public void showBottomPlayer(PlayerPodcatsEnt podcastDetail, Integer ID, String playerType,
-                                 BookDetailEnt bookDetailEnt, NewsEpisodeEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
+                                 BookDetailEnt bookDetailEnt, PlayerNewsEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
         playerFragment.resetPlayer();
         playerFragment.setContent(podcastDetail, ID, playerType, bookDetailEnt, newsEpisodeEnt, startingIndex, checkChangeListener);
         playerFragment.startPlaying();

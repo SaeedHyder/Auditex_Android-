@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/x5"
+        android:layout_marginStart="@dimen/x5"
+        android:layout_marginTop="@dimen/x10">
+
+        <ImageView
+            android:id="@+id/img_item_pic"
+            android:layout_width="@dimen/x92"
+            android:layout_height="@dimen/x92"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/x10"
+            android:contentDescription="@string/profile"
+            android:scaleType="fitXY"
+            android:src="@drawable/com_facebook_profile_picture_blank_square"/>
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x100">
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/x5"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/x16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typeface="@string/font_normal"
+                tools:text="CNN Technology"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txtDescription"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/x5"
+                android:layout_marginTop="@dimen/x5"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:textColor="@color/app_font_gray"
+                android:textSize="@dimen/x16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_title"
+                app:typeface="@string/font_normal"
+                tools:text="asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasddas"/>
+        </android.support.constraint.ConstraintLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/x10"
+        android:background="@color/app_font_gray"/>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginStart="@dimen/x10"
+        android:layout_marginTop="@dimen/x10"
+        >
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txtToday"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/x10"
+            android:layout_marginStart="@dimen/x5"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/today"
+            android:textColor="@color/app_font_black"
+            android:textSize="@dimen/x15"
+            app:layout_constraintBottom_toTopOf="@id/todayLine"
+            app:layout_constraintEnd_toStartOf="@id/imgToday"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typeface="@string/font_normal"/>
+
+
+        <ImageView
+            android:id="@+id/imgToday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/x10"
+            android:src="@drawable/right_arrow_orange"
+            app:layout_constraintBottom_toTopOf="@id/todayLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <View
+            android:id="@+id/todayLine"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginBottom="@dimen/x10"
+            android:background="@color/app_font_gray"
+            app:layout_constraintBottom_toTopOf="@id/txtYesterday"/>
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txtYesterday"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/x10"
+
+            android:layout_marginStart="@dimen/x5"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/yesterday"
+            android:textColor="@color/app_font_black"
+            android:textSize="@dimen/x15"
+            app:layout_constraintBottom_toTopOf="@+id/YesterdayLine"
+            app:layout_constraintEnd_toStartOf="@id/imgYesterday"
+            app:layout_constraintStart_toStartOf="parent"
+
+            app:typeface="@string/font_normal"/>
+
+
+        <ImageView
+            android:id="@+id/imgYesterday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/x10"
+            android:src="@drawable/right_arrow_orange"
+
+            app:layout_constraintBottom_toTopOf="@+id/YesterdayLine"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            />
+
+        <View
+            android:id="@+id/YesterdayLine"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+
+            android:layout_marginBottom="@dimen/x10"
+            android:background="@color/app_font_gray"
+            app:layout_constraintBottom_toTopOf="@id/txtOlder"/>
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txtOlder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/x10"
+            android:layout_marginStart="@dimen/x5"
+            android:ellipsize="end"
+            android:singleLine="true"
+
+            android:text="@string/older"
+            android:textColor="@color/app_font_black"
+            android:textSize="@dimen/x15"
+            app:layout_constraintBottom_toTopOf="@id/OlderLine"
+            app:layout_constraintEnd_toStartOf="@id/imgOlder"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typeface="@string/font_normal"/>
+
+
+        <ImageView
+            android:id="@+id/imgOlder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/x10"
+            android:src="@drawable/right_arrow_orange"
+            app:layout_constraintBottom_toTopOf="@id/OlderLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <View
+            android:id="@+id/OlderLine"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/app_font_gray"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
+</LinearLayout>

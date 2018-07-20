@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
+import com.ingic.auditix.entities.NewsChannelDetailEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.fragments.standard.HomeTabFragment;
 import com.ingic.auditix.global.WebServiceConstants;
@@ -55,16 +57,16 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
     NestedScrollView parentScroll;
     Unbinder unbinder;
     DisplayImageOptions options;
-    ArrayList<NewsCategoryEnt> subscriptionCollection;
+    ArrayList<NewItemDetailEnt> subscriptionCollection;
     private RecyclerViewItemListener newSubscriptionListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
-            serviceHelper.enqueueCall(webService.unsubscribeNews(((NewsCategoryEnt) Ent).getNewsCategoryId(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_NEWS);
+            serviceHelper.enqueueCall(webService.unsubscribeNews(((NewItemDetailEnt) Ent).getNewsID(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_NEWS);
         }
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(NewsCategoryDetailFragment.newInstance((NewsCategoryEnt) Ent), NewsCategoryDetailFragment.TAG);
+            getDockActivity().replaceDockableFragment(NewsChannelDetailFragment.newInstance((NewItemDetailEnt) Ent), NewsCategoryDetailFragment.TAG);
         }
     };
     private RecyclerViewItemListener newCategoriesListener = new RecyclerViewItemListener() {
@@ -75,7 +77,7 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(NewsCategoryDetailFragment.newInstance((NewsCategoryEnt) Ent), NewsCategoryDetailFragment.TAG);
+            getDockActivity().replaceDockableFragment(NewListingByCategoryFragment.newInstance(((NewsCategoryEnt) Ent).getId()), NewsCategoryDetailFragment.TAG);
         }
     };
 
@@ -108,7 +110,7 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
                 bindNewsCategories((ArrayList<NewsCategoryEnt>) result);
                 break;
             case WebServiceConstants.GET_ALL_NEWS_SUBSCRIBE:
-                getAllSubscribeNews((ArrayList<NewsCategoryEnt>) result);
+                getAllSubscribeNews((ArrayList<NewItemDetailEnt>) result);
                 break;
             case WebServiceConstants.UNSUBSCRIBE_NEWS:
                 serviceHelper.enqueueCall(webService.getAllSubscribeNews(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_NEWS_SUBSCRIBE);
@@ -154,11 +156,11 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
         rvCategories.setNestedScrollingEnabled(false);
     }
 
-    private void getAllSubscribeNews(ArrayList<NewsCategoryEnt> results) {
+    private void getAllSubscribeNews(ArrayList<NewItemDetailEnt> results) {
  /*       if (results.size() > 2)
             subscriptionCollection = new ArrayList<>(results.subList(0, 2));
         else*/
-            subscriptionCollection = new ArrayList<>(results);
+        subscriptionCollection = new ArrayList<>(results);
 
         rvSubscribe.BindRecyclerView(new NewsSubscriptionBinder(options,
                         newSubscriptionListener, prefHelper), subscriptionCollection, new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false)

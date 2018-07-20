@@ -115,10 +115,10 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
         fragmentList = new ArrayList<>(3);
         fragmentList.add(new ProfileNewsFragment());
         fragmentList.add(new ProfilePodcastFragment());
-        fragmentList.add(new ProfileLibraryFragment());
+        fragmentList.add(new ProfileBooksFragment());
         tabLayout.addTab(tabLayout.newTab().setText(R.string.news), true);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.podcast), false);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.library), false);
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.books), false);
         replaceTab(startingWithIndex);
         tabLayout.addOnTabSelectedListener(this);
 

@@ -30,6 +30,7 @@ public class AppConstants {
     //Path to Drawable
     public static final String DRAWABLE_PATH = "drawable://";
     public static final String KEY_CMS_TYPE = "Key";
+    public static final String MEDIA_FORMAT = ".mp3";
     public static String twitter = "twitter";
     public static int INTENT_ID = 100;
     // id to handle the notification in the notification tray

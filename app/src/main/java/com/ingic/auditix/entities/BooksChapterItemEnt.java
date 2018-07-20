@@ -26,9 +26,31 @@ public class BooksChapterItemEnt extends RealmObject {
     @SerializedName("FileDuration")
     @Expose
     private Integer fileDuration;
+    @SerializedName("EpisodeWebUrl")
+    @Expose
+    private String episodeWebUrl;
+    @SerializedName("FilePath")
+    @Expose
+    private String filePath;
     private boolean isSelected;
-    private int statusState ;
+    private int statusState;
     private int downloadProgress = 0;
+
+    public String getEpisodeWebUrl() {
+        return episodeWebUrl;
+    }
+
+    public void setEpisodeWebUrl(String episodeWebUrl) {
+        this.episodeWebUrl = episodeWebUrl;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 
     public int getStatusState() {
         return statusState;

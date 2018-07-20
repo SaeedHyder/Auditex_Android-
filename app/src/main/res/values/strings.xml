@@ -272,4 +272,10 @@
     <string name="share_episode">Share Episode</string>
     <string name="podcast_channel">Podcast Channels</string>
     <string name="seconds">Seconds</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="download_all_news">Download All News</string>
+    <string name="later_shows">Later Shows</string>
+    <string name="episode_no">Episode No.</string>
+    <string name="recommended">Recommended</string>
+    <string name="storage_permission">Permission is required to access this feature</string>
 </resources>

@@ -33,6 +33,17 @@ public class NewsCategoryEnt {
     @SerializedName("IsFavoriteNews")
     private boolean IsFavoriteNews;
 
+    public boolean isFeatured() {
+        return IsFeatured;
+    }
+
+    public void setFeatured(boolean featured) {
+        IsFeatured = featured;
+    }
+
+    @SerializedName("IsFeatured")
+    private boolean IsFeatured;
+
     public boolean isNewsSubscribed() {
         return IsNewsSubscribed;
     }

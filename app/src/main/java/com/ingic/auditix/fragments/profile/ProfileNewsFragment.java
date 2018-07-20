@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.fragments.news.NewsCategoryDetailFragment;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
@@ -39,7 +40,7 @@ public class ProfileNewsFragment extends BaseFragment {
     private RecyclerViewItemListener newSubscriptionListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
-            serviceHelper.enqueueCall(webService.unsubscribeNews(((NewsCategoryEnt) Ent).getNewsCategoryId(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_NEWS);
+            serviceHelper.enqueueCall(webService.unsubscribeNews(((NewItemDetailEnt) Ent).getNewsID(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_NEWS);
         }
 
         @Override
@@ -68,7 +69,7 @@ public class ProfileNewsFragment extends BaseFragment {
     public void ResponseSuccess(Object result, String Tag) {
         switch (Tag) {
             case WebServiceConstants.GET_ALL_NEWS_SUBSCRIBE:
-                bindNewsCategories((ArrayList<NewsCategoryEnt>) result);
+                bindNewsCategories((ArrayList<NewItemDetailEnt>) result);
                 break;
             case WebServiceConstants.UNSUBSCRIBE_NEWS:
                 serviceHelper.enqueueCall(webService.getAllSubscribeNews(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_NEWS_SUBSCRIBE);
@@ -101,7 +102,7 @@ public class ProfileNewsFragment extends BaseFragment {
         unbinder.unbind();
     }
 
-    private void bindNewsCategories(ArrayList<NewsCategoryEnt> result) {
+    private void bindNewsCategories(ArrayList<NewItemDetailEnt> result) {
         if (txtNoData!=null&&rvNews!=null) {
             if (result.size() <= 0) {
                 txtNoData.setVisibility(View.VISIBLE);

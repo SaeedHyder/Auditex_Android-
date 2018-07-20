@@ -66,7 +66,7 @@ public class BookChapterBinder extends RecyclerViewBinder<BooksChapterItemEnt> i
         holder.btnPlay.setVisibility(View.GONE);
         holder.downloadProgress.setVisibility(View.GONE);*/
         ;
-        if (isAlreadyDownloaded(entity.getAudioUrl())) {
+        if (isAlreadyDownloaded(entity.getChapterID())) {
             holder.btnDownload.setVisibility(View.GONE);
             holder.downloadProgress.setVisibility(View.GONE);
             holder.btnPlay.setVisibility(View.VISIBLE);

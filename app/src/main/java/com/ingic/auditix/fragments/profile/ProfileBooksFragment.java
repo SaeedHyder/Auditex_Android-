@@ -9,11 +9,12 @@ import android.view.ViewGroup;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BookDetailEnt;
+import com.ingic.auditix.entities.BookFavoriteEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
-import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.fragments.books.BookDetailFragment;
 import com.ingic.auditix.global.WebServiceConstants;
-import com.ingic.auditix.interfaces.LoadMoreListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
+import com.ingic.auditix.ui.binders.books.BooksProfileFavouriteBinder;
 import com.ingic.auditix.ui.binders.books.LibraryBooksBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
@@ -25,25 +26,40 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.realm.RealmResults;
 
 /**
  * Created on 1/6/2018.
  */
-public class ProfileLibraryFragment extends BaseFragment {
-    public static final String TAG = "ProfileLibraryFragment";
+public class ProfileBooksFragment extends BaseFragment {
+    public static final String TAG = "ProfileBooksFragment";
     @BindView(R.id.txt_no_data)
     AnyTextView txtNoData;
     @BindView(R.id.rv_books)
     CustomRecyclerView rvBooks;
     Unbinder unbinder;
-    int currentPageNumber = 1;
-    int totalCount = 10;
     String culture = null;
+    @BindView(R.id.rvBooksFavourite)
+    CustomRecyclerView rvBooksFavourite;
+    @BindView(R.id.txt_favourite_no_data)
+    AnyTextView txtFavouriteNoData;
+    @BindView(R.id.txt_recommended)
+    AnyTextView txtRecommended;
+    @BindView(R.id.btn_recommne_seeall)
+    AnyTextView btnRecommneSeeall;
     private ArrayList<BookDetailEnt> booksCollections;
     private LinearLayoutManager layoutManager;
-    private int categoryID;
-    private boolean canCallForMore = true;
-    private boolean isOnCall;
+    private RecyclerViewItemListener newSubscriptionListener = new RecyclerViewItemListener() {
+        @Override
+        public void onRecyclerItemButtonClicked(Object Ent, int position) {
+            serviceHelper.enqueueCall(webService.RemoveBookFromFavorite(((BookFavoriteEnt) Ent).getBookID(), prefHelper.getUserToken()), WebServiceConstants.REMOVE_FAVORITE_BOOK);
+        }
+
+        @Override
+        public void onRecyclerItemClicked(Object Ent, int position) {
+            getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(((BookFavoriteEnt) Ent).getBookID()), BookDetailFragment.TAG);
+        }
+    };
     private RecyclerViewItemListener booksItemListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
@@ -57,23 +73,16 @@ public class ProfileLibraryFragment extends BaseFragment {
                 if (getMainActivity().booksFilterFragment != null) {
                     getMainActivity().booksFilterFragment.clearFilters();
                 }
-                detailEnt.setIsPurchased(true);
-                detailEnt.setIsFavorite(false);
-                if (detailEnt.getChapters().getChapter().size() > 1) {
-                    detailEnt.getChapters().getChapter().remove(0);
-                }
-                getMainActivity().showBottomPlayer(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt,
-                        null,0,null);
-               /* getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, detailEnt.getBookID(), AppConstants.TAB_BOOKS, detailEnt,
-                        null,0), PlayerFragment.TAG);*/
+                getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(detailEnt.getBookID()), BookDetailFragment.TAG);
             }
         }
     };
+    private ArrayList<BookFavoriteEnt> favouriteCollection;
 
-    public static ProfileLibraryFragment newInstance() {
+    public static ProfileBooksFragment newInstance() {
         Bundle args = new Bundle();
 
-        ProfileLibraryFragment fragment = new ProfileLibraryFragment();
+        ProfileBooksFragment fragment = new ProfileBooksFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,12 +98,11 @@ public class ProfileLibraryFragment extends BaseFragment {
     @Override
     public void ResponseSuccess(Object result, String Tag) {
         switch (Tag) {
-            case WebServiceConstants.GET_ALL_LIBRARY_BOOK:
-                bindDataToView((ArrayList<BookDetailEnt>) result);
+            case WebServiceConstants.REMOVE_FAVORITE_BOOK:
+                serviceHelper.enqueueCall(webService.getBooksAllFavorite(culture, prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FAVORITE);
                 break;
-            case WebServiceConstants.GET_PAGED_BOOKS:
-                isOnCall = false;
-                bindPagedBooksList((ArrayList<BookDetailEnt>) result);
+            case WebServiceConstants.GET_ALL_FAVORITE:
+                getAllFavouriteBooks((ArrayList<BookFavoriteEnt>) result);
                 break;
         }
     }
@@ -103,6 +111,20 @@ public class ProfileLibraryFragment extends BaseFragment {
     public void setTitleBar(TitleBar titleBar) {
         super.setTitleBar(titleBar);
         titleBar.hideTitleBar();
+    }
+
+    private void getAllFavouriteBooks(ArrayList<BookFavoriteEnt> results) {
+        favouriteCollection = new ArrayList<>(results);
+        DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(
+                Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
+        rvBooksFavourite.BindRecyclerView(new BooksProfileFavouriteBinder(options,
+                        newSubscriptionListener, prefHelper), favouriteCollection, new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false)
+                , new DefaultItemAnimator());
+        if (favouriteCollection.size() <= 0) {
+            txtFavouriteNoData.setVisibility(View.VISIBLE);
+        } else {
+            txtFavouriteNoData.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -115,9 +137,9 @@ public class ProfileLibraryFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        currentPageNumber = 1;
-        serviceHelper.enqueueCall(webService.getLibraryBooks(currentPageNumber, totalCount, culture, prefHelper.getUserToken()),
-                WebServiceConstants.GET_ALL_LIBRARY_BOOK);
+        serviceHelper.enqueueCall(webService.getBooksAllFavorite(culture, prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FAVORITE);
+        RealmResults<BookDetailEnt> results = getMainActivity().realm.where(BookDetailEnt.class).findAll();
+        bindDataToView(new ArrayList<>(results.subList(0, results.size())));
     }
 
     private void bindDataToView(ArrayList<BookDetailEnt> result) {
@@ -137,32 +159,6 @@ public class ProfileLibraryFragment extends BaseFragment {
         rvBooks.BindRecyclerView(new LibraryBooksBinder(options, booksItemListener), booksCollections,
                 layoutManager,
                 new DefaultItemAnimator());
-        rvBooks.getAdapter().setOnLoadMoreListener(new LoadMoreListener() {
-            @Override
-            public void onLoadMoreItem(int position) {
-                getPagedData();
-            }
-        });
     }
 
-    private void bindPagedBooksList(ArrayList<BookDetailEnt> result) {
-        if (result.size() <= 0) {
-            canCallForMore = false;
-        } else {
-            booksCollections.addAll(result);
-            rvBooks.notifyItemRangeChanged(layoutManager.findLastVisibleItemPosition(), result.size());
-        }
-    }
-
-    private void getPagedData() {
-        if (canCallForMore) {
-            if (!isOnCall) {
-                currentPageNumber = currentPageNumber + 1;
-                //  progressBar.setVisibility(View.VISIBLE);
-                isOnCall = true;
-                serviceHelper.enqueueCall(webService.getLibraryBooks(currentPageNumber, totalCount, culture, prefHelper.getUserToken()),
-                        WebServiceConstants.GET_PAGED_BOOKS);
-            }
-        }
-    }
 }

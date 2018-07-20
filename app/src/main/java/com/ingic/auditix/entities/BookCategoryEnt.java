@@ -16,10 +16,10 @@ public class BookCategoryEnt {
     @SerializedName("CategoryName")
     @Expose
     private String categoryName;
-    @SerializedName("CategoryId")
+    @SerializedName("BooksCount")
     @Expose
-    private Integer categoryId;
-    @SerializedName("CategoryBooks")
+    private Integer BooksCount;
+    @SerializedName("Books")
     @Expose
     private ArrayList<BookDetailEnt> categoryBooks = null;
 
@@ -32,11 +32,11 @@ public class BookCategoryEnt {
     }
 
     public Integer getCategoryId() {
-        return categoryId;
+        return BooksCount;
     }
 
     public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
+        this.BooksCount = categoryId;
     }
 
     public ArrayList<BookDetailEnt> getCategoryBooks() {
@@ -49,7 +49,7 @@ public class BookCategoryEnt {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(categoryName).append(categoryBooks).append(categoryId).toHashCode();
+        return new HashCodeBuilder().append(categoryName).append(categoryBooks).append(BooksCount).toHashCode();
     }
 
     @Override
@@ -61,6 +61,6 @@ public class BookCategoryEnt {
             return false;
         }
         BookCategoryEnt rhs = ((BookCategoryEnt) other);
-        return new EqualsBuilder().append(categoryName, rhs.categoryName).append(categoryBooks, rhs.categoryBooks).append(categoryId, rhs.categoryId).isEquals();
+        return new EqualsBuilder().append(categoryName, rhs.categoryName).append(categoryBooks, rhs.categoryBooks).append(BooksCount, rhs.BooksCount).isEquals();
     }
 }

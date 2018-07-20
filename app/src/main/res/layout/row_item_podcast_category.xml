@@ -16,16 +16,18 @@
             android:id="@+id/txt_item_image"
             android:layout_width="match_parent"
             android:layout_height="@dimen/x200"
+            android:layout_gravity="center_horizontal"
             android:scaleType="centerInside"
             android:src="@drawable/dummyalbum"
             />
 
         <com.ingic.auditix.ui.views.AnyTextView
             android:id="@+id/txt_item_text"
-            android:layout_width="@dimen/x140"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/x5"
-            android:ellipsize="end"
+            android:ellipsize="marquee"
+            android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:singleLine="true"
             android:text="Barbarasdhahsdgshasdsadagdsagdasgdjasgdas"

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.BookCategoriesEnt;
 import com.ingic.auditix.entities.BookCategoryEnt;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
@@ -21,8 +23,7 @@ import com.ingic.auditix.interfaces.FilterDoneClickListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.interfaces.ViewPagerFragmentLifecycleListener;
 import com.ingic.auditix.ui.binders.books.AllBooksBinder;
-import com.ingic.auditix.ui.binders.books.BestBooksBinder;
-import com.ingic.auditix.ui.binders.books.RecommendedBooksBinder;
+import com.ingic.auditix.ui.binders.books.BooksCategoryBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.ingic.auditix.ui.views.TitleBar;
@@ -34,6 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import droidninja.filepicker.utils.GridSpacingItemDecoration;
 
 /**
  * Created on 12/23/2017.
@@ -71,8 +73,7 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
     String filterGenreID = "";
     String culture = null;
     ArrayList<BookDetailEnt> allBooksCollections;
-    ArrayList<BookDetailEnt> recommendedBooksCollections;
-    ArrayList<BookDetailEnt> bestBooksCollections;
+    private BookCategoryEnt bookCategoryEnt;
     private RecyclerViewItemListener booksItemListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
@@ -85,7 +86,18 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
 
         }
     };
-    private ArrayList<BookCategoryEnt> bookCategoryEnts;
+    private RecyclerViewItemListener categoryListener = new RecyclerViewItemListener() {
+        @Override
+        public void onRecyclerItemButtonClicked(Object Ent, int position) {
+
+        }
+
+        @Override
+        public void onRecyclerItemClicked(Object Ent, int position) {
+            openCategoryListing(((BookCategoriesEnt) Ent).getBookcategoryid());
+
+        }
+    };
 
     public static BooksFragment newInstance() {
         Bundle args = new Bundle();
@@ -93,6 +105,10 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
         BooksFragment fragment = new BooksFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setBookCategoryEnt(BookCategoryEnt bookCategoryEnt) {
+        this.bookCategoryEnt = bookCategoryEnt;
     }
 
     private void openBookDetail(Integer bookID) {
@@ -107,13 +123,22 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
+    }
 
     @Override
     public void ResponseSuccess(Object result, String Tag) {
         switch (Tag) {
-            case WebServiceConstants.GET_DEFAULT_BOOKS:
-                this.bookCategoryEnts = (ArrayList<BookCategoryEnt>) result;
-                bindDataToViews(bookCategoryEnts);
+
+            case WebServiceConstants.GET_BOOKS_FEATURED:
+                setBookCategoryEnt((BookCategoryEnt) result);
+                bindDataToViews((BookCategoryEnt) result);
+                break;
+            case WebServiceConstants.GET_BOOKS_CATEGORIES:
+                bindCategories((ArrayList<BookCategoriesEnt>) result);
                 break;
 
         }
@@ -127,62 +152,47 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.books));
         titleBar.showBackButton();
-        titleBar.showFilterButton(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getMainActivity().isNavigationGravityRight = true;
-                getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
-            }
+        titleBar.showFilterButton(v -> {
+            getMainActivity().isNavigationGravityRight = true;
+            getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
         });
 
     }
 
-    private void bindDataToViews(ArrayList<BookCategoryEnt> result) {
-            DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
-            bindData(result);
-
-            rvAllBooks.BindRecyclerView(new AllBooksBinder(options, booksItemListener), allBooksCollections,
-                    new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
-                    new DefaultItemAnimator());
-            rvRecommended.BindRecyclerView(new RecommendedBooksBinder(options, booksItemListener), recommendedBooksCollections,
-                    new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false),
-                    new DefaultItemAnimator());
-            rvBest.BindRecyclerView(new BestBooksBinder(options, booksItemListener), bestBooksCollections,
-                    new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
-                    new DefaultItemAnimator());
-        // rvRecommended.addOnScrollListener(scrollListener);
-
-    }
-
-    private void bindData(ArrayList<BookCategoryEnt> result) {
-        allBooksCollections = new ArrayList<>();
-        allBooksCollections.addAll(result.size() > 0 ? result.get(0).getCategoryBooks() : new ArrayList<BookDetailEnt>());
-        recommendedBooksCollections = new ArrayList<>();
-        recommendedBooksCollections.addAll(result.size() > 1 ? result.get(1).getCategoryBooks() : new ArrayList<BookDetailEnt>());
-        bestBooksCollections = new ArrayList<>();
-        bestBooksCollections.addAll(result.size() > 2 ? result.get(2).getCategoryBooks() : new ArrayList<BookDetailEnt>());
-
-        if (allBooksCollections.size() <= 0) {
-            txtAllBooksNoData.setVisibility(View.VISIBLE);
-            rvAllBooks.setVisibility(View.GONE);
-        } else {
-            txtAllBooksNoData.setVisibility(View.GONE);
-            rvAllBooks.setVisibility(View.VISIBLE);
-        }
-        if (recommendedBooksCollections.size() <= 0) {
+    private void bindCategories(ArrayList<BookCategoriesEnt> result) {
+        DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
+        GridLayoutManager defaultLayoutManager = new GridLayoutManager(getDockActivity(), 3, GridLayoutManager.VERTICAL, false);
+        rvRecommended.BindRecyclerView(new BooksCategoryBinder(options, categoryListener), result,
+                defaultLayoutManager, new DefaultItemAnimator());
+        rvRecommended.setHasFixedSize(true);
+        rvRecommended.addItemDecoration(new GridSpacingItemDecoration(3, Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)), true));
+        rvRecommended.setNestedScrollingEnabled(false);
+        if (result.size() <= 0) {
             txtRecommendedNoData.setVisibility(View.VISIBLE);
             rvRecommended.setVisibility(View.GONE);
         } else {
             txtRecommendedNoData.setVisibility(View.GONE);
             rvRecommended.setVisibility(View.VISIBLE);
         }
-        if (bestBooksCollections.size() <= 0) {
-            txtBestNoData.setVisibility(View.VISIBLE);
-            rvBest.setVisibility(View.GONE);
+    }
+
+    private void bindDataToViews(BookCategoryEnt result) {
+        DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
+        allBooksCollections = new ArrayList<>();
+        allBooksCollections.addAll(result.getCategoryBooks());
+
+        if (allBooksCollections.size() <= 0) {
+            btnAllbooksSeeall.setVisibility(View.GONE);
+            txtAllBooksNoData.setVisibility(View.VISIBLE);
+            rvAllBooks.setVisibility(View.GONE);
         } else {
-            txtBestNoData.setVisibility(View.GONE);
-            rvBest.setVisibility(View.VISIBLE);
+            btnAllbooksSeeall.setVisibility(View.VISIBLE);
+            txtAllBooksNoData.setVisibility(View.GONE);
+            rvAllBooks.setVisibility(View.VISIBLE);
         }
+        rvAllBooks.BindRecyclerView(new AllBooksBinder(options, booksItemListener), allBooksCollections,
+                new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false),
+                new DefaultItemAnimator());
     }
 
     @Override
@@ -191,11 +201,7 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
-    @Override
-    public void onResume() {
-        super.onResume();
-        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
-    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -204,10 +210,9 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
 
 
     private void getDefaultBooks() {
-        filterGenreID =  getMainActivity().booksFilterFragment.getFiltersList();
-        serviceHelper.enqueueCall(
-                webService.getDefaultBooks(currentPageNumber, totalCount, filterGenreID, culture, prefHelper.getUserToken()),
-                WebServiceConstants.GET_DEFAULT_BOOKS);
+        filterGenreID = getMainActivity().booksFilterFragment.getFiltersList();
+        serviceHelper.enqueueCall(webService.getBooksCategories(prefHelper.getUserToken()), WebServiceConstants.GET_BOOKS_CATEGORIES);
+        serviceHelper.enqueueCall(webService.getFeaturesBooks(prefHelper.getUserToken()), WebServiceConstants.GET_BOOKS_FEATURED);
     }
 
 
@@ -229,19 +234,11 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
 
     @OnClick({R.id.btn_allbooks_seeall, R.id.btn_recommne_seeall, R.id.btn_best_seeall})
     public void onViewClicked(View view) {
-        if (bookCategoryEnts == null){
-            return;
-        }
         switch (view.getId()) {
             case R.id.btn_allbooks_seeall:
-                openCategoryListing(bookCategoryEnts.size() > 0 ? bookCategoryEnts.get(0).getCategoryId() : -1);
+                getDockActivity().replaceDockableFragment(FeatureAllBooksListingFragment.newInstance(bookCategoryEnt), FeatureAllBooksListingFragment.TAG);
                 break;
-            case R.id.btn_recommne_seeall:
-                openCategoryListing(bookCategoryEnts.size() > 1 ? bookCategoryEnts.get(1).getCategoryId() : -1);
-                break;
-            case R.id.btn_best_seeall:
-                openCategoryListing(bookCategoryEnts.size() > 2 ? bookCategoryEnts.get(2).getCategoryId() : -1);
-                break;
+
         }
     }
 

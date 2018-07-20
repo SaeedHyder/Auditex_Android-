@@ -1,294 +1,133 @@
 package com.ingic.auditix.entities;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created on 3/15/2018.
  */
 
-public class NewsEpisodeEnt {
+public class NewsEpisodeEnt extends RealmObject {
 
-    @SerializedName("_index")
-    private String _index;
-    @SerializedName("_type")
-    private String _type;
-    @SerializedName("_id")
-    private String _id;
-    @SerializedName("title")
-    private String title;
-    @SerializedName("audio_link")
-    private String audio_link;
-    @SerializedName("audio_duration")
-    private int audio_duration;
-    @SerializedName("duration")
-    private int duration;
-    @SerializedName("image_url")
-    private String image_url;
-    @SerializedName("category")
-    private String category;
-    @SerializedName("timestamp")
-    private String timestamp;
-    @SerializedName("description")
-    private String description;
-    @SerializedName("source_image_url")
-    private String source_image_url;
-    @SerializedName("source_name")
-    private String source_name;
-    @SerializedName("source")
-    private String source;
-    @SerializedName("story_actionlog_data")
-    private Story_actionlog_data story_actionlog_data;
-    @SerializedName("link")
-    private String link;
-    @SerializedName("text_id")
-    private String text_id;
-    @SerializedName("tags")
-    private String tags;
-    @SerializedName("source_id")
-    private String source_id;
-    @SerializedName("channel_id")
-    private String channel_id;
-    @SerializedName("channel_name")
-    private String channel_name;
-    @SerializedName("source_text_id")
-    private String source_text_id;
-    @SerializedName("channel_text_id")
-    private String channel_text_id;
-    @SerializedName("IsFavourite")
-    private boolean IsFavourite;
-    @SerializedName("IsSubscribed")
-    private boolean IsSubscribed;
+    @Expose
+    @SerializedName("CreatedDate")
+    private String createddate;
+    @Expose
+    @SerializedName("EpisodeTitle")
+    private String episodetitle;
+    @Expose
+    @SerializedName("EpisodeWebUrl")
+    private String episodeweburl;
+    @Expose
+    @SerializedName("FileDuration")
+    private int fileduration;
+    @Expose
+    @SerializedName("FilePath")
+    private String filepath;
+    @Expose
+    @SerializedName("FileSize")
+    private int filesize;
+    @Expose
+    @SerializedName("EpisodeNo")
+    private int episodeno;
+    @Expose
+    @SerializedName("NewsID")
+    private int newsid;
+    @PrimaryKey
+    @Expose
+    @SerializedName("NewsEpisodeID")
+    private int newsepisodeid;
+    private int statusState;
+    private int downloadProgress = 0;
 
-    public boolean isFavourite() {
-        return IsFavourite;
+    public int getStatusState() {
+        return statusState;
     }
 
-    public void setFavourite(boolean favourite) {
-        IsFavourite = favourite;
+    public void setStatusState(int statusState) {
+        this.statusState = statusState;
     }
 
-    public boolean isSubscribed() {
-        return IsSubscribed;
+    public int getDownloadProgress() {
+        return downloadProgress;
     }
 
-    public void setSubscribed(boolean subscribed) {
-        IsSubscribed = subscribed;
+    public void setDownloadProgress(int downloadProgress) {
+        this.downloadProgress = downloadProgress;
     }
 
-    public String get_index() {
-        return _index;
+    public String getCreateddate() {
+        return createddate;
     }
 
-    public void set_index(String _index) {
-        this._index = _index;
+    public void setCreateddate(String createddate) {
+        this.createddate = createddate;
     }
 
-    public String get_type() {
-        return _type;
+    public String getEpisodetitle() {
+        return episodetitle;
     }
 
-    public void set_type(String _type) {
-        this._type = _type;
+    public void setEpisodetitle(String episodetitle) {
+        this.episodetitle = episodetitle;
     }
 
-    public String get_id() {
-        return _id;
+    public String getEpisodeweburl() {
+        return episodeweburl;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setEpisodeweburl(String episodeweburl) {
+        this.episodeweburl = episodeweburl;
     }
 
-    public String getTitle() {
-        return title;
+    public int getFileduration() {
+        return fileduration;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setFileduration(int fileduration) {
+        this.fileduration = fileduration;
     }
 
-    public String getAudio_link() {
-        return audio_link;
+    public String getFilepath() {
+        return filepath;
     }
 
-    public void setAudio_link(String audio_link) {
-        this.audio_link = audio_link;
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
     }
 
-    public int getAudio_duration() {
-        return audio_duration;
+    public int getFilesize() {
+        return filesize;
     }
 
-    public void setAudio_duration(int audio_duration) {
-        this.audio_duration = audio_duration;
+    public void setFilesize(int filesize) {
+        this.filesize = filesize;
     }
 
-    public int getDuration() {
-        return duration;
+    public int getEpisodeno() {
+        return episodeno;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    public void setEpisodeno(int episodeno) {
+        this.episodeno = episodeno;
     }
 
-    public String getImage_url() {
-        return image_url;
+    public int getNewsid() {
+        return newsid;
     }
 
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
+    public void setNewsid(int newsid) {
+        this.newsid = newsid;
     }
 
-    public String getCategory() {
-        return category;
+    public int getNewsepisodeid() {
+        return newsepisodeid;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getSource_image_url() {
-        return source_image_url;
-    }
-
-    public void setSource_image_url(String source_image_url) {
-        this.source_image_url = source_image_url;
-    }
-
-    public String getSource_name() {
-        return source_name;
-    }
-
-    public void setSource_name(String source_name) {
-        this.source_name = source_name;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public Story_actionlog_data getStory_actionlog_data() {
-        return story_actionlog_data;
-    }
-
-    public void setStory_actionlog_data(Story_actionlog_data story_actionlog_data) {
-        this.story_actionlog_data = story_actionlog_data;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public String getText_id() {
-        return text_id;
-    }
-
-    public void setText_id(String text_id) {
-        this.text_id = text_id;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
-
-    public String getSource_id() {
-        return source_id;
-    }
-
-    public void setSource_id(String source_id) {
-        this.source_id = source_id;
-    }
-
-    public String getChannel_id() {
-        return channel_id;
-    }
-
-    public void setChannel_id(String channel_id) {
-        this.channel_id = channel_id;
-    }
-
-    public String getChannel_name() {
-        return channel_name;
-    }
-
-    public void setChannel_name(String channel_name) {
-        this.channel_name = channel_name;
-    }
-
-    public String getSource_text_id() {
-        return source_text_id;
-    }
-
-    public void setSource_text_id(String source_text_id) {
-        this.source_text_id = source_text_id;
-    }
-
-    public String getChannel_text_id() {
-        return channel_text_id;
-    }
-
-    public void setChannel_text_id(String channel_text_id) {
-        this.channel_text_id = channel_text_id;
-    }
-
-    public static class Story_actionlog_data {
-        @SerializedName("_index")
-        private String _index;
-        @SerializedName("_type")
-        private String _type;
-        @SerializedName("_id")
-        private String _id;
-
-        public String get_index() {
-            return _index;
-        }
-
-        public void set_index(String _index) {
-            this._index = _index;
-        }
-
-        public String get_type() {
-            return _type;
-        }
-
-        public void set_type(String _type) {
-            this._type = _type;
-        }
-
-        public String get_id() {
-            return _id;
-        }
-
-        public void set_id(String _id) {
-            this._id = _id;
-        }
+    public void setNewsepisodeid(int newsepisodeid) {
+        this.newsepisodeid = newsepisodeid;
     }
 }

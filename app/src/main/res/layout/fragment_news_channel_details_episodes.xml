@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/x5"
+        android:layout_marginStart="@dimen/x5"
+        android:layout_marginTop="@dimen/x10">
+
+        <ImageView
+            android:id="@+id/img_item_pic"
+            android:layout_width="@dimen/x92"
+            android:layout_height="@dimen/x92"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/x10"
+            android:contentDescription="@string/profile"
+            android:scaleType="fitXY"
+            android:src="@drawable/com_facebook_profile_picture_blank_square"/>
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x120">
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/x5"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/x16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typeface="@string/font_normal"
+                tools:text="CNN Technology"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txtDescription"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/x5"
+                android:layout_marginTop="@dimen/x5"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textColor="@color/app_font_gray"
+                android:textSize="@dimen/x16"
+                app:layout_constraintBottom_toTopOf="@+id/btnDownloadAll"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_title"
+                app:typeface="@string/font_normal"
+                tools:text="@string/lorem_ipsum"/>
+
+            <Button
+                android:id="@+id/btnDownloadAll"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/x30"
+                android:layout_gravity="start|bottom"
+                android:layout_marginTop="@dimen/x5"
+                android:background="@drawable/button_orange"
+                android:paddingEnd="@dimen/x5"
+                android:paddingStart="@dimen/x5"
+                android:text="@string/download_all_news"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x13"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </android.support.constraint.ConstraintLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/x10"
+        android:layout_marginTop="@dimen/x10"
+        android:background="@color/app_font_gray"/>
+
+    <com.ingic.auditix.ui.views.AnyTextView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="@dimen/x5"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:text="@string/later_shows"
+        android:textColor="@color/black"
+        android:textSize="@dimen/x16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typeface="@string/font_normal"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/x10"
+        android:background="@color/app_font_gray"/>
+    <com.ingic.auditix.ui.views.AnyTextView
+        android:id="@+id/txtNoData"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:layout_marginTop="@dimen/x10"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/no_data_available"
+        android:textColor="@color/app_font_black"
+        android:textSize="@dimen/x16"
+        android:visibility="gone"
+        app:typeface="@string/font_normal"/>
+    <com.ingic.auditix.ui.views.CustomRecyclerView
+        android:id="@+id/rvEpisodes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

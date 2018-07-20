@@ -2,14 +2,16 @@ package com.ingic.auditix.retrofit;
 
 
 import com.ingic.auditix.entities.AdvertisementEnt;
+import com.ingic.auditix.entities.BookCategoriesEnt;
 import com.ingic.auditix.entities.BookCategoryDetailEnt;
 import com.ingic.auditix.entities.BookCategoryEnt;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.BookFavoriteEnt;
 import com.ingic.auditix.entities.BookGenreEnt;
 import com.ingic.auditix.entities.CMSEnt;
+import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
-import com.ingic.auditix.entities.NewsEpisodeEnt;
+import com.ingic.auditix.entities.NewsChannelDetailEnt;
 import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.entities.PodcastCategoryListEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
@@ -143,7 +145,7 @@ public interface WebService {
 
     @GET("GetPodcastEpisodesByPodcastID")
     Call<ResponseWrapper<ArrayList<PodcastEpisodeEnt>>> getPodcastEpisodesByPodcastID(@Query("PodcastID") Integer PodcastID,
-                                                                           @Header(WebServiceConstants.HEADER_KEY) String header);
+                                                                                      @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("SubscribePodcast")
     Call<ResponseWrapper> subscribePodcast(@Query("trackId") Integer trackId,
@@ -171,6 +173,10 @@ public interface WebService {
     @GET("GetAllCategories")
     Call<ResponseWrapper<ArrayList<PodcastCategoriesEnt>>> getAllPodcastCategories(@Header(WebServiceConstants.HEADER_KEY) String header);
 
+    @GET("AddListeningEventPodcast")
+    Call<ResponseWrapper> addListeningEventPodcast(@Query("PodcastID") Integer PodcastID,
+                                                   @Query("EpisodeID") Integer EpisodeID, @Header(WebServiceConstants.HEADER_KEY) String header);
+
     @GET("GetLocationList")
     Call<ResponseWrapper<ArrayList<PodcastLocationEnt>>> getAllFilter(@Header(WebServiceConstants.HEADER_KEY) String header);
     //endregion
@@ -188,6 +194,9 @@ public interface WebService {
                                                                       @Query("genreIdList") String genreIdList,
                                                                       @Query("culture") String culture,
                                                                       @Header(WebServiceConstants.HEADER_KEY) String header);
+
+    @GET("GetFeaturedBooks")
+    Call<ResponseWrapper<BookCategoryEnt>> getFeaturesBooks(@Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("BooksByCategoryId")
     Call<ResponseWrapper<BookCategoryDetailEnt>> getAllCategoryBooks(@Query("categoryId") Integer categoryId,
@@ -216,6 +225,9 @@ public interface WebService {
 
     @GET("GetListeningEventPodcast")
     Call<ResponseWrapper<ArrayList<PodcastEpisodeEnt>>> getNewAndNoteworthy(@Header(WebServiceConstants.HEADER_KEY) String header);
+
+    @GET("GetBookCategories")
+    Call<ResponseWrapper<ArrayList<BookCategoriesEnt>>> getBooksCategories(@Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("MyLibraryBooks")
     Call<ResponseWrapper<ArrayList<BookDetailEnt>>> getLibraryBooks(@Query("PageNo") Integer pageNumber,
@@ -254,13 +266,16 @@ public interface WebService {
     Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllNewsCategories(@Header(WebServiceConstants.HEADER_KEY) String userToken);
 
     @GET("GetAllNewsByCategoryId")
-    Call<ResponseWrapper<ArrayList<NewsEpisodeEnt>>> getAllNewsByCategory(@Query("Id") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
+    Call<ResponseWrapper<ArrayList<NewItemDetailEnt>>> getAllNewsByCategory(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
 
-    @GET("SubscribeNewsCategory")
-    Call<ResponseWrapper> subscribeNews(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
+    @GET("SubscribeNews")
+    Call<ResponseWrapper> subscribeNews(@Query("NewsId") int NewsId, @Header(WebServiceConstants.HEADER_KEY) String userToken);
 
-    @GET("UnSubscribeNewsCategory ")
-    Call<ResponseWrapper> unsubscribeNews(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
+    @GET("GetSortedNewsEpisodes")
+    Call<ResponseWrapper<NewsChannelDetailEnt>> getAllChannelEpisode(@Query("NewsId") int NewsId, @Header(WebServiceConstants.HEADER_KEY) String userToken);
+
+    @GET("UnSubscribeNews ")
+    Call<ResponseWrapper> unsubscribeNews(@Query("NewsId") int NewsId, @Header(WebServiceConstants.HEADER_KEY) String userToken);
 
     @GET("FavoriteNews")
     Call<ResponseWrapper> favoriteNews(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
@@ -269,7 +284,7 @@ public interface WebService {
     Call<ResponseWrapper> unFavoriteNews(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
 
     @GET("GetAllNewsSubscriptions")
-    Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllSubscribeNews(@Header(WebServiceConstants.HEADER_KEY) String userToken);
+    Call<ResponseWrapper<ArrayList<NewItemDetailEnt>>> getAllSubscribeNews(@Header(WebServiceConstants.HEADER_KEY) String userToken);
 
     @GET("GetAllFavoriteNews")
     Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllFavoriteNews(@Header(WebServiceConstants.HEADER_KEY) String userToken);

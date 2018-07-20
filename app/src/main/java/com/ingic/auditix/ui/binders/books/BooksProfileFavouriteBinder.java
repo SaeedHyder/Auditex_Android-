@@ -1,4 +1,4 @@
-package com.ingic.auditix.ui.binders.news;
+package com.ingic.auditix.ui.binders.books;
 
 import android.content.Context;
 import android.view.View;
@@ -6,8 +6,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ingic.auditix.R;
-import com.ingic.auditix.entities.NewItemDetailEnt;
-import com.ingic.auditix.entities.NewsCategoryEnt;
+import com.ingic.auditix.entities.BookFavoriteEnt;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
@@ -20,17 +19,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created on 4/13/18.
+ * Created on 7/19/18.
  */
-public class NewsSubscriptionListBinder extends RecyclerViewBinder<NewItemDetailEnt> implements View.OnClickListener {
-
+public class BooksProfileFavouriteBinder extends RecyclerViewBinder<BookFavoriteEnt> implements View.OnClickListener{
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private RecyclerViewItemListener listener;
     private BasePreferenceHelper prefHelper;
 
-    public NewsSubscriptionListBinder(DisplayImageOptions options, RecyclerViewItemListener listener, BasePreferenceHelper prefHelper) {
-        super(R.layout.row_item_news_subscription_list);
+    public BooksProfileFavouriteBinder(DisplayImageOptions options, RecyclerViewItemListener listener, BasePreferenceHelper prefHelper) {
+        super(R.layout.row_item_news_subscription);
         this.prefHelper = prefHelper;
         this.imageLoader = ImageLoader.getInstance();
         this.options = options;
@@ -43,10 +41,10 @@ public class NewsSubscriptionListBinder extends RecyclerViewBinder<NewItemDetail
     }
 
     @Override
-    public void bindView(NewItemDetailEnt entity, int position, Object viewHolder, Context context) {
+    public void bindView(BookFavoriteEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
-        imageLoader.displayImage(entity.getImageUrl(), holder.imgItemPic, options);
-        holder.txtTitle.setText(entity.getName() + "");
+        imageLoader.displayImage(entity.getImageUrl(), holder.txtItemImage, options);
+        holder.txtItemText.setText(entity.getBookName() + "");
         holder.btnSubscribe.setTag(R.integer.key_recycler_object, entity);
         holder.btnSubscribe.setTag(R.integer.key_recycler_position, position);
         holder.btnSubscribe.setOnClickListener(this);
@@ -78,15 +76,11 @@ public class NewsSubscriptionListBinder extends RecyclerViewBinder<NewItemDetail
 
     }
 
-    static class ViewHolder extends BaseViewHolder {
-        @BindView(R.id.img_item_pic)
-        ImageView imgItemPic;
-        @BindView(R.id.txt_title)
-        AnyTextView txtTitle;
-        @BindView(R.id.txt_narrator)
-        AnyTextView txtNarrator;
-        @BindView(R.id.txt_narrator_text)
-        AnyTextView txtNarratorText;
+    static class ViewHolder extends BaseViewHolder{
+        @BindView(R.id.txt_item_image)
+        ImageView txtItemImage;
+        @BindView(R.id.txt_item_text)
+        AnyTextView txtItemText;
         @BindView(R.id.btn_subscribe)
         Button btnSubscribe;
 

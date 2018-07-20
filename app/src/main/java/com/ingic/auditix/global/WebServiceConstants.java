@@ -68,4 +68,9 @@ public class WebServiceConstants {
     public static final String RESENT_SMS_CODE = "RESENT_SMS_CODE";
     public static final String SUBMIT_SMS_CODE = "SUBMIT_SMS_CODE";
     public static final String GET_PODCAST_EPISODE_DETAIL = "GET_PODCAST_EPISODE_DETAIL";
+    public static final String GET_ALL_NEWS_CHANNEL_EPISODES = "GET_ALL_NEWS_CHANNEL_EPISODES";
+    public static final String ADD_TO_LISTENING_LIBRARY = "ADD_TO_LISTENING_LIBRARY";
+    public static final String GET_BOOKS_CATEGORIES = "GET_BOOKS_CATEGORIES";
+    public static final String GET_BOOKS_FEATURED = "GET_BOOKS_FEATURED";
+
 }

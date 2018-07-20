@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -13,7 +12,7 @@ import io.realm.annotations.PrimaryKey;
  * Created on 2/1/2018.
  */
 
-public class BookDetailEnt extends RealmObject{
+public class BookDetailEnt extends RealmObject {
     @PrimaryKey
     @SerializedName("BookID")
     @Expose
@@ -29,13 +28,13 @@ public class BookDetailEnt extends RealmObject{
     private String narratorName;
     @SerializedName("Rating")
     @Expose
-    private Float rating;
+    private Double rating;
     @SerializedName("Genre")
     @Expose
     private String genre;
     @SerializedName("TotalsChapters")
     @Expose
-    private int totalChapters;
+    private Integer totalsChapters;
     @SerializedName("Duration")
     @Expose
     private Integer duration;
@@ -57,15 +56,61 @@ public class BookDetailEnt extends RealmObject{
     @SerializedName("Price")
     @Expose
     private Integer price;
-    @SerializedName("IsPurchased")
-    @Expose
-    private Boolean isPurchased;
     @SerializedName("IsFavorite")
     @Expose
     private Boolean isFavorite;
     @SerializedName("Chapters")
     @Expose
     private BookChaptersEnt chapters;
+    @SerializedName("IsRated")
+    @Expose
+    private Boolean isRated;
+    @SerializedName("WowzaURL")
+    @Expose
+    private String wowzaURL;
+    @SerializedName("WowzaPort")
+    @Expose
+    private String wowzaPort;
+    @SerializedName("WowzaAppName")
+    @Expose
+    private String wowzaAppName;
+    @SerializedName("AudioUrl")
+    @Expose
+    private String audioUrl;
+    private String downloadedOn;
+
+    public String getDownloadedOn() {
+        return downloadedOn;
+    }
+
+    public void setDownloadedOn(String downloadedOn) {
+        this.downloadedOn = downloadedOn;
+    }
+
+    public Boolean getPaid() {
+        return isPaid;
+    }
+
+    public void setPaid(Boolean paid) {
+        isPaid = paid;
+    }
+
+
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public Boolean getRated() {
+        return isRated;
+    }
+
+    public void setRated(Boolean rated) {
+        isRated = rated;
+    }
 
     public Integer getBookID() {
         return bookID;
@@ -100,10 +145,10 @@ public class BookDetailEnt extends RealmObject{
     }
 
     public Float getRating() {
-        return rating;
+        return rating.floatValue();
     }
 
-    public void setRating(Float rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 
@@ -115,13 +160,6 @@ public class BookDetailEnt extends RealmObject{
         this.genre = genre;
     }
 
-    public int getTotalChapters() {
-        return totalChapters;
-    }
-
-    public void setTotalChapters(int totalChapters) {
-        this.totalChapters = totalChapters;
-    }
 
     public Integer getDuration() {
         return duration;
@@ -179,13 +217,6 @@ public class BookDetailEnt extends RealmObject{
         this.price = price;
     }
 
-    public Boolean getIsPurchased() {
-        return isPurchased;
-    }
-
-    public void setIsPurchased(Boolean isPurchased) {
-        this.isPurchased = isPurchased;
-    }
 
     public Boolean getIsFavorite() {
         return isFavorite;
@@ -203,9 +234,44 @@ public class BookDetailEnt extends RealmObject{
         this.chapters = chapters;
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(genre).append(chapters).append(imageUrl).append(bookID).append(isPaid).append(aboutTheNarrator).append(size).append(narratorName).append(duration).append(price).append(isPurchased).append(isFavorite).append(authorName).append(aboutTheBook).append(rating).append(totalChapters).append(bookName).toHashCode();
+    public Integer getTotalsChapters() {
+        return totalsChapters;
+    }
+
+    public void setTotalsChapters(Integer totalsChapters) {
+        this.totalsChapters = totalsChapters;
+    }
+
+    public String getWowzaURL() {
+        return wowzaURL;
+    }
+
+    public void setWowzaURL(String wowzaURL) {
+        this.wowzaURL = wowzaURL;
+    }
+
+    public String getWowzaPort() {
+        return wowzaPort;
+    }
+
+    public void setWowzaPort(String wowzaPort) {
+        this.wowzaPort = wowzaPort;
+    }
+
+    public String getWowzaAppName() {
+        return wowzaAppName;
+    }
+
+    public void setWowzaAppName(String wowzaAppName) {
+        this.wowzaAppName = wowzaAppName;
+    }
+
+    public String getAudioUrl() {
+        return audioUrl;
+    }
+
+    public void setAudioUrl(String audioUrl) {
+        this.audioUrl = audioUrl;
     }
 
     @Override
@@ -217,7 +283,10 @@ public class BookDetailEnt extends RealmObject{
             return false;
         }
         BookDetailEnt rhs = ((BookDetailEnt) other);
-        return new EqualsBuilder().append(genre, rhs.genre).append(chapters, rhs.chapters).append(imageUrl, rhs.imageUrl).append(bookID, rhs.bookID).append(isPaid, rhs.isPaid).append(aboutTheNarrator, rhs.aboutTheNarrator).append(size, rhs.size).append(narratorName, rhs.narratorName).append(duration, rhs.duration).append(price, rhs.price).append(isPurchased, rhs.isPurchased).append(isFavorite, rhs.isFavorite).append(authorName, rhs.authorName).append(aboutTheBook, rhs.aboutTheBook).append(rating, rhs.rating).append(totalChapters, rhs.totalChapters).append(bookName, rhs.bookName).isEquals();
+        return new EqualsBuilder().append(genre, rhs.genre).append(chapters, rhs.chapters).append(imageUrl, rhs.imageUrl).append(bookID, rhs.bookID).append(isPaid, rhs.isPaid).append(aboutTheNarrator, rhs.aboutTheNarrator).append(size, rhs.size).append(narratorName, rhs.narratorName).append(duration, rhs.duration).append(price, rhs.price).append(isFavorite, rhs.isFavorite).append(authorName, rhs.authorName).append(aboutTheBook, rhs.aboutTheBook).append(rating, rhs.rating).append(bookName, rhs.bookName).isEquals();
     }
 
+    public boolean getIsPurchased() {
+        return true;
+    }
 }
