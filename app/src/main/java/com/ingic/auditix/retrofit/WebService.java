@@ -7,16 +7,19 @@ import com.ingic.auditix.entities.BookCategoryDetailEnt;
 import com.ingic.auditix.entities.BookCategoryEnt;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.BookFavoriteEnt;
+import com.ingic.auditix.entities.BookFilterEnt;
 import com.ingic.auditix.entities.BookGenreEnt;
 import com.ingic.auditix.entities.CMSEnt;
 import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.entities.NewsChannelDetailEnt;
+import com.ingic.auditix.entities.NewsFilterEnt;
 import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.entities.PodcastCategoryListEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.entities.PodcastEpisodeEnt;
 import com.ingic.auditix.entities.PodcastFavoriteEnt;
+import com.ingic.auditix.entities.PodcastFilterEnt;
 import com.ingic.auditix.entities.PodcastHomeEnt;
 import com.ingic.auditix.entities.PodcastLocationEnt;
 import com.ingic.auditix.entities.ResponseWrapper;
@@ -133,7 +136,8 @@ public interface WebService {
                                                                         @Query("countryCode") String countryCode,
                                                                         @Query("offset") Integer offset,
                                                                         @Header(WebServiceConstants.HEADER_KEY) String header);
-
+    @GET("GetFilterData?Type=1")
+    Call<ResponseWrapper<PodcastFilterEnt>> getPodcastFilterData(@Header(WebServiceConstants.HEADER_KEY) String header);
     @GET("GetDefaultPodCast")
     Call<ResponseWrapper<PodcastHomeEnt>> getDefaultPodcast(@Query("pageNumber") Integer pageNumber, @Query("totalCount") Integer totalCount, @Query("categoriesIds") String categoriesIds,
                                                             @Header(WebServiceConstants.HEADER_KEY) String header);
@@ -197,6 +201,8 @@ public interface WebService {
 
     @GET("GetFeaturedBooks")
     Call<ResponseWrapper<BookCategoryEnt>> getFeaturesBooks(@Header(WebServiceConstants.HEADER_KEY) String header);
+    @GET("GetFilterData?Type=2")
+    Call<ResponseWrapper<BookFilterEnt>> getBooksFilterData(@Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("BooksByCategoryId")
     Call<ResponseWrapper<BookCategoryDetailEnt>> getAllCategoryBooks(@Query("categoryId") Integer categoryId,
@@ -264,7 +270,8 @@ public interface WebService {
     //region News
     @GET("GetAllNewsCategory")
     Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllNewsCategories(@Header(WebServiceConstants.HEADER_KEY) String userToken);
-
+    @GET("GetFilterData?Type=3")
+    Call<ResponseWrapper<NewsFilterEnt>> getNewsFilterData(@Header(WebServiceConstants.HEADER_KEY) String header);
     @GET("GetAllNewsByCategoryId")
     Call<ResponseWrapper<ArrayList<NewItemDetailEnt>>> getAllNewsByCategory(@Query("NewsCategoryId") int Id, @Header(WebServiceConstants.HEADER_KEY) String userToken);
 

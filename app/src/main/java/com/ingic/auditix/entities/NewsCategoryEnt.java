@@ -1,5 +1,6 @@
 package com.ingic.auditix.entities;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -33,6 +34,10 @@ public class NewsCategoryEnt {
     @SerializedName("IsFavoriteNews")
     private boolean IsFavoriteNews;
 
+    @SerializedName("IsFeatured")
+    private boolean IsFeatured;
+
+
     public boolean isFeatured() {
         return IsFeatured;
     }
@@ -40,9 +45,6 @@ public class NewsCategoryEnt {
     public void setFeatured(boolean featured) {
         IsFeatured = featured;
     }
-
-    @SerializedName("IsFeatured")
-    private boolean IsFeatured;
 
     public boolean isNewsSubscribed() {
         return IsNewsSubscribed;
