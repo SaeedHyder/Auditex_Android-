@@ -6,6 +6,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,6 @@ import android.view.ViewGroup;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
-import com.ingic.auditix.entities.NewsChannelDetailEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.fragments.standard.HomeTabFragment;
 import com.ingic.auditix.global.WebServiceConstants;
@@ -119,10 +119,19 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
     }
 
     public void setTitleBar(TitleBar titleBar) {
+        if (getMainActivity().newsFilterFragment != null) {
+            getMainActivity().setRightSideFragment(getMainActivity().newsFilterFragment);
+            getMainActivity().newsFilterFragment.setListener(filterIDs -> {
+
+            });
+        }
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.news));
         titleBar.showBackButton();
-
+        titleBar.showFilterButton(v -> {
+            getMainActivity().isNavigationGravityRight = true;
+            getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
+        });
     }
 
     @Override

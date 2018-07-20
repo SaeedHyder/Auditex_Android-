@@ -30,7 +30,7 @@ import butterknife.Unbinder;
 /**
  * Created on 12/28/2017.
  */
-public class FilterFragment extends BaseFragment {
+public class PodcastFilterFragment extends BaseFragment {
     @BindView(R.id.btn_close)
     ImageView btnClose;
     @BindView(R.id.btn_clear)
@@ -39,19 +39,15 @@ public class FilterFragment extends BaseFragment {
     Button btnDone;
     Unbinder unbinder;
     FilterBinder binder;
-    @BindView(R.id.txt_title)
-    AnyTextView txtTitle;
-    @BindView(R.id.img_group_arrow)
-    ImageView imgGroupArrow;
     @BindView(R.id.rvfilters)
     CustomRecyclerView rvfilters;
     private ArrayList<FilterEnt> child1Collection;
     private FilterDoneClickListener listener;
 
-    public static FilterFragment newInstance() {
+    public static PodcastFilterFragment newInstance() {
         Bundle args = new Bundle();
 
-        FilterFragment fragment = new FilterFragment();
+        PodcastFilterFragment fragment = new PodcastFilterFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -87,7 +83,7 @@ public class FilterFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        txtTitle.setText(getResString(R.string.by_location));
+        //txtTitle.setText(getResString(R.string.by_location));
         if (child1Collection == null && binder == null) {
             serviceHelper.enqueueCall(webService.getAllFilter(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FILTER, false);
         } else {
@@ -127,7 +123,7 @@ public class FilterFragment extends BaseFragment {
         this.listener = listener;
     }
 
-    @OnClick({R.id.btn_clear, R.id.btn_done, R.id.btn_close,R.id.container_genre,R.id.upper_container,R.id.lower_container})
+    @OnClick({R.id.btn_clear, R.id.btn_done, R.id.btn_close})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_clear:
@@ -145,8 +141,7 @@ public class FilterFragment extends BaseFragment {
             case R.id.btn_close:
                 getMainActivity().closeDrawer();
                 break;
-                case R.id.container_genre:
-                break;
+
 
 
         }

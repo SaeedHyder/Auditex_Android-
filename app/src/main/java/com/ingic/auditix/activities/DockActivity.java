@@ -14,7 +14,8 @@ import com.ingic.auditix.BaseApplication;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.DownloadItemModel;
 import com.ingic.auditix.fragments.books.BooksFilterFragment;
-import com.ingic.auditix.fragments.podcast.FilterFragment;
+import com.ingic.auditix.fragments.news.NewsFilterFragment;
+import com.ingic.auditix.fragments.podcast.PodcastFilterFragment;
 import com.ingic.auditix.fragments.standard.HomeFragment;
 import com.ingic.auditix.fragments.standard.SideMenuFragment;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
@@ -27,7 +28,6 @@ import com.ingic.auditix.interfaces.LoadingListener;
 import com.ingic.auditix.residemenu.ResideMenu;
 import com.ingic.auditix.ui.dialogs.DialogFactory;
 import com.liulishuo.filedownloader.FileDownloadConnectListener;
-import com.liulishuo.filedownloader.FileDownloadLine;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.event.DownloadServiceConnectChangedEvent;
 import com.liulishuo.filedownloader.event.IDownloadEvent;
@@ -53,8 +53,9 @@ public abstract class DockActivity extends AppCompatActivity implements
     public static final String KEY_FRAG_FIRST = "firstFrag";
     public Realm realm;
     public SideMenuFragment sideMenuFragment;
-    public FilterFragment filterFragment;
+    public PodcastFilterFragment filterFragment;
     public BooksFilterFragment booksFilterFragment;
+    public NewsFilterFragment newsFilterFragment;
     protected BasePreferenceHelper prefHelper;
     BaseFragment baseFragment;
     private ResideMenu.OnMenuListener menuListener = new ResideMenu.OnMenuListener() {

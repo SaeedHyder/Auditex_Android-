@@ -1,4 +1,4 @@
-package com.ingic.auditix.fragments.books;
+package com.ingic.auditix.fragments.news;
 
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -6,18 +6,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.Switch;
 
 import com.ingic.auditix.R;
-import com.ingic.auditix.entities.BookGenreEnt;
-import com.ingic.auditix.entities.FilterEnt;
+import com.ingic.auditix.entities.LocationEnt;
+import com.ingic.auditix.entities.NewsFilterEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.FilterDoneClickListener;
 import com.ingic.auditix.ui.binders.FilterBinder;
-import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
+import com.ingic.auditix.ui.views.sRangeSeekBar;
 
 import java.util.ArrayList;
 
@@ -27,27 +26,27 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
- * Created on 2/2/2018.
+ * Created on 7/20/18.
  */
-public class BooksFilterFragment extends BaseFragment {
-    public static final String TAG = "BooksFilterFragment";
+public class NewsFilterFragment extends BaseFragment {
+    public static final String TAG = "NewsFilterFragment";
+    @BindView(R.id.rgbduration)
+    sRangeSeekBar rgbduration;
+    @BindView(R.id.rgbSubscriber)
+    sRangeSeekBar rgbSubscriber;
+    @BindView(R.id.swtInternational)
+    Switch swtInternational;
     @BindView(R.id.rvfilters)
     CustomRecyclerView rvfilters;
     Unbinder unbinder;
-    @BindView(R.id.btn_close)
-    ImageView btnClose;
-    @BindView(R.id.btn_clear)
-    Button btnClear;
-    @BindView(R.id.btn_done)
-    Button btnDone;
-    FilterBinder binder;
-    private ArrayList<FilterEnt> bookFilters;
+    private FilterBinder binder;
+    private ArrayList<LocationEnt> locationCollection;
     private FilterDoneClickListener listener;
 
-    public static BooksFilterFragment newInstance() {
+    public static NewsFilterFragment newInstance() {
         Bundle args = new Bundle();
 
-        BooksFilterFragment fragment = new BooksFilterFragment();
+        NewsFilterFragment fragment = new NewsFilterFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,8 +62,8 @@ public class BooksFilterFragment extends BaseFragment {
     @Override
     public void ResponseSuccess(Object result, String Tag) {
         switch (Tag) {
-            case WebServiceConstants.GET_ALL_BOOKS_FILTER:
-                bindData((ArrayList<BookGenreEnt>) result);
+            case WebServiceConstants.GET_ALL_FILTER:
+                bindFilterData((NewsFilterEnt) result);
                 break;
         }
     }
@@ -80,6 +79,19 @@ public class BooksFilterFragment extends BaseFragment {
         return binder == null ? "" : binder.getFilterCheckIDs();
     }
 
+    public void setListener(FilterDoneClickListener listener) {
+        this.listener = listener;
+    }
+
+    private void bindFilterData(NewsFilterEnt result) {
+        rgbduration.setRangeValues(result.getMinMaxSubscibersAndDuration().getMinDuration(), result.getMinMaxSubscibersAndDuration().getMaxDuration());
+        rgbSubscriber.setRangeValues(result.getMinMaxSubscibersAndDuration().getMinSubscriber(), result.getMinMaxSubscibersAndDuration().getMaxSubscriber());
+        locationCollection = new ArrayList<>(result.getLocations());
+        rvfilters.BindRecyclerView(binder, locationCollection,
+                new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
+                new DefaultItemAnimator());
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_filter, container, false);
@@ -90,39 +102,22 @@ public class BooksFilterFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //txtTitle.setText(getResString(R.string.by_genre));
-        if (bookFilters == null && binder == null) {
-            serviceHelper.enqueueCall(webService.getAllBooksFilters(null, prefHelper.getUserToken()), WebServiceConstants.GET_ALL_BOOKS_FILTER, false);
-        } else {
-            rvfilters.BindRecyclerView(binder, bookFilters,
-                    new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
-                    new DefaultItemAnimator());
-        }
-    }
-
-    public void setListener(FilterDoneClickListener listener) {
-        this.listener = listener;
-    }
-
-    private void bindData(ArrayList<BookGenreEnt> result) {
-
-        bookFilters = new ArrayList<>();
-        for (BookGenreEnt item : result
-                ) {
-            bookFilters.add(new FilterEnt(item.getGenreID(), item.getGenreName()));
-        }
         binder = new FilterBinder();
-        rvfilters.BindRecyclerView(binder, bookFilters,
-                new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
-                new DefaultItemAnimator());
+        serviceHelper.enqueueCall(webService.getNewsFilterData(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FILTER);
 
     }
 
-    @OnClick({R.id.btn_clear, R.id.btn_done, R.id.btn_close})
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @OnClick({R.id.btn_close, R.id.btn_clear, R.id.btn_done})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_clear:
-                if (binder != null && rvfilters != null && bookFilters != null && bookFilters.size() > 0) {
+                if (binder != null && rvfilters != null && locationCollection != null && locationCollection.size() > 0) {
                     binder.clearFilterIDs();
                     rvfilters.notifyDataSetChanged();
                 }
@@ -136,8 +131,6 @@ public class BooksFilterFragment extends BaseFragment {
             case R.id.btn_close:
                 getMainActivity().closeDrawer();
                 break;
-
-
         }
     }
 }

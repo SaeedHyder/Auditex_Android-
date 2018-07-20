@@ -7,6 +7,7 @@ import android.widget.CompoundButton;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.FilterEnt;
+import com.ingic.auditix.entities.LocationEnt;
 import com.ingic.auditix.ui.viewbinders.abstracts.RecyclerViewBinder;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +21,7 @@ import butterknife.ButterKnife;
  * Created on 2/2/2018.
  */
 
-public class FilterBinder extends RecyclerViewBinder<FilterEnt> {
+public class FilterBinder extends RecyclerViewBinder<LocationEnt> {
     private ArrayList<String> filterCheckIDs;
 
     public FilterBinder() {
@@ -34,25 +35,22 @@ public class FilterBinder extends RecyclerViewBinder<FilterEnt> {
     }
 
     @Override
-    public void bindView(final FilterEnt entity, int position, Object viewHolder, Context context) {
+    public void bindView(final LocationEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
-        if (filterCheckIDs.contains(entity.getGenreID())) {
+        if (filterCheckIDs.contains(entity.getId())) {
             holder.chkGenre.setChecked(true);
         } else {
             holder.chkGenre.setChecked(false);
         }
-        holder.chkGenre.setText(entity.getGenreName() + "");
-        holder.chkGenre.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    if (!filterCheckIDs.contains(entity.getGenreID())) {
-                        filterCheckIDs.add(entity.getGenreID());
-                    }
-                } else {
-                    if (filterCheckIDs.contains(entity.getGenreID())) {
-                        filterCheckIDs.remove(entity.getGenreID());
-                    }
+        holder.chkGenre.setText(entity.getCountryName() + "");
+        holder.chkGenre.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                if (!filterCheckIDs.contains(entity.getId())) {
+                    filterCheckIDs.add(entity.getId());
+                }
+            } else {
+                if (filterCheckIDs.contains(entity.getId())) {
+                    filterCheckIDs.remove(entity.getId());
                 }
             }
         });

@@ -24,12 +24,11 @@ import com.facebook.FacebookSdk;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.CMSEnt;
-import com.ingic.auditix.entities.NewsEpisodeEnt;
 import com.ingic.auditix.entities.PlayerNewsEnt;
 import com.ingic.auditix.entities.PlayerPodcatsEnt;
-import com.ingic.auditix.entities.PodcastDetailEnt;
 import com.ingic.auditix.fragments.books.BooksFilterFragment;
-import com.ingic.auditix.fragments.podcast.FilterFragment;
+import com.ingic.auditix.fragments.news.NewsFilterFragment;
+import com.ingic.auditix.fragments.podcast.PodcastFilterFragment;
 import com.ingic.auditix.fragments.standard.HomeFragment;
 import com.ingic.auditix.fragments.standard.LanguageSelectionFragment;
 import com.ingic.auditix.fragments.dashboard.NotificationsFragment;
@@ -550,8 +549,9 @@ public class MainActivity extends DockActivity implements OnClickListener {
     }
 
     private void initFiltersFragment() {
-        filterFragment = FilterFragment.newInstance();
+        filterFragment = PodcastFilterFragment.newInstance();
         booksFilterFragment = BooksFilterFragment.newInstance();
+        newsFilterFragment = NewsFilterFragment.newInstance();
     }
 
     public RelativeLayout getContentView() {

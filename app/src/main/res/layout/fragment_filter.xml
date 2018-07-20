@@ -1,77 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="?android:colorBackground"
-    android:scrollbars="none"
-    android:weightSum="1">
+    android:fillViewport="true"
+    android:scrollbars="none">
 
-    <FrameLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@+id/upper_container"
-        android:layout_weight="0.3">
+        android:layout_height="wrap_content"
+        android:background="?android:colorBackground"
+        android:orientation="vertical"
+        android:scrollbars="none"
+        android:weightSum="1">
 
-        <ImageView
+        <FrameLayout
+            android:id="@+id/upper_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/orange_box_gradient"/>
+            android:layout_height="0dp"
+            android:layout_weight="0.3">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/audio_icon_white"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/orange_box_gradient"/>
 
-        <ImageView
-            android:id="@+id/btn_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|top"
-            android:layout_marginStart="@dimen/x10"
-            android:layout_marginTop="@dimen/x10"
-            android:src="@drawable/cross_white"/>
-    </FrameLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/audio_icon_white"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.7"
-        android:id="@+id/lower_container"
-        android:orientation="vertical">
+            <ImageView
+                android:id="@+id/btn_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|top"
+                android:layout_marginStart="@dimen/x10"
+                android:layout_marginTop="@dimen/x10"
+                android:src="@drawable/cross_white"/>
+        </FrameLayout>
 
         <LinearLayout
+            android:id="@+id/lower_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/btn_clear"
-            android:layout_alignParentTop="true"
+            android:layout_height="0dp"
+            android:layout_weight="0.7"
             android:orientation="vertical">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/x60"
-                android:id="@+id/container_genre"
+                android:layout_height="@dimen/x40"
                 android:background="@color/app_filter_gray">
 
                 <com.ingic.auditix.ui.views.AnyTextView
-                    android:id="@+id/txt_title"
-                    app:typeface="@string/font_normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center_vertical"
                     android:layout_marginStart="@dimen/x10"
                     android:ellipsize="marquee"
                     android:singleLine="true"
-                    android:text="@string/by_genre"
+                    android:text="@string/duration"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/x16"/>
+                    android:textSize="@dimen/x16"
+                    app:typeface="@string/font_normal"/>
 
                 <ImageView
-                    android:id="@+id/img_group_arrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center_vertical"
@@ -79,41 +75,142 @@
                     android:src="@drawable/down_arrow"/>
             </FrameLayout>
 
+            <com.ingic.auditix.ui.views.sRangeSeekBar
+                android:id="@+id/rgbduration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/x10"
+                android:visibility="visible"
+                app:activateOnDefaultValues="true"
+                app:activeColor="@color/app_filter_gray"
+                app:barHeight="@dimen/x5"
+                app:defaultColor="@color/app_gray"
+                app:showLabels="false"
+                app:singleThumb="false"
+                app:textAboveThumbsColor="@color/app_font_black"
+                app:thumbNormal="@drawable/circle_orange"
+                app:thumbPressed="@drawable/circle_orange"
+                app:valuesAboveThumbs="true"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x40"
+                android:background="@color/app_filter_gray">
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginStart="@dimen/x10"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text="@string/subscriber"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/x16"
+                    app:typeface="@string/font_normal"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="@dimen/x15"
+                    android:src="@drawable/down_arrow"/>
+            </FrameLayout>
+
+            <com.ingic.auditix.ui.views.sRangeSeekBar
+                android:id="@+id/rgbSubscriber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/x10"
+                android:visibility="visible"
+                app:activateOnDefaultValues="true"
+                app:activeColor="@color/app_filter_gray"
+                app:barHeight="@dimen/x5"
+                app:defaultColor="@color/app_gray"
+                app:showLabels="false"
+                app:singleThumb="false"
+                app:textAboveThumbsColor="@color/app_font_black"
+                app:thumbNormal="@drawable/circle_orange"
+                app:thumbPressed="@drawable/circle_orange"
+                app:valuesAboveThumbs="true"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x40"
+                android:background="@color/app_filter_gray">
+
+                <com.ingic.auditix.ui.views.AnyTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginStart="@dimen/x10"
+                    android:layout_toStartOf="@+id/swtInternational"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text="@string/countries"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/x16"
+                    app:typeface="@string/font_normal"/>
+
+                <Switch
+                    android:id="@+id/swtInternational"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:visibility="invisible"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="@dimen/x8"
+                    android:layout_toStartOf="@+id/img_group_arrow"
+                    />
+
+                <ImageView
+                    android:id="@+id/img_group_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="@dimen/x15"
+                    android:src="@drawable/down_arrow"/>
+            </RelativeLayout>
+
             <com.ingic.auditix.ui.views.CustomRecyclerView
                 android:id="@+id/rvfilters"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+
+
+            <Button
+                android:id="@+id/btn_clear"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x30"
+                android:layout_gravity="start|bottom"
+                android:layout_marginEnd="@dimen/x30"
+                android:layout_marginStart="@dimen/x30"
+                android:layout_marginTop="@dimen/x30"
+                android:background="@drawable/button_orange"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
+                android:text="@string/clear"
+                android:textColor="@color/white"/>
+
+            <Button
+                android:id="@+id/btn_done"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x30"
+                android:layout_marginBottom="@dimen/x10"
+                android:layout_marginEnd="@dimen/x30"
+                android:layout_marginStart="@dimen/x30"
+                android:layout_marginTop="@dimen/x10"
+                android:background="@drawable/button_orange"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
+                android:text="@string/done"
+                android:textColor="@color/white"/>
         </LinearLayout>
-
-
-        <Button
-            android:id="@+id/btn_clear"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x30"
-            android:layout_above="@+id/btn_done"
-            android:layout_gravity="start|bottom"
-            android:layout_marginEnd="@dimen/x30"
-            android:layout_marginStart="@dimen/x30"
-            android:layout_marginTop="@dimen/x30"
-            android:background="@drawable/button_orange"
-            android:paddingEnd="@dimen/x10"
-            android:paddingStart="@dimen/x10"
-            android:text="@string/clear"
-            android:textColor="@color/white"/>
-
-        <Button
-            android:id="@+id/btn_done"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x30"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/x10"
-            android:layout_marginEnd="@dimen/x30"
-            android:layout_marginStart="@dimen/x30"
-            android:layout_marginTop="@dimen/x10"
-            android:background="@drawable/button_orange"
-            android:paddingEnd="@dimen/x10"
-            android:paddingStart="@dimen/x10"
-            android:text="@string/done"
-            android:textColor="@color/white"/>
-    </RelativeLayout>
-</LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
+</android.support.v4.widget.NestedScrollView>

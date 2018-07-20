@@ -136,9 +136,9 @@ public class sRangeSeekBar<T extends Number> extends ImageView {
 
     private boolean activateOnDefaultValues;
 
-    private String textUnitam = "am ";
+    private String textUnitam = "";
     private String textUnit = "$ ";
-    private String textUnitpm = "pm ";
+    private String textUnitpm = "";
 
     public sRangeSeekBar(Context context) {
         super(context);

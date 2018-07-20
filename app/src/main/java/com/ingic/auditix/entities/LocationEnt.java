@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class LocationEnt {
     @SerializedName("Id")
     @Expose
-    private Integer id;
+    private String id;
     @SerializedName("CountryCode")
     @Expose
     private String countryCode;
@@ -38,11 +38,11 @@ public class LocationEnt {
     @Expose
     private Boolean inActive;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
