@@ -122,14 +122,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.btn_poscast:
                 tabFragment.setTag(AppConstants.TAB_PODCAST);
+                getDockActivity().popBackStackTillEntry(0);
                 getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
                 break;
             case R.id.btn_books:
                 tabFragment.setTag(AppConstants.TAB_BOOKS);
+                getDockActivity().popBackStackTillEntry(0);
                 getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
                 break;
             case R.id.btn_news:
                 tabFragment.setTag(AppConstants.TAB_NEWS);
+                getDockActivity().popBackStackTillEntry(0);
                 getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
                 //willbeimplementedinfuture();
                 break;

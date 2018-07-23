@@ -14,7 +14,7 @@ import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.LoadMoreListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
-import com.ingic.auditix.ui.binders.CategoryListBinder;
+import com.ingic.auditix.ui.binders.books.BookCategoryListBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.ingic.auditix.ui.views.TitleBar;
@@ -127,7 +127,7 @@ public class BookCategoryListFragment extends BaseFragment {
             rvCategories.setVisibility(View.VISIBLE);
         }
         layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
-        rvCategories.BindRecyclerView(new CategoryListBinder(options, booksItemListener), booksCollections,
+        rvCategories.BindRecyclerView(new BookCategoryListBinder(options, booksItemListener), booksCollections,
                 layoutManager,
                 new DefaultItemAnimator());
         rvCategories.getAdapter().setOnLoadMoreListener(new LoadMoreListener() {

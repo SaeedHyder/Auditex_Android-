@@ -7,11 +7,13 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.EnableFilterDataEnt;
 import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.entities.PodcastCategoryHomeEnt;
 import com.ingic.auditix.entities.PodcastDetailHomeEnt;
@@ -46,7 +48,7 @@ import droidninja.filepicker.utils.GridSpacingItemDecoration;
 /**
  * Created on 1/10/2018.
  */
-public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmentLifecycleListener, FilterDoneClickListener {
+public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmentLifecycleListener {
 
     //region Global Variables
     public static final String TAG = "PodcastFragmentNew";
@@ -195,10 +197,22 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
     }
 
     public void setTitleBar(TitleBar titleBar) {
+        if (getMainActivity().filterFragment != null) {
+            getMainActivity().setRightSideFragment(getMainActivity().filterFragment);
+            getMainActivity().filterFragment.setListener((filters, isClear) -> {
 
+            });
+        }
         titleBar.hideButtons();
         titleBar.setSubHeading(getDockActivity().getResources().getString(R.string.podcast));
-        titleBar.showBackButton();
+        titleBar.showMenuButton();
+        titleBar.showFilterButton(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getMainActivity().isNavigationGravityRight = true;
+                getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
+            }
+        });
     }
 
     @Override
@@ -418,12 +432,12 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(ent), "PodcastDetailFragment");
     }
 
-    @Override
+   /* @Override
     public void onDoneFiltering(String filterIDs) {
         categoriesIds = filterIDs;
         serviceHelper.enqueueCall(webService.getDefaultPodcast(currentPageNumber, totalCount, categoriesIds, prefHelper.getUserToken()),
                 WebServiceConstants.GET_DEFAULT_PODCASTS);
-    }
+    }*/
     //endregion
 
 }

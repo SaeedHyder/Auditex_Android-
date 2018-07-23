@@ -82,7 +82,7 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
     public void setTitleBar(TitleBar titleBar) {
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.profile));
-        titleBar.showBackButton();
+        titleBar.showMenuButton();
     }
 
     @Override

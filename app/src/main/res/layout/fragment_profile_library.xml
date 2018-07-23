@@ -71,7 +71,7 @@
             android:layout_gravity="start"
             android:layout_marginTop="@dimen/x10"
             android:maxLines="1"
-            android:text="@string/categories"
+            android:text="@string/downloads"
             android:textAllCaps="true"
             android:textColor="@color/app_font_black"
             android:textSize="@dimen/x16"

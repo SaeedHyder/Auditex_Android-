@@ -295,16 +295,15 @@ public interface WebService {
     //region News
     @GET("GetAllNewsCategory")
     Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllNewsCategories(@Header(WebServiceConstants.HEADER_KEY) String userToken);
-    @FormUrlEncoded
     @POST("GetFilterResponse")
-    Call<ResponseWrapper<ArrayList<NewItemDetailEnt>>> getNewsByfilter(@Field("MinDuration") Integer MinDuration,
-                                                                               @Field("MaxDuration") Integer MaxDuration,
-                                                                               @Field("MinSubscriber") Integer MinSubscriber,
-                                                                               @Field("MaxSubscriber") Integer MaxSubscriber,
-                                                                               @Field("Type") Integer Type,
-                                                                               @Field("pageNumber") Integer pageNumber,
-                                                                               @Field("count") Integer count,
-                                                                               @Field("CountryIds") Integer CountryIds,
+    Call<ResponseWrapper<ArrayList<NewItemDetailEnt>>> getNewsByfilter(@Query("MinDuration") Integer MinDuration,
+                                                                               @Query("MaxDuration") Integer MaxDuration,
+                                                                               @Query("MinSubscriber") Integer MinSubscriber,
+                                                                               @Query("MaxSubscriber") Integer MaxSubscriber,
+                                                                               @Query("Type") Integer Type,
+                                                                               @Query("pageNumber") Integer pageNumber,
+                                                                               @Query("count") Integer count,
+                                                                               @Query("CountryIds") String CountryIds,
                                                                                @Header(WebServiceConstants.HEADER_KEY) String header);
     @GET("GetFilterData?Type=3")
     Call<ResponseWrapper<NewsFilterEnt>> getNewsFilterData(@Header(WebServiceConstants.HEADER_KEY) String header);

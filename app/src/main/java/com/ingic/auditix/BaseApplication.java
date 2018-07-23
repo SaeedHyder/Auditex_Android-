@@ -125,8 +125,8 @@ public class BaseApplication extends MultiDexApplication {
     }
     public void initImageLoader() {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageForEmptyUri(com.facebook.R.drawable.com_facebook_profile_picture_blank_square)
-                .showImageOnFail(com.facebook.R.drawable.com_facebook_profile_picture_blank_square)
+                .showImageForEmptyUri(R.drawable.placeholder_image)
+                .showImageOnFail(R.drawable.placeholder_image)
                 .resetViewBeforeLoading(true)
                 .cacheInMemory(true).cacheOnDisc(true)
                 .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)

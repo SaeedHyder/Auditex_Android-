@@ -1,6 +1,7 @@
 package com.ingic.auditix.fragments.news;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.EnableFilterDataEnt;
 import com.ingic.auditix.entities.LocationEnt;
 import com.ingic.auditix.entities.NewsFilterEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
@@ -42,6 +44,7 @@ public class NewsFilterFragment extends BaseFragment {
     private FilterBinder binder;
     private ArrayList<LocationEnt> locationCollection;
     private FilterDoneClickListener listener;
+    private boolean isClear = false;
 
     public static NewsFilterFragment newInstance() {
         Bundle args = new Bundle();
@@ -72,6 +75,9 @@ public class NewsFilterFragment extends BaseFragment {
         if (rvfilters != null && binder != null) {
             binder.clearFilterIDs();
             rvfilters.notifyDataSetChanged();
+            rgbduration.resetSelectedValues();
+            rgbSubscriber.resetSelectedValues();
+            isClear = false;
         }
     }
 
@@ -86,10 +92,18 @@ public class NewsFilterFragment extends BaseFragment {
     private void bindFilterData(NewsFilterEnt result) {
         rgbduration.setRangeValues(result.getMinMaxSubscibersAndDuration().getMinDuration(), result.getMinMaxSubscibersAndDuration().getMaxDuration());
         rgbSubscriber.setRangeValues(result.getMinMaxSubscibersAndDuration().getMinSubscriber(), result.getMinMaxSubscibersAndDuration().getMaxSubscriber());
+        rgbSubscriber.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
+            isClear = false;
+        });
+        rgbduration.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
+            isClear = false;
+        });
         locationCollection = new ArrayList<>(result.getLocations());
         rvfilters.BindRecyclerView(binder, locationCollection,
                 new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
                 new DefaultItemAnimator());
+        rvfilters.setNestedScrollingEnabled(false);
+
     }
 
     @Override
@@ -103,6 +117,7 @@ public class NewsFilterFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binder = new FilterBinder();
+        swtInternational.setVisibility(View.VISIBLE);
         serviceHelper.enqueueCall(webService.getNewsFilterData(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FILTER);
 
     }
@@ -120,11 +135,16 @@ public class NewsFilterFragment extends BaseFragment {
                 if (binder != null && rvfilters != null && locationCollection != null && locationCollection.size() > 0) {
                     binder.clearFilterIDs();
                     rvfilters.notifyDataSetChanged();
+                    rgbduration.resetSelectedValues();
+                    rgbSubscriber.resetSelectedValues();
+                    isClear = true;
                 }
                 break;
             case R.id.btn_done:
                 if (listener != null) {
-                    listener.onDoneFiltering(binder == null ? "" : binder.getFilterCheckIDs());
+
+                    listener.onDoneFiltering(getUserEnableFilters(), isClear);
+
                 }
                 getMainActivity().closeDrawer();
                 break;
@@ -132,5 +152,14 @@ public class NewsFilterFragment extends BaseFragment {
                 getMainActivity().closeDrawer();
                 break;
         }
+    }
+
+    @NonNull
+    private EnableFilterDataEnt getUserEnableFilters() {
+        String countriesIDs = binder == null ? "" : binder.getFilterCheckIDs();
+        EnableFilterDataEnt filterDataEnt = new EnableFilterDataEnt(rgbduration.getSelectedMinValue().intValue(), rgbduration.getSelectedMaxValue().intValue(),
+                rgbSubscriber.getSelectedMinValue().intValue(), rgbSubscriber.getSelectedMaxValue().intValue(),
+                countriesIDs);
+        return filterDataEnt;
     }
 }

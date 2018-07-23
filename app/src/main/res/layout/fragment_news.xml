@@ -8,11 +8,15 @@
                                             android:padding="@dimen/x10"
                                             android:scrollbars="none">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
+        <LinearLayout
+            android:id="@+id/MainContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -103,5 +107,11 @@
             android:textSize="@dimen/x16"
             android:visibility="gone"
             app:typeface="@string/font_normal"/>
-    </LinearLayout>
+        </LinearLayout>
+        <FrameLayout
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/containerFragment"/>
+    </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

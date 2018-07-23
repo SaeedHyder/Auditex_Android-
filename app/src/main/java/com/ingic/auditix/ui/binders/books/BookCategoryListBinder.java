@@ -1,4 +1,4 @@
-package com.ingic.auditix.ui.binders;
+package com.ingic.auditix.ui.binders.books;
 
 import android.content.Context;
 import android.view.View;
@@ -19,12 +19,12 @@ import butterknife.ButterKnife;
  * Created on 2/1/2018.
  */
 
-public class CategoryListBinder extends RecyclerViewBinder<BookDetailEnt> implements View.OnClickListener {
+public class BookCategoryListBinder extends RecyclerViewBinder<BookDetailEnt> implements View.OnClickListener {
     private ImageLoader imageLoader;
     private DisplayImageOptions options;
     private RecyclerViewItemListener listener;
 
-    public CategoryListBinder(DisplayImageOptions options, RecyclerViewItemListener listener) {
+    public BookCategoryListBinder(DisplayImageOptions options, RecyclerViewItemListener listener) {
         super(R.layout.row_item_books_category);
         this.options = options;
         this.listener = listener;

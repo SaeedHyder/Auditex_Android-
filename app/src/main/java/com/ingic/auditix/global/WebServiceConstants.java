@@ -73,4 +73,6 @@ public class WebServiceConstants {
     public static final String GET_BOOKS_CATEGORIES = "GET_BOOKS_CATEGORIES";
     public static final String GET_BOOKS_FEATURED = "GET_BOOKS_FEATURED";
 
+    public static final String GET_FILTER_DATA = "GET_FILTER_DATA";
+    public static final String GET_PAGED_DATA = "GET_PAGED_DATA";
 }

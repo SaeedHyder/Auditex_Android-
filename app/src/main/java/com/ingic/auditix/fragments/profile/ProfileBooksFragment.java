@@ -122,8 +122,11 @@ public class ProfileBooksFragment extends BaseFragment {
                 , new DefaultItemAnimator());
         if (favouriteCollection.size() <= 0) {
             txtFavouriteNoData.setVisibility(View.VISIBLE);
+            rvBooksFavourite.setVisibility(View.GONE);
         } else {
             txtFavouriteNoData.setVisibility(View.GONE);
+            rvBooksFavourite.setVisibility(View.VISIBLE);
+
         }
     }
 

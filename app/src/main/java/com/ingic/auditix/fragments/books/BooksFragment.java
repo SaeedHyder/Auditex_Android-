@@ -15,6 +15,7 @@ import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BookCategoriesEnt;
 import com.ingic.auditix.entities.BookCategoryEnt;
 import com.ingic.auditix.entities.BookDetailEnt;
+import com.ingic.auditix.entities.EnableFilterDataEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.fragments.standard.HomeTabFragment;
 import com.ingic.auditix.global.WebServiceConstants;
@@ -40,7 +41,7 @@ import droidninja.filepicker.utils.GridSpacingItemDecoration;
 /**
  * Created on 12/23/2017.
  */
-public class BooksFragment extends BaseFragment implements ViewPagerFragmentLifecycleListener, FilterDoneClickListener {
+public class BooksFragment extends BaseFragment implements ViewPagerFragmentLifecycleListener {
     @BindView(R.id.txt_allbooks)
     AnyTextView txtAllbooks;
     @BindView(R.id.btn_allbooks_seeall)
@@ -147,11 +148,13 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
     public void setTitleBar(TitleBar titleBar) {
         if (getMainActivity().booksFilterFragment != null) {
             getMainActivity().setRightSideFragment(getMainActivity().booksFilterFragment);
-            getMainActivity().booksFilterFragment.setListener(this);
+            getMainActivity().booksFilterFragment.setListener((filters, isClear) -> {
+
+            });
         }
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.books));
-        titleBar.showBackButton();
+        titleBar.showMenuButton();
         titleBar.showFilterButton(v -> {
             getMainActivity().isNavigationGravityRight = true;
             getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
@@ -242,8 +245,8 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
         }
     }
 
-    @Override
+   /* @Override
     public void onDoneFiltering(String filterIDs) {
         getDefaultBooks();
-    }
+    }*/
 }

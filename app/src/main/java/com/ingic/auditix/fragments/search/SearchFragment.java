@@ -130,7 +130,7 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
     public void setTitleBar(TitleBar titleBar) {
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.search));
-        titleBar.showBackButton();
+        titleBar.showMenuButton();
 
     }
 

@@ -31,7 +31,7 @@ import butterknife.Unbinder;
 /**
  * Created on 4/11/18.
  */
-public class PodcastListByCategoryFragment extends BaseFragment implements FilterDoneClickListener {
+public class PodcastListByCategoryFragment extends BaseFragment  {
     public static final String TAG = "PodcastListByCategoryFragment";
     @BindView(R.id.txt_no_data)
     AnyTextView txtNoData;
@@ -105,21 +105,12 @@ public class PodcastListByCategoryFragment extends BaseFragment implements Filte
     @Override
     public void setTitleBar(TitleBar titleBar) {
         super.setTitleBar(titleBar);
-        if (getMainActivity().filterFragment != null) {
-            getMainActivity().setRightSideFragment(getMainActivity().filterFragment);
-            getMainActivity().filterFragment.setListener(this);
-        }
+
         titleBar.hideButtons();
         titleBar.addBackground();
         titleBar.setSubHeading(getDockActivity().getResources().getString(R.string.podcast));
         titleBar.showBackButton();
-        titleBar.showFilterButton(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getMainActivity().isNavigationGravityRight = true;
-                getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
-            }
-        });
+
     }
 
     @Override
@@ -189,7 +180,7 @@ public class PodcastListByCategoryFragment extends BaseFragment implements Filte
         }
     }
 
-    @Override
+    /*@Override
     public void onDoneFiltering(String filterIDs) {
         if (filterIDs.equalsIgnoreCase("")) {
             categoriesIds = "US";
@@ -197,7 +188,7 @@ public class PodcastListByCategoryFragment extends BaseFragment implements Filte
             categoriesIds = filterIDs;
         serviceHelper.enqueueCall(webService.getPodcastsByCategory(mCategoryID, totalCount, categoriesIds, currentOffset, prefHelper.getUserToken()),
                 WebServiceConstants.GET_ALL_PODCAST_BY_CATEGORIES);
-    }
+    }*/
 
     public void setmCategoryID(int mCategoryID) {
         this.mCategoryID = mCategoryID;

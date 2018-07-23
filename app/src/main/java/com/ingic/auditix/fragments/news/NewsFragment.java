@@ -2,6 +2,7 @@ package com.ingic.auditix.fragments.news;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,6 +11,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.NewItemDetailEnt;
@@ -58,6 +61,10 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
     Unbinder unbinder;
     DisplayImageOptions options;
     ArrayList<NewItemDetailEnt> subscriptionCollection;
+    @BindView(R.id.MainContainer)
+    LinearLayout MainContainer;
+    @BindView(R.id.containerFragment)
+    FrameLayout containerFragment;
     private RecyclerViewItemListener newSubscriptionListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
@@ -121,17 +128,39 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
     public void setTitleBar(TitleBar titleBar) {
         if (getMainActivity().newsFilterFragment != null) {
             getMainActivity().setRightSideFragment(getMainActivity().newsFilterFragment);
-            getMainActivity().newsFilterFragment.setListener(filterIDs -> {
-
+            getMainActivity().newsFilterFragment.setListener((filters, isClear) -> {
+                if (isClear) {
+                    if (getChildFragmentManager().findFragmentById(R.id.containerFragment) != null) {
+                          getChildFragmentManager().beginTransaction().
+                                remove(getChildFragmentManager().findFragmentById(R.id.containerFragment)).commit();
+                        getChildFragmentManager().popBackStack();
+                        MainContainer.setVisibility(View.VISIBLE);
+                        containerFragment.setVisibility(View.GONE);
+                    }
+                } else {
+                    MainContainer.setVisibility(View.GONE);
+                    containerFragment.setVisibility(View.VISIBLE);
+                    replaceFragment(NewsFilterListFragment.newInstance(filters));
+                }
             });
         }
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.news));
-        titleBar.showBackButton();
+        titleBar.showMenuButton();
         titleBar.showFilterButton(v -> {
             getMainActivity().isNavigationGravityRight = true;
             getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
         });
+    }
+
+    private void replaceFragment(BaseFragment fragment) {
+        FragmentTransaction transaction = getChildFragmentManager()
+                .beginTransaction();
+        //transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
+        transaction.replace(R.id.containerFragment, fragment);
+        transaction.commit();
+
+
     }
 
     @Override
@@ -204,4 +233,5 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
     public void onViewClicked() {
         getDockActivity().replaceDockableFragment(NewsSubscriptionLIstFragment.newInstance(), NewsSubscriptionLIstFragment.TAG);
     }
+
 }

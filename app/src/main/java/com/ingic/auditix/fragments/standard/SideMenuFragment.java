@@ -14,8 +14,8 @@ import android.widget.ListView;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.NavigationEnt;
 import com.ingic.auditix.entities.UserModel;
-import com.ingic.auditix.fragments.dashboard.DashboardFragment;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.fragments.dashboard.DashboardFragment;
 import com.ingic.auditix.fragments.dashboard.NotificationsFragment;
 import com.ingic.auditix.fragments.settings.SettingsFragment;
 import com.ingic.auditix.global.WebServiceConstants;
@@ -138,8 +138,8 @@ public class SideMenuFragment extends BaseFragment {
                 .async()
                 .from(image)
                 .into(imgUserBlur);*/
-      if (imgUserBlur!=null)
-        imgUserBlur.setImageBitmap(image);
+        if (imgUserBlur != null)
+            imgUserBlur.setImageBitmap(image);
     }
 
     public void refreshMenuData() {
@@ -167,6 +167,8 @@ public class SideMenuFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (navigationEnts.get(position).getTitle().equals(getString(R.string.home))) {
                     getMainActivity().closeDrawer();
+                    getDockActivity().popBackStackTillEntry(0);
+                    getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), "HomeFragment");
                 } else if (navigationEnts.get(position).getTitle().equals(getString(R.string.dashboard))) {
                     if (prefHelper.isGuest()) {
                         showGuestMessage();
@@ -204,7 +206,7 @@ public class SideMenuFragment extends BaseFragment {
                     });
                     logoutdialog.setCancelable(false);
                     logoutdialog.showDialog();
-                }else if (navigationEnts.get(position).getTitle().equals(getResources().getString(R.string.login))) {
+                } else if (navigationEnts.get(position).getTitle().equals(getResources().getString(R.string.login))) {
                     getMainActivity().hideBottomPlayer();
                     prefHelper.setLoginStatus(false);
                     prefHelper.setGuestStatus(false);

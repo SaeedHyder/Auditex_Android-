@@ -1,6 +1,7 @@
 package com.ingic.auditix.fragments.standard;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.view.InflateException;
@@ -143,10 +144,12 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
                 .beginTransaction();
         transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
         transaction.replace(R.id.pager, adapter.getItem(position));
-        transaction.commit();
+        transaction.commitNowAllowingStateLoss();
 
 
     }
+
+
 
     private void bindUnselectedTabView(TabLayout.Tab tab) {
         View view = tab.getCustomView();
@@ -186,12 +189,9 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
           /*  ViewGroup vgTab = (ViewGroup) tabLayout.getChildAt(INDEX_PROFILE);
             if (vgTab != null)
                 vgTab.setEnabled(false);*/
-          Objects.requireNonNull(tabLayout.getTabAt(INDEX_PROFILE)).getCustomView().setOnTouchListener(new View.OnTouchListener() {
-              @Override
-              public boolean onTouch(View v, MotionEvent event) {
-                  showGuestMessage();
-                  return true;
-              }
+          Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(INDEX_PROFILE)).getCustomView()).setOnTouchListener((v, event) -> {
+              showGuestMessage();
+              return true;
           });
         }
         tabLayout.addOnTabSelectedListener(this);

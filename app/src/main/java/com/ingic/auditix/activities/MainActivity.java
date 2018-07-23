@@ -118,8 +118,8 @@ public class MainActivity extends DockActivity implements OnClickListener {
 
     public DisplayImageOptions getImageLoaderRoundCornerTransformation(int raduis) {
         return new DisplayImageOptions.Builder()
-                .showImageForEmptyUri(R.color.black)
-                .showImageOnFail(R.color.black).resetViewBeforeLoading(true)
+                .showImageForEmptyUri(R.drawable.placeholder_image)
+                .showImageOnFail(R.drawable.placeholder_image).resetViewBeforeLoading(true)
                 .cacheInMemory(true).cacheOnDisc(true)
                 .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
                 .displayer(new RoundedBitmapDisplayer(raduis))
@@ -322,20 +322,17 @@ public class MainActivity extends DockActivity implements OnClickListener {
     }
 
     private FragmentManager.OnBackStackChangedListener getListener() {
-        FragmentManager.OnBackStackChangedListener result = new FragmentManager.OnBackStackChangedListener() {
-            public void onBackStackChanged() {
-                FragmentManager manager = getSupportFragmentManager();
 
-                if (manager != null) {
-                    BaseFragment currFrag = (BaseFragment) manager.findFragmentById(getDockFrameLayoutId());
-                    if (currFrag != null) {
-                        currFrag.fragmentResume();
-                    }
+        return () -> {
+            FragmentManager manager = getSupportFragmentManager();
+
+            if (manager != null) {
+                BaseFragment currFrag = (BaseFragment) manager.findFragmentById(getDockFrameLayoutId());
+                if (currFrag != null) {
+                    currFrag.fragmentResume();
                 }
             }
         };
-
-        return result;
     }
 
     @Override
