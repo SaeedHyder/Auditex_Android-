@@ -1,116 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:orientation="vertical"
-              android:paddingEnd="@dimen/x10"
-              android:paddingStart="@dimen/x10">
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:fillViewport="true"
+                                           >
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.ingic.auditix.ui.views.AnyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginTop="@dimen/x10"
-            android:maxLines="1"
-            android:text="@string/my_favourite"
-            android:textAllCaps="true"
-            android:textColor="@color/app_font_black"
-            android:textSize="@dimen/x16"
-            android:textStyle="bold"
-            app:typeface="@string/font_bold"/>
-
-        <com.ingic.auditix.ui.views.AnyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:maxLines="1"
-            android:text="@string/see_all"
-            android:textColor="@color/app_title_orange"
-            android:textSize="@dimen/x14"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            app:typeface="@string/font_normal"/>
-    </FrameLayout>
-
-    <com.ingic.auditix.ui.views.CustomRecyclerView
-        android:id="@+id/rvBooksFavourite"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/x10"
-        android:divider="@null"
-        android:scrollbars="none"/>
+        android:background="@color/white"
+        android:paddingEnd="@dimen/x10"
+        android:paddingStart="@dimen/x10"
+        android:orientation="vertical">
 
-    <com.ingic.auditix.ui.views.AnyTextView
-        android:id="@+id/txt_favourite_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/x200"
-        android:layout_gravity="start"
-        android:layout_marginTop="@dimen/x10"
-        android:gravity="center"
-        android:maxLines="1"
-        android:text="@string/no_data_available"
-        android:textColor="@color/app_font_black"
-        android:textSize="@dimen/x16"
-        android:visibility="gone"
-        app:typeface="@string/font_normal"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/x10"
+                android:maxLines="1"
+                android:text="@string/my_favourite"
+                android:textAllCaps="true"
+                android:textColor="@color/app_font_black"
+                android:textSize="@dimen/x16"
+                android:textStyle="bold"
+                app:typeface="@string/font_bold"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:maxLines="1"
+                android:text="@string/see_all"
+                android:textColor="@color/app_title_orange"
+                android:textSize="@dimen/x14"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:typeface="@string/font_normal"/>
+        </FrameLayout>
+
+        <com.ingic.auditix.ui.views.CustomRecyclerView
+            android:id="@+id/rvBooksFavourite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x10"
+            android:divider="@null"
+            android:scrollbars="none"/>
 
         <com.ingic.auditix.ui.views.AnyTextView
-            android:id="@+id/txt_recommended"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/txt_favourite_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x200"
             android:layout_gravity="start"
             android:layout_marginTop="@dimen/x10"
+            android:gravity="center"
             android:maxLines="1"
-            android:text="@string/downloads"
-            android:textAllCaps="true"
+            android:text="@string/no_data_available"
             android:textColor="@color/app_font_black"
             android:textSize="@dimen/x16"
-            android:textStyle="bold"
-            app:typeface="@string/font_bold"/>
+            android:visibility="gone"
+            app:typeface="@string/font_normal"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/txt_recommended"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/x10"
+                android:maxLines="1"
+                android:text="@string/downloads"
+                android:textAllCaps="true"
+                android:textColor="@color/app_font_black"
+                android:textSize="@dimen/x16"
+                android:textStyle="bold"
+                app:typeface="@string/font_bold"/>
+
+            <com.ingic.auditix.ui.views.AnyTextView
+                android:id="@+id/btn_recommne_seeall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:maxLines="1"
+                android:text="@string/see_all"
+                android:textColor="@color/app_title_orange"
+                android:textSize="@dimen/x14"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:typeface="@string/font_normal"/>
+        </FrameLayout>
 
         <com.ingic.auditix.ui.views.AnyTextView
-            android:id="@+id/btn_recommne_seeall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:maxLines="1"
-            android:text="@string/see_all"
-            android:textColor="@color/app_title_orange"
-            android:textSize="@dimen/x14"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            app:typeface="@string/font_normal"/>
-    </FrameLayout>
+            android:id="@+id/txt_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/no_data_available"
+            android:textColor="@color/dark_grey"
+            android:textSize="@dimen/x15"
+            android:visibility="gone"
+            app:typeface="@string/font_normal"
 
-    <com.ingic.auditix.ui.views.AnyTextView
-        android:id="@+id/txt_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/no_data_available"
-        android:textColor="@color/dark_grey"
-        android:textSize="@dimen/x15"
-        android:visibility="gone"
-        app:typeface="@string/font_normal"
+            />
 
-        />
-
-    <com.ingic.auditix.ui.views.CustomRecyclerView
-        android:id="@+id/rv_books"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null"
-        android:scrollbars="none"
-        android:visibility="visible"/>
-</LinearLayout>
+        <com.ingic.auditix.ui.views.CustomRecyclerView
+            android:id="@+id/rv_books"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:scrollbars="none"
+            android:visibility="visible"/>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

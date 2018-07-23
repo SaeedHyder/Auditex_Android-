@@ -88,7 +88,7 @@ public class sRangeSeekBar<T extends Number> extends ImageView {
     private static final int LINE_HEIGHT_IN_DP = 1;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint shadowPaint = new Paint();
-    protected T absoluteMinValue, absoluteMaxValue, absoluteStepValue;
+    protected Integer absoluteMinValue, absoluteMaxValue, absoluteStepValue;
     protected NumberType numberType;
     protected double absoluteMinValuePrim, absoluteMaxValuePrim, absoluteStepValuePrim;
     protected double normalizedMinValue = 0d;
@@ -156,17 +156,17 @@ public class sRangeSeekBar<T extends Number> extends ImageView {
     }
 
     @SuppressWarnings("unchecked")
-    private T extractNumericValueFromAttributes(TypedArray a, int attribute, int defaultValue) {
+    private Integer extractNumericValueFromAttributes(TypedArray a, int attribute, int defaultValue) {
         TypedValue tv = a.peekValue(attribute);
         if (tv == null) {
-            return (T) Integer.valueOf(defaultValue);
+            return (Integer) Integer.valueOf(defaultValue);
         }
 
         int type = tv.type;
         if (type == TypedValue.TYPE_FLOAT) {
-            return (T) Float.valueOf(a.getFloat(attribute, defaultValue));
+            return  Float.valueOf(a.getFloat(attribute, defaultValue)).intValue();
         } else {
-            return (T) Integer.valueOf(a.getInteger(attribute, defaultValue));
+            return (Integer) Integer.valueOf(a.getInteger(attribute, defaultValue));
         }
     }
 
@@ -280,13 +280,13 @@ public class sRangeSeekBar<T extends Number> extends ImageView {
         }
     }
 
-    public void setRangeValues(T minValue, T maxValue) {
+    public void setRangeValues(Integer minValue, Integer maxValue) {
         this.absoluteMinValue = minValue;
         this.absoluteMaxValue = maxValue;
         setValuePrimAndNumberType();
     }
 
-    public void setRangeValues(T minValue, T maxValue, T step) {
+    public void setRangeValues(Integer minValue, Integer maxValue, Integer step) {
         this.absoluteStepValue = step;
         setRangeValues(minValue, maxValue);
     }
@@ -303,9 +303,9 @@ public class sRangeSeekBar<T extends Number> extends ImageView {
     @SuppressWarnings("unchecked")
     // only used to set default values when initialised from XML without any values specified
     private void setRangeToDefaultValues() {
-        this.absoluteMinValue = (T) DEFAULT_MINIMUM;
-        this.absoluteMaxValue = (T) DEFAULT_MAXIMUM;
-        this.absoluteStepValue = (T) DEFAULT_STEP;
+        this.absoluteMinValue = (Integer) DEFAULT_MINIMUM;
+        this.absoluteMaxValue = (Integer) DEFAULT_MAXIMUM;
+        this.absoluteStepValue = (Integer) DEFAULT_STEP;
         setValuePrimAndNumberType();
     }
 
@@ -340,7 +340,7 @@ public class sRangeSeekBar<T extends Number> extends ImageView {
      *
      * @return The absolute minimum value of the range.
      */
-    public T getAbsoluteMinValue() {
+    public Integer getAbsoluteMinValue() {
         return absoluteMinValue;
     }
 
@@ -349,7 +349,7 @@ public class sRangeSeekBar<T extends Number> extends ImageView {
      *
      * @return The absolute maximum value of the range.
      */
-    public T getAbsoluteMaxValue() {
+    public Integer getAbsoluteMaxValue() {
         return absoluteMaxValue;
     }
 
@@ -379,7 +379,7 @@ public class sRangeSeekBar<T extends Number> extends ImageView {
      *
      * @param value The Number value to set the minimum value to. Will be clamped to given absolute minimum/maximum range.
      */
-    public void setSelectedMinValue(T value) {
+    public void setSelectedMinValue(Integer value) {
         // in case absoluteMinValue == absoluteMaxValue, avoid division by zero when normalizing.
         if (0 == (absoluteMaxValuePrim - absoluteMinValuePrim)) {
             setNormalizedMinValue(0d);
@@ -406,7 +406,7 @@ public class sRangeSeekBar<T extends Number> extends ImageView {
      *
      * @param value The Number value to set the maximum value to. Will be clamped to given absolute minimum/maximum range.
      */
-    public void setSelectedMaxValue(T value) {
+    public void setSelectedMaxValue(Integer value) {
         // in case absoluteMinValue == absoluteMaxValue, avoid division by zero when normalizing.
         if (0 == (absoluteMaxValuePrim - absoluteMinValuePrim)) {
             setNormalizedMaxValue(1d);
@@ -853,7 +853,7 @@ public class sRangeSeekBar<T extends Number> extends ImageView {
      * @param value The Number value to normalize.
      * @return The normalized double.
      */
-    protected double valueToNormalized(T value) {
+    protected double valueToNormalized(Integer value) {
         if (0 == absoluteMaxValuePrim - absoluteMinValuePrim) {
             // prevent division by zero, simply return 0.
             return 0d;

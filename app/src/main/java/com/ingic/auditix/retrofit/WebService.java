@@ -10,6 +10,7 @@ import com.ingic.auditix.entities.BookFavoriteEnt;
 import com.ingic.auditix.entities.BookFilterEnt;
 import com.ingic.auditix.entities.BookGenreEnt;
 import com.ingic.auditix.entities.CMSEnt;
+import com.ingic.auditix.entities.FavoriteBookEnt;
 import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.entities.NewsChannelDetailEnt;
@@ -137,16 +138,16 @@ public interface WebService {
                                                                         @Query("countryCode") String countryCode,
                                                                         @Query("offset") Integer offset,
                                                                         @Header(WebServiceConstants.HEADER_KEY) String header);
-    @FormUrlEncoded
+
     @POST("GetFilterResponse")
-    Call<ResponseWrapper<ArrayList<PodcastDetailHomeEnt>>> getPodcastsByfilter(@Field("MinDuration") Integer MinDuration,
-                                                                               @Field("MaxDuration") Integer MaxDuration,
-                                                                               @Field("MinSubscriber") Integer MinSubscriber,
-                                                                               @Field("MaxSubscriber") Integer MaxSubscriber,
-                                                                               @Field("Type") Integer Type,
-                                                                               @Field("pageNumber") Integer pageNumber,
-                                                                               @Field("count") Integer count,
-                                                                               @Field("CountryIds") Integer CountryIds,
+    Call<ResponseWrapper<ArrayList<PodcastDetailHomeEnt>>> getPodcastsByfilter(@Query("MinDuration") Integer MinDuration,
+                                                                               @Query("MaxDuration") Integer MaxDuration,
+                                                                               @Query("MinSubscriber") Integer MinSubscriber,
+                                                                               @Query("MaxSubscriber") Integer MaxSubscriber,
+                                                                               @Query("Type") Integer Type,
+                                                                               @Query("pageNumber") Integer pageNumber,
+                                                                               @Query("count") Integer count,
+                                                                               @Query("CountryIds") String CountryIds,
                                                                                @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("GetFilterData?Type=1")
@@ -212,16 +213,15 @@ public interface WebService {
                                                                       @Query("genreIdList") String genreIdList,
                                                                       @Query("culture") String culture,
                                                                       @Header(WebServiceConstants.HEADER_KEY) String header);
-    @FormUrlEncoded
     @POST("GetFilterResponse")
-    Call<ResponseWrapper<ArrayList<BookDetailEnt>>> getBooksByfilter(@Field("MinDuration") Integer MinDuration,
-                                                                               @Field("MaxDuration") Integer MaxDuration,
-                                                                               @Field("MinSubscriber") Integer MinSubscriber,
-                                                                               @Field("MaxSubscriber") Integer MaxSubscriber,
-                                                                               @Field("Type") Integer Type,
-                                                                               @Field("pageNumber") Integer pageNumber,
-                                                                               @Field("count") Integer count,
-                                                                               @Field("CountryIds") Integer CountryIds,
+    Call<ResponseWrapper<ArrayList<BookDetailEnt>>> getBooksByfilter(@Query("MinDuration") Integer MinDuration,
+                                                                               @Query("MaxDuration") Integer MaxDuration,
+                                                                               @Query("MinSubscriber") Integer MinSubscriber,
+                                                                               @Query("MaxSubscriber") Integer MaxSubscriber,
+                                                                               @Query("Type") Integer Type,
+                                                                               @Query("pageNumber") Integer pageNumber,
+                                                                               @Query("count") Integer count,
+                                                                               @Query("CountryIds") String CountryIds,
                                                                                @Header(WebServiceConstants.HEADER_KEY) String header);
     @GET("GetFeaturedBooks")
     Call<ResponseWrapper<BookCategoryEnt>> getFeaturesBooks(@Header(WebServiceConstants.HEADER_KEY) String header);
@@ -237,7 +237,7 @@ public interface WebService {
                                                                      @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("GetFavoriteBooks")
-    Call<ResponseWrapper<ArrayList<BookFavoriteEnt>>> getBooksAllFavorite(@Query("culture") String culture, @Header(WebServiceConstants.HEADER_KEY) String header);
+    Call<ResponseWrapper<FavoriteBookEnt>> getBooksAllFavorite(@Query("culture") String culture, @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("BookDetail")
     Call<ResponseWrapper<BookDetailEnt>> getBookDetails(@Query("BookID") Integer BookID, @Header(WebServiceConstants.HEADER_KEY) String header);

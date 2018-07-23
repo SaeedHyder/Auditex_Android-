@@ -181,8 +181,8 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
     }
 
     private void openPlayer(PlayerNewsEnt playerNewsEnt, int startingIndex) {
-        if (getMainActivity().filterFragment != null) {
-            getMainActivity().filterFragment.clearFilters();
+        if (getMainActivity().newsFilterFragment != null) {
+            getMainActivity().newsFilterFragment.clearFilters();
         }
         getMainActivity().showBottomPlayer(null, playerNewsEnt.getDetailEnt().getNewsID(), AppConstants.TAB_NEWS, null, playerNewsEnt,
                 startingIndex, null);

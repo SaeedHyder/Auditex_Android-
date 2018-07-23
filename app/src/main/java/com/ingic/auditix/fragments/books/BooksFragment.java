@@ -2,6 +2,7 @@ package com.ingic.auditix.fragments.books;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,6 +11,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BookCategoriesEnt;
@@ -20,7 +23,6 @@ import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.fragments.standard.HomeTabFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
-import com.ingic.auditix.interfaces.FilterDoneClickListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.interfaces.ViewPagerFragmentLifecycleListener;
 import com.ingic.auditix.ui.binders.books.AllBooksBinder;
@@ -71,10 +73,15 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
     Unbinder unbinder;
     int currentPageNumber = 1;
     int totalCount = 2;
-    String filterGenreID = "";
     String culture = null;
     ArrayList<BookDetailEnt> allBooksCollections;
+    @BindView(R.id.MainContainer)
+    LinearLayout MainContainer;
+    @BindView(R.id.containerFragment)
+    FrameLayout containerFragment;
     private BookCategoryEnt bookCategoryEnt;
+    private boolean isFilterVisible = false;
+    private EnableFilterDataEnt filterDataEnt;
     private RecyclerViewItemListener booksItemListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
@@ -112,7 +119,7 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
         this.bookCategoryEnt = bookCategoryEnt;
     }
 
-    private void openBookDetail(Integer bookID) {
+    public void openBookDetail(Integer bookID) {
         getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(bookID), BookDetailFragment.TAG);
     }
 
@@ -136,10 +143,10 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
 
             case WebServiceConstants.GET_BOOKS_FEATURED:
                 setBookCategoryEnt((BookCategoryEnt) result);
-                bindDataToViews((BookCategoryEnt) result);
+                bindCategoriesData((BookCategoryEnt) result);
                 break;
             case WebServiceConstants.GET_BOOKS_CATEGORIES:
-                bindCategories((ArrayList<BookCategoriesEnt>) result);
+                bindRecommended((ArrayList<BookCategoriesEnt>) result);
                 break;
 
         }
@@ -149,7 +156,13 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
         if (getMainActivity().booksFilterFragment != null) {
             getMainActivity().setRightSideFragment(getMainActivity().booksFilterFragment);
             getMainActivity().booksFilterFragment.setListener((filters, isClear) -> {
-
+                if (isClear) {
+                    filterDataEnt = null;
+                    hideFilterList();
+                } else {
+                    filterDataEnt = filters;
+                    showFilterList();
+                }
             });
         }
         titleBar.hideButtons();
@@ -162,7 +175,7 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
 
     }
 
-    private void bindCategories(ArrayList<BookCategoriesEnt> result) {
+    private void bindRecommended(ArrayList<BookCategoriesEnt> result) {
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
         GridLayoutManager defaultLayoutManager = new GridLayoutManager(getDockActivity(), 3, GridLayoutManager.VERTICAL, false);
         rvRecommended.BindRecyclerView(new BooksCategoryBinder(options, categoryListener), result,
@@ -179,9 +192,10 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
         }
     }
 
-    private void bindDataToViews(BookCategoryEnt result) {
+    private void bindCategoriesData(BookCategoryEnt result) {
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
         allBooksCollections = new ArrayList<>();
+
         allBooksCollections.addAll(result.getCategoryBooks());
 
         if (allBooksCollections.size() <= 0) {
@@ -209,11 +223,15 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getDefaultBooks();
+        if (isFilterVisible) {
+            showFilterList();
+        } else {
+            hideFilterList();
+        }
     }
 
 
     private void getDefaultBooks() {
-        filterGenreID = getMainActivity().booksFilterFragment.getFiltersList();
         serviceHelper.enqueueCall(webService.getBooksCategories(prefHelper.getUserToken()), WebServiceConstants.GET_BOOKS_CATEGORIES);
         serviceHelper.enqueueCall(webService.getFeaturesBooks(prefHelper.getUserToken()), WebServiceConstants.GET_BOOKS_FEATURED);
     }
@@ -241,6 +259,33 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
             case R.id.btn_allbooks_seeall:
                 getDockActivity().replaceDockableFragment(FeatureAllBooksListingFragment.newInstance(bookCategoryEnt), FeatureAllBooksListingFragment.TAG);
                 break;
+
+        }
+    }
+    public void replaceFragment(BaseFragment fragment) {
+        FragmentTransaction transaction = getChildFragmentManager()
+                .beginTransaction();
+        //transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
+        transaction.replace(R.id.containerFragment, fragment);
+        transaction.commit();
+
+
+    }
+    private void showFilterList() {
+        MainContainer.setVisibility(View.GONE);
+        containerFragment.setVisibility(View.VISIBLE);
+        replaceFragment(BookFilterListFragment.newInstance(filterDataEnt));
+        isFilterVisible = true;
+    }
+
+    private void hideFilterList() {
+        if (getChildFragmentManager().findFragmentById(R.id.containerFragment) != null) {
+            getChildFragmentManager().beginTransaction().
+                    remove(getChildFragmentManager().findFragmentById(R.id.containerFragment)).commit();
+            getChildFragmentManager().popBackStack();
+            MainContainer.setVisibility(View.VISIBLE);
+            containerFragment.setVisibility(View.GONE);
+            isFilterVisible = false;
 
         }
     }

@@ -74,6 +74,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         if (getMainActivity().booksFilterFragment != null) {
             getMainActivity().booksFilterFragment.clearFilters();
         }
+        if (getMainActivity().newsFilterFragment != null) {
+            getMainActivity().newsFilterFragment.clearFilters();
+        }
         setListeners();
         getDownloadFilePath(prefHelper.getUser().getAccountID() + "");
     }

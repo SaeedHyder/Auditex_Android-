@@ -22,6 +22,7 @@ import com.andreabaccega.formedittextvalidator.Validator;
 import com.ingic.auditix.R;
 import com.ingic.auditix.activities.DockActivity;
 import com.ingic.auditix.activities.MainActivity;
+import com.ingic.auditix.fragments.standard.HomeTabFragment;
 import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
@@ -126,7 +127,9 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
             }
         };
     }
-
+    public HomeTabFragment getParentfragment(){
+        return (HomeTabFragment) getParentFragment();
+    }
     protected void onPushAction(Intent intent) {
     }
 

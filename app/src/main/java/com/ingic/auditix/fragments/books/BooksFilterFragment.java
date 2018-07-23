@@ -34,9 +34,9 @@ import butterknife.Unbinder;
 public class BooksFilterFragment extends BaseFragment {
     public static final String TAG = "BooksFilterFragment";
     @BindView(R.id.rgbduration)
-    sRangeSeekBar rgbduration;
+    sRangeSeekBar<Integer> rgbduration;
     @BindView(R.id.rgbSubscriber)
-    sRangeSeekBar rgbSubscriber;
+    sRangeSeekBar<Integer> rgbSubscriber;
     @BindView(R.id.swtInternational)
     Switch swtInternational;
     @BindView(R.id.rvfilters)
@@ -84,9 +84,10 @@ public class BooksFilterFragment extends BaseFragment {
         }
     }
 
-    public String getFiltersList() {
+    public String getFiltersCountries() {
         return binder == null ? "" : binder.getFilterCheckIDs();
     }
+
 
     public void setListener(FilterDoneClickListener listener) {
         this.listener = listener;
@@ -146,7 +147,9 @@ public class BooksFilterFragment extends BaseFragment {
                 }
                 break;
             case R.id.btn_done:
-                if (listener != null) {
+                if (listener != null && binder != null) {
+                    if (isClear)
+                        isClear = binder.isAllClear();
                     listener.onDoneFiltering(getUserEnableFilters(), isClear);
 
                 }
@@ -160,14 +163,9 @@ public class BooksFilterFragment extends BaseFragment {
 
     @NonNull
     private EnableFilterDataEnt getUserEnableFilters() {
-        String countriesIDs = binder == null ? "" : binder.getFilterCheckIDs();
-        EnableFilterDataEnt filterDataEnt = new EnableFilterDataEnt(rgbduration.getSelectedMinValue().intValue(), rgbduration.getSelectedMaxValue().intValue(),
+        return new EnableFilterDataEnt(rgbduration.getSelectedMinValue().intValue(), rgbduration.getSelectedMaxValue().intValue(),
                 rgbSubscriber.getSelectedMinValue().intValue(), rgbSubscriber.getSelectedMaxValue().intValue(),
-                countriesIDs);
-        if (countriesIDs.equalsIgnoreCase("")) {
-            isClear = false;
-        }
-        return filterDataEnt;
+                getFiltersCountries());
     }
 
 }

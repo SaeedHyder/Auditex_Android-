@@ -3,6 +3,7 @@ package com.ingic.auditix.fragments.podcast;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,6 +12,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.EnableFilterDataEnt;
@@ -25,7 +28,6 @@ import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
 import com.ingic.auditix.helpers.InternetHelper;
 import com.ingic.auditix.helpers.UIHelper;
-import com.ingic.auditix.interfaces.FilterDoneClickListener;
 import com.ingic.auditix.interfaces.LoadMoreListener;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.interfaces.ViewPagerFragmentLifecycleListener;
@@ -75,7 +77,12 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
     AnyTextView txtRecommendedNoData;
     @BindView(R.id.txt_default_no_data)
     AnyTextView txtDefaultNoData;
-
+    @BindView(R.id.MainContainer)
+    LinearLayout MainContainer;
+    @BindView(R.id.containerFragment)
+    FrameLayout containerFragment;
+    private boolean isFilterVisible = false;
+    private EnableFilterDataEnt filterDataEnt;
     private LinearLayoutManager defaultLayoutManager;
     private LinearLayoutManager recommendedLayoutManager;
     private ArrayList<PodcastDetailHomeEnt> podcastRecommendedCollections;
@@ -123,9 +130,6 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            if (getMainActivity().filterFragment != null) {
-                getMainActivity().filterFragment.clearFilters();
-            }
             getDockActivity().replaceDockableFragment(PodcastListByCategoryFragment.newInstance(((PodcastCategoriesEnt) Ent).getCategoryId()), PodcastListByCategoryFragment.TAG);
         }
     };
@@ -200,18 +204,21 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         if (getMainActivity().filterFragment != null) {
             getMainActivity().setRightSideFragment(getMainActivity().filterFragment);
             getMainActivity().filterFragment.setListener((filters, isClear) -> {
-
+                if (isClear) {
+                    filterDataEnt = null;
+                    hideFilterList();
+                } else {
+                    filterDataEnt = filters;
+                    showFilterList();
+                }
             });
         }
         titleBar.hideButtons();
         titleBar.setSubHeading(getDockActivity().getResources().getString(R.string.podcast));
         titleBar.showMenuButton();
-        titleBar.showFilterButton(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getMainActivity().isNavigationGravityRight = true;
-                getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
-            }
+        titleBar.showFilterButton(v -> {
+            getMainActivity().isNavigationGravityRight = true;
+            getMainActivity().getDrawerLayout().openDrawer(Gravity.RIGHT);
         });
     }
 
@@ -244,9 +251,40 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
                     WebServiceConstants.GET_DEFAULT_PODCASTS, false);
             serviceHelper.enqueueCall(webService.getAllPodcastCategories(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_PODCAST_CATEGORIES, false);
             isFirstTime = false;
+            if (isFilterVisible) {
+                showFilterList();
+            } else {
+                hideFilterList();
+            }
         }
     }
+    private void showFilterList() {
+        MainContainer.setVisibility(View.GONE);
+        containerFragment.setVisibility(View.VISIBLE);
+        replaceFragment(PodcastFilterListFragment.newInstance(filterDataEnt));
+        isFilterVisible = true;
+    }
 
+    private void hideFilterList() {
+        if (getChildFragmentManager().findFragmentById(R.id.containerFragment) != null) {
+            getChildFragmentManager().beginTransaction().
+                    remove(getChildFragmentManager().findFragmentById(R.id.containerFragment)).commit();
+            getChildFragmentManager().popBackStack();
+            MainContainer.setVisibility(View.VISIBLE);
+            containerFragment.setVisibility(View.GONE);
+            isFilterVisible = false;
+
+        }
+    }
+    public void replaceFragment(BaseFragment fragment) {
+        FragmentTransaction transaction = getChildFragmentManager()
+                .beginTransaction();
+        //transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
+        transaction.replace(R.id.containerFragment, fragment);
+        transaction.commit();
+
+
+    }
     private void clearFragmentResources() {
         currentPageNumber = 1;
         if (rvRecommended != null && rvPodcastDefault != null && rvSubscribe != null) {
@@ -320,7 +358,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
                     }
                 }
 
-             //   recommenedCount = recommenedCount + ent.getPodcastdetails().size();
+                //   recommenedCount = recommenedCount + ent.getPodcastdetails().size();
 
             }
             rvRecommended.notifyItemRangeChanged(recommendedLayoutManager.findLastVisibleItemPosition(), recommenedCount);
@@ -428,9 +466,11 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
         getDockActivity().replaceDockableFragment(NewAndNoteworthyListingFragment.newInstance(podcastEpisodesCollections), NewAndNoteworthyListingFragment.TAG);
     }
 
-    private void openPodcastDetail(PodcastDetailHomeEnt ent) {
+    public void openPodcastDetail(PodcastDetailHomeEnt ent) {
         getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(ent), "PodcastDetailFragment");
     }
+
+
 
    /* @Override
     public void onDoneFiltering(String filterIDs) {

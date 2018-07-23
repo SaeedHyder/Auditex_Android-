@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.EnableFilterDataEnt;
 import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
@@ -65,6 +66,8 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
     LinearLayout MainContainer;
     @BindView(R.id.containerFragment)
     FrameLayout containerFragment;
+    private boolean isFilterVisible = false;
+    private EnableFilterDataEnt filterDataEnt;
     private RecyclerViewItemListener newSubscriptionListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
@@ -73,9 +76,14 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(NewsChannelDetailFragment.newInstance((NewItemDetailEnt) Ent), NewsCategoryDetailFragment.TAG);
+            openChannelDetail((NewItemDetailEnt) Ent);
         }
     };
+
+    public void openChannelDetail(NewItemDetailEnt Ent) {
+        getDockActivity().replaceDockableFragment(NewsChannelDetailFragment.newInstance(Ent), NewsCategoryDetailFragment.TAG);
+    }
+
     private RecyclerViewItemListener newCategoriesListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
@@ -130,17 +138,11 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
             getMainActivity().setRightSideFragment(getMainActivity().newsFilterFragment);
             getMainActivity().newsFilterFragment.setListener((filters, isClear) -> {
                 if (isClear) {
-                    if (getChildFragmentManager().findFragmentById(R.id.containerFragment) != null) {
-                          getChildFragmentManager().beginTransaction().
-                                remove(getChildFragmentManager().findFragmentById(R.id.containerFragment)).commit();
-                        getChildFragmentManager().popBackStack();
-                        MainContainer.setVisibility(View.VISIBLE);
-                        containerFragment.setVisibility(View.GONE);
-                    }
+                    filterDataEnt = null;
+                    hideFilterList();
                 } else {
-                    MainContainer.setVisibility(View.GONE);
-                    containerFragment.setVisibility(View.VISIBLE);
-                    replaceFragment(NewsFilterListFragment.newInstance(filters));
+                    filterDataEnt = filters;
+                    showFilterList();
                 }
             });
         }
@@ -153,7 +155,25 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
         });
     }
 
-    private void replaceFragment(BaseFragment fragment) {
+    private void showFilterList() {
+        MainContainer.setVisibility(View.GONE);
+        containerFragment.setVisibility(View.VISIBLE);
+        replaceFragment(NewsFilterListFragment.newInstance(filterDataEnt));
+        isFilterVisible = true;
+    }
+
+    private void hideFilterList() {
+        if (getChildFragmentManager().findFragmentById(R.id.containerFragment) != null) {
+            getChildFragmentManager().beginTransaction().
+                    remove(getChildFragmentManager().findFragmentById(R.id.containerFragment)).commit();
+            getChildFragmentManager().popBackStack();
+            MainContainer.setVisibility(View.VISIBLE);
+            containerFragment.setVisibility(View.GONE);
+            isFilterVisible = false;
+
+        }
+    }
+    public void replaceFragment(BaseFragment fragment) {
         FragmentTransaction transaction = getChildFragmentManager()
                 .beginTransaction();
         //transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
@@ -162,6 +182,8 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
 
 
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -175,6 +197,11 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
         super.onViewCreated(view, savedInstanceState);
         options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
         getNewsCategories();
+        if (isFilterVisible) {
+            showFilterList();
+        } else {
+            hideFilterList();
+        }
 //        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
 
     }
@@ -198,8 +225,13 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
  /*       if (results.size() > 2)
             subscriptionCollection = new ArrayList<>(results.subList(0, 2));
         else*/
-        subscriptionCollection = new ArrayList<>(results);
-
+        subscriptionCollection = new ArrayList<>();
+        for (int i = 0; i < results.size(); i++) {
+            if (i == 4) {
+                break;
+            }
+            subscriptionCollection.add(results.get(i));
+        }
         rvSubscribe.BindRecyclerView(new NewsSubscriptionBinder(options,
                         newSubscriptionListener, prefHelper), subscriptionCollection, new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false)
                 , new DefaultItemAnimator());

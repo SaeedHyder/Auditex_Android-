@@ -3,10 +3,8 @@ package com.ingic.auditix.ui.binders;
 import android.content.Context;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import com.ingic.auditix.R;
-import com.ingic.auditix.entities.FilterEnt;
 import com.ingic.auditix.entities.LocationEnt;
 import com.ingic.auditix.ui.viewbinders.abstracts.RecyclerViewBinder;
 
@@ -23,6 +21,7 @@ import butterknife.ButterKnife;
 
 public class FilterBinder extends RecyclerViewBinder<LocationEnt> {
     private ArrayList<String> filterCheckIDs;
+    private boolean isAllClear = false;
 
     public FilterBinder() {
         super(R.layout.row_item_filter_child_check);
@@ -46,19 +45,28 @@ public class FilterBinder extends RecyclerViewBinder<LocationEnt> {
         holder.chkGenre.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 if (!filterCheckIDs.contains(entity.getId())) {
+                    isAllClear = false;
                     filterCheckIDs.add(entity.getId());
                 }
             } else {
                 if (filterCheckIDs.contains(entity.getId())) {
                     filterCheckIDs.remove(entity.getId());
+                    if (filterCheckIDs.isEmpty()) {
+                        isAllClear = true;
+                    }
                 }
             }
         });
     }
 
+    public boolean isAllClear() {
+        return isAllClear;
+    }
+
     public void clearFilterIDs() {
         if (filterCheckIDs != null) {
             filterCheckIDs.clear();
+            isAllClear = true;
         }
     }
 

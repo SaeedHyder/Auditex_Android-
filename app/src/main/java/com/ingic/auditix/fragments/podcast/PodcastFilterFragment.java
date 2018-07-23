@@ -7,22 +7,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Switch;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.EnableFilterDataEnt;
-import com.ingic.auditix.entities.FilterEnt;
 import com.ingic.auditix.entities.LocationEnt;
-import com.ingic.auditix.entities.NewsFilterEnt;
 import com.ingic.auditix.entities.PodcastFilterEnt;
-import com.ingic.auditix.entities.PodcastLocationEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.FilterDoneClickListener;
 import com.ingic.auditix.ui.binders.FilterBinder;
-import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.ingic.auditix.ui.views.TitleBar;
 import com.ingic.auditix.ui.views.sRangeSeekBar;
@@ -39,9 +33,9 @@ import butterknife.Unbinder;
  */
 public class PodcastFilterFragment extends BaseFragment {
     @BindView(R.id.rgbduration)
-    sRangeSeekBar rgbduration;
+    sRangeSeekBar<Integer> rgbduration;
     @BindView(R.id.rgbSubscriber)
-    sRangeSeekBar rgbSubscriber;
+    sRangeSeekBar<Integer> rgbSubscriber;
     @BindView(R.id.swtInternational)
     Switch swtInternational;
     @BindView(R.id.rvfilters)
@@ -65,15 +59,6 @@ public class PodcastFilterFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
     }
 
-
-
-    @Override
-    public void setTitleBar(TitleBar titleBar) {
-        super.setTitleBar(titleBar);
-        titleBar.hideTitleBar();
-    }
-
-
     @Override
     public void ResponseSuccess(Object result, String Tag) {
         switch (Tag) {
@@ -81,6 +66,12 @@ public class PodcastFilterFragment extends BaseFragment {
                 bindFilterData((PodcastFilterEnt) result);
                 break;
         }
+    }
+
+    @Override
+    public void setTitleBar(TitleBar titleBar) {
+        super.setTitleBar(titleBar);
+        titleBar.hideTitleBar();
     }
 
     public void clearFilters() {
@@ -93,7 +84,7 @@ public class PodcastFilterFragment extends BaseFragment {
         }
     }
 
-    public String getFiltersList() {
+    public String getFiltersCountries() {
         return binder == null ? "" : binder.getFilterCheckIDs();
     }
 
@@ -133,6 +124,7 @@ public class PodcastFilterFragment extends BaseFragment {
         serviceHelper.enqueueCall(webService.getPodcastFilterData(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FILTER);
 
     }
+
     @OnClick({R.id.btn_close, R.id.btn_clear, R.id.btn_done})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -147,7 +139,9 @@ public class PodcastFilterFragment extends BaseFragment {
                 }
                 break;
             case R.id.btn_done:
-                if (listener != null) {
+                if (listener != null && binder != null) {
+                    if (isClear)
+                        isClear = binder.isAllClear();
                     listener.onDoneFiltering(getUserEnableFilters(), isClear);
 
                 }
@@ -161,14 +155,9 @@ public class PodcastFilterFragment extends BaseFragment {
 
     @NonNull
     private EnableFilterDataEnt getUserEnableFilters() {
-        String countriesIDs = binder == null ? "" : binder.getFilterCheckIDs();
-        EnableFilterDataEnt filterDataEnt = new EnableFilterDataEnt(rgbduration.getSelectedMinValue().intValue(), rgbduration.getSelectedMaxValue().intValue(),
+        return new EnableFilterDataEnt(rgbduration.getSelectedMinValue().intValue(), rgbduration.getSelectedMaxValue().intValue(),
                 rgbSubscriber.getSelectedMinValue().intValue(), rgbSubscriber.getSelectedMaxValue().intValue(),
-                countriesIDs);
-        if (countriesIDs.equalsIgnoreCase("")) {
-            isClear = false;
-        }
-        return filterDataEnt;
+                getFiltersCountries());
     }
 
 

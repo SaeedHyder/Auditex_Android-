@@ -1,4 +1,16 @@
-package com.ingic.auditix.fragments.news;
+package com.ingic.auditix.fragments.podcast;
+
+import com.ingic.auditix.R;
+import com.ingic.auditix.entities.EnableFilterDataEnt;
+import com.ingic.auditix.entities.PodcastDetailHomeEnt;
+import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.fragments.books.BooksFragment;
+import com.ingic.auditix.global.WebServiceConstants;
+import com.ingic.auditix.interfaces.RecyclerViewItemListener;
+import com.ingic.auditix.ui.binders.podcast.PodcastDefaultCategoryBinder;
+import com.ingic.auditix.ui.views.AnyTextView;
+import com.ingic.auditix.ui.views.CustomRecyclerView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -7,17 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ingic.auditix.R;
-import com.ingic.auditix.entities.EnableFilterDataEnt;
-import com.ingic.auditix.entities.NewItemDetailEnt;
-import com.ingic.auditix.fragments.abstracts.BaseFragment;
-import com.ingic.auditix.global.WebServiceConstants;
-import com.ingic.auditix.interfaces.RecyclerViewItemListener;
-import com.ingic.auditix.ui.binders.news.NewsCategoryListingBinder;
-import com.ingic.auditix.ui.views.AnyTextView;
-import com.ingic.auditix.ui.views.CustomRecyclerView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -25,11 +26,12 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * Created on 7/20/18.
+ * Created on 7/23/18.
  */
-public class NewsFilterListFragment extends BaseFragment {
+public class PodcastFilterListFragment extends BaseFragment {
+    public static final String TAG = "PodcastFilterListFragment";
 
-    public static final String TAG = "NewsFilterListFragment";
+
     @BindView(R.id.txt_subscription_no_data)
     AnyTextView txtSubscriptionNoData;
     @BindView(R.id.rvListing)
@@ -43,30 +45,32 @@ public class NewsFilterListFragment extends BaseFragment {
     private RecyclerViewItemListener itemClickListner = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
-            NewItemDetailEnt ent = (NewItemDetailEnt) Ent;
-            if (ent.getSubscribed()) {
-                serviceHelper.enqueueCall(webService.unsubscribeNews(ent.getNewsID(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_NEWS);
+            PodcastDetailHomeEnt ent = (PodcastDetailHomeEnt) Ent;
+            if (!ent.getSubscribed()) {
+                serviceHelper.enqueueCall(webService.subscribePodcast(ent.getTrackId(),ent.getCategoryId(), prefHelper.getUserToken()), WebServiceConstants.SUBSCRIBE_PODCAST);
+                podcastDefaultCollections.get(position).setSubscribed(true);
+                rvListing.notifyItemChanged(position);
             } else {
-                serviceHelper.enqueueCall(webService.subscribeNews(ent.getNewsID(), prefHelper.getUserToken()), WebServiceConstants.SUBSCRIBE_NEWS);
+                serviceHelper.enqueueCall(webService.unSubscribePodcast(ent.getTrackId(), prefHelper.getUserToken()), WebServiceConstants.UNSUBSCRIBE_PODCAST);
+                podcastDefaultCollections.get(position).setSubscribed(false);
+                rvListing.notifyItemChanged(position);
             }
-            ent.setSubscribed(!ent.getSubscribed());
-            rvListing.notifyItemChanged(position);
         }
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
+            PodcastDetailHomeEnt ent = (PodcastDetailHomeEnt) Ent;
             assert getParentFragment() != null;
-            ((NewsFragment)getParentFragment()).openChannelDetail((NewItemDetailEnt) Ent);
-
+            ((PodcastFragmentNew)getParentFragment()).openPodcastDetail((PodcastDetailHomeEnt) Ent);
         }
     };
-    private ArrayList<NewItemDetailEnt> newsCollection;
+    private ArrayList<PodcastDetailHomeEnt> podcastDefaultCollections;
     private LinearLayoutManager defaultLayoutManager;
 
-    public static NewsFilterListFragment newInstance(EnableFilterDataEnt filters) {
+    public static PodcastFilterListFragment newInstance(EnableFilterDataEnt filters) {
         Bundle args = new Bundle();
 
-        NewsFilterListFragment fragment = new NewsFilterListFragment();
+        PodcastFilterListFragment fragment = new PodcastFilterListFragment();
         fragment.setArguments(args);
         fragment.setFilters(filters);
         return fragment;
@@ -88,11 +92,11 @@ public class NewsFilterListFragment extends BaseFragment {
     public void ResponseSuccess(Object result, String Tag) {
         switch (Tag) {
             case WebServiceConstants.GET_FILTER_DATA:
-                bindData((ArrayList<NewItemDetailEnt>) result);
+                bindData((ArrayList<PodcastDetailHomeEnt>) result);
                 break;
             case WebServiceConstants.GET_PAGED_DATA:
                 isOnCall = false;
-                bindPagedPodcastList((ArrayList<NewItemDetailEnt>) result);
+                bindPagedPodcastList((ArrayList<PodcastDetailHomeEnt>) result);
                 break;
         }
     }
@@ -112,10 +116,10 @@ public class NewsFilterListFragment extends BaseFragment {
     }
 
     private void getFilterData(String TAG) {
-        serviceHelper.enqueueCall(webService.getNewsByfilter(filters.getMinDuration(),
+        serviceHelper.enqueueCall(webService.getPodcastsByfilter(filters.getMinDuration(),
                 filters.getMaxDuration(),
                 filters.getMinSubscriber(),
-                filters.getMaxSubscriber(), 3,
+                filters.getMaxSubscriber(), 1,
                 currentPageNumber,
                 totalCount,
                 filters.getCountryIDS(),
@@ -134,23 +138,23 @@ public class NewsFilterListFragment extends BaseFragment {
         }
     }
 
-    private void bindPagedPodcastList(ArrayList<NewItemDetailEnt> result) {
+    private void bindPagedPodcastList(ArrayList<PodcastDetailHomeEnt> result) {
         if (result.size() <= 0) {
             canCallForMore = false;
-        } else if (newsCollection != null && rvListing != null && defaultLayoutManager != null) {
-            newsCollection.addAll(result);
+        } else if (podcastDefaultCollections != null && rvListing != null && defaultLayoutManager != null) {
+            podcastDefaultCollections.addAll(result);
             int defaultCount = 0;
-            defaultCount = defaultCount + newsCollection.size();
+            defaultCount = defaultCount + podcastDefaultCollections.size();
             rvListing.notifyItemRangeChanged(defaultLayoutManager.findLastVisibleItemPosition(), defaultCount);
         }
     }
 
-    private void bindData(ArrayList<NewItemDetailEnt> result) {
+    private void bindData(ArrayList<PodcastDetailHomeEnt> result) {
         defaultLayoutManager = new LinearLayoutManager(getDockActivity());
-        newsCollection = new ArrayList<>(result);
+        podcastDefaultCollections = new ArrayList<>(result);
         txtSubscriptionNoData.setVisibility(result.size() <= 0 ? View.VISIBLE : View.GONE);
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
-        rvListing.BindRecyclerView(new NewsCategoryListingBinder(options, itemClickListner, prefHelper), newsCollection, defaultLayoutManager, new DefaultItemAnimator());
+        rvListing.BindRecyclerView(new PodcastDefaultCategoryBinder(options, itemClickListner,prefHelper), podcastDefaultCollections, defaultLayoutManager, new DefaultItemAnimator());
         rvListing.setNestedScrollingEnabled(false);
         //rvListing.getAdapter().setOnLoadMoreListener(position -> getPagedPodcast());
     }

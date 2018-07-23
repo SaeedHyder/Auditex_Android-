@@ -33,9 +33,9 @@ import butterknife.Unbinder;
 public class NewsFilterFragment extends BaseFragment {
     public static final String TAG = "NewsFilterFragment";
     @BindView(R.id.rgbduration)
-    sRangeSeekBar rgbduration;
+    sRangeSeekBar<Integer> rgbduration;
     @BindView(R.id.rgbSubscriber)
-    sRangeSeekBar rgbSubscriber;
+    sRangeSeekBar<Integer> rgbSubscriber;
     @BindView(R.id.swtInternational)
     Switch swtInternational;
     @BindView(R.id.rvfilters)
@@ -81,7 +81,7 @@ public class NewsFilterFragment extends BaseFragment {
         }
     }
 
-    public String getFiltersList() {
+    public String getFiltersCountries() {
         return binder == null ? "" : binder.getFilterCheckIDs();
     }
 
@@ -128,7 +128,7 @@ public class NewsFilterFragment extends BaseFragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.btn_close, R.id.btn_clear, R.id.btn_done})
+    @OnClick({R.id.btn_close, R.id.btn_clear, R.id.btn_done,R.id.buttons})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_clear:
@@ -141,8 +141,9 @@ public class NewsFilterFragment extends BaseFragment {
                 }
                 break;
             case R.id.btn_done:
-                if (listener != null) {
-
+                if (listener != null && binder != null) {
+                    if (isClear)
+                    isClear = binder.isAllClear();
                     listener.onDoneFiltering(getUserEnableFilters(), isClear);
 
                 }
@@ -156,10 +157,8 @@ public class NewsFilterFragment extends BaseFragment {
 
     @NonNull
     private EnableFilterDataEnt getUserEnableFilters() {
-        String countriesIDs = binder == null ? "" : binder.getFilterCheckIDs();
-        EnableFilterDataEnt filterDataEnt = new EnableFilterDataEnt(rgbduration.getSelectedMinValue().intValue(), rgbduration.getSelectedMaxValue().intValue(),
+        return new EnableFilterDataEnt(rgbduration.getSelectedMinValue().intValue(), rgbduration.getSelectedMaxValue().intValue(),
                 rgbSubscriber.getSelectedMinValue().intValue(), rgbSubscriber.getSelectedMaxValue().intValue(),
-                countriesIDs);
-        return filterDataEnt;
+                getFiltersCountries());
     }
 }

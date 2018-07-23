@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BookDetailEnt;
 import com.ingic.auditix.entities.BookFavoriteEnt;
+import com.ingic.auditix.entities.FavoriteBookEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.fragments.books.BookDetailFragment;
 import com.ingic.auditix.global.WebServiceConstants;
@@ -102,7 +103,7 @@ public class ProfileBooksFragment extends BaseFragment {
                 serviceHelper.enqueueCall(webService.getBooksAllFavorite(culture, prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FAVORITE);
                 break;
             case WebServiceConstants.GET_ALL_FAVORITE:
-                getAllFavouriteBooks((ArrayList<BookFavoriteEnt>) result);
+                getAllFavouriteBooks(((FavoriteBookEnt) result).getBooks());
                 break;
         }
     }
@@ -120,6 +121,7 @@ public class ProfileBooksFragment extends BaseFragment {
         rvBooksFavourite.BindRecyclerView(new BooksProfileFavouriteBinder(options,
                         newSubscriptionListener, prefHelper), favouriteCollection, new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false)
                 , new DefaultItemAnimator());
+        rvBooksFavourite.setNestedScrollingEnabled(false);
         if (favouriteCollection.size() <= 0) {
             txtFavouriteNoData.setVisibility(View.VISIBLE);
             rvBooksFavourite.setVisibility(View.GONE);
@@ -162,6 +164,7 @@ public class ProfileBooksFragment extends BaseFragment {
         rvBooks.BindRecyclerView(new LibraryBooksBinder(options, booksItemListener), booksCollections,
                 layoutManager,
                 new DefaultItemAnimator());
+        rvBooks.setNestedScrollingEnabled(false);
     }
 
 }

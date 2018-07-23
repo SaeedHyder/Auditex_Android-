@@ -3,6 +3,7 @@ package com.ingic.auditix.fragments.standard;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -139,7 +140,7 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
         }
     }
 
-    private void replaceTab(int position) {
+    public void replaceTab(int position) {
         android.support.v4.app.FragmentTransaction transaction = getChildFragmentManager()
                 .beginTransaction();
         transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
@@ -149,7 +150,15 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
 
     }
 
+    public void replaceFragment(BaseFragment fragment) {
+        FragmentTransaction transaction = getChildFragmentManager()
+                .beginTransaction();
+        //transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
+        transaction.replace(R.id.containerFragment, fragment);
+        transaction.commit();
 
+
+    }
 
     private void bindUnselectedTabView(TabLayout.Tab tab) {
         View view = tab.getCustomView();
