@@ -70,6 +70,7 @@ public class SearchItemAllListingFragment extends BaseFragment {
         return fragment;
     }
 
+
     public void setQuery(String query) {
         this.query = query;
     }
@@ -77,11 +78,11 @@ public class SearchItemAllListingFragment extends BaseFragment {
     private void openItemDetailPage(Object searchItem) {
         if (searchItem instanceof PodcastDetailHomeEnt) {
             PodcastDetailHomeEnt ent = (PodcastDetailHomeEnt) searchItem;
-            getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(ent), PodcastDetailFragment.TAG);
+            replaceFromParentFragment(PodcastDetailFragment.newInstance(ent), PodcastDetailFragment.TAG);
         } else if (searchItem instanceof BookDetailEnt) {
-            getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(((BookDetailEnt) searchItem).getBookID()), BookDetailFragment.TAG);
+            replaceFromParentFragment(BookDetailFragment.newInstance(((BookDetailEnt) searchItem).getBookID()), BookDetailFragment.TAG);
         } else if (searchItem instanceof NewsCategoryEnt) {
-            getDockActivity().replaceDockableFragment(NewsCategoryDetailFragment.newInstance((NewsCategoryEnt) searchItem), NewsCategoryDetailFragment.TAG);
+            replaceFromParentFragment(NewsCategoryDetailFragment.newInstance((NewsCategoryEnt) searchItem), NewsCategoryDetailFragment.TAG);
         }
     }
 
@@ -109,8 +110,9 @@ public class SearchItemAllListingFragment extends BaseFragment {
                 break;
         }
     }
-
+    @Override
     public void setTitleBar(TitleBar titleBar) {
+        super.setTitleBar(titleBar);
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.search));
         titleBar.showBackButton();

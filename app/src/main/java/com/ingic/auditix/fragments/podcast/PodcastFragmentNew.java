@@ -130,7 +130,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(PodcastListByCategoryFragment.newInstance(((PodcastCategoriesEnt) Ent).getCategoryId()), PodcastListByCategoryFragment.TAG);
+            replaceFromParentFragment(PodcastListByCategoryFragment.newInstance(((PodcastCategoriesEnt) Ent).getCategoryId()), PodcastListByCategoryFragment.TAG);
         }
     };
 
@@ -160,11 +160,6 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
-    }
 
     //endregion
     //region Service Response Helpers
@@ -256,6 +251,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
             } else {
                 hideFilterList();
             }
+
         }
     }
     private void showFilterList() {
@@ -270,11 +266,12 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
             getChildFragmentManager().beginTransaction().
                     remove(getChildFragmentManager().findFragmentById(R.id.containerFragment)).commit();
             getChildFragmentManager().popBackStack();
+            getMainActivity().newsFilterFragment.clearFilters();
             MainContainer.setVisibility(View.VISIBLE);
             containerFragment.setVisibility(View.GONE);
             isFilterVisible = false;
-
         }
+
     }
     public void replaceFragment(BaseFragment fragment) {
         FragmentTransaction transaction = getChildFragmentManager()
@@ -458,16 +455,16 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
 
     //region Action Events
     private void openPodcastEpisodeDetail(PodcastEpisodeEnt ent) {
-        getDockActivity().replaceDockableFragment(PodcastEpisodeDetailFragment.newInstance(ent), PodcastEpisodeDetailFragment.TAG);
+        replaceFromParentFragment(PodcastEpisodeDetailFragment.newInstance(ent), PodcastEpisodeDetailFragment.TAG);
     }
 
     @OnClick(R.id.btn_subscription_seeall)
     public void onViewClicked() {
-        getDockActivity().replaceDockableFragment(NewAndNoteworthyListingFragment.newInstance(podcastEpisodesCollections), NewAndNoteworthyListingFragment.TAG);
+        replaceFromParentFragment(NewAndNoteworthyListingFragment.newInstance(podcastEpisodesCollections), NewAndNoteworthyListingFragment.TAG);
     }
 
     public void openPodcastDetail(PodcastDetailHomeEnt ent) {
-        getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(ent), "PodcastDetailFragment");
+        replaceFromParentFragment(PodcastDetailFragment.newInstance(ent), "PodcastDetailFragment");
     }
 
 

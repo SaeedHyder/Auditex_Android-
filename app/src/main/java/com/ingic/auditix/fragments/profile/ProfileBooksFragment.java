@@ -58,7 +58,7 @@ public class ProfileBooksFragment extends BaseFragment {
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(((BookFavoriteEnt) Ent).getBookID()), BookDetailFragment.TAG);
+            replaceFromParentFragment(BookDetailFragment.newInstance(((BookFavoriteEnt) Ent).getBookID()), BookDetailFragment.TAG);
         }
     };
     private RecyclerViewItemListener booksItemListener = new RecyclerViewItemListener() {
@@ -74,7 +74,7 @@ public class ProfileBooksFragment extends BaseFragment {
                 if (getMainActivity().booksFilterFragment != null) {
                     getMainActivity().booksFilterFragment.clearFilters();
                 }
-                getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(detailEnt.getBookID()), BookDetailFragment.TAG);
+                replaceFromParentFragment(BookDetailFragment.newInstance(detailEnt.getBookID()), BookDetailFragment.TAG);
             }
         }
     };

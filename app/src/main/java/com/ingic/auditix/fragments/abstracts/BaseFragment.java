@@ -22,14 +22,21 @@ import com.andreabaccega.formedittextvalidator.Validator;
 import com.ingic.auditix.R;
 import com.ingic.auditix.activities.DockActivity;
 import com.ingic.auditix.activities.MainActivity;
+import com.ingic.auditix.fragments.books.BooksMainFragment;
+import com.ingic.auditix.fragments.news.NewsMainFragment;
+import com.ingic.auditix.fragments.podcast.PodcastMainFragment;
+import com.ingic.auditix.fragments.profile.ProfileMainFragment;
+import com.ingic.auditix.fragments.search.SearchMainFragment;
 import com.ingic.auditix.fragments.standard.HomeTabFragment;
 import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
+import com.ingic.auditix.helpers.ChildBackPressHelper;
 import com.ingic.auditix.helpers.GPSTracker;
 import com.ingic.auditix.helpers.ServiceHelper;
 import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.interfaces.LoadingListener;
+import com.ingic.auditix.interfaces.OnBackPressListener;
 import com.ingic.auditix.interfaces.webServiceResponseLisener;
 import com.ingic.auditix.retrofit.WebService;
 import com.ingic.auditix.retrofit.WebServiceFactory;
@@ -37,7 +44,7 @@ import com.ingic.auditix.ui.views.AnyEditTextView;
 import com.ingic.auditix.ui.views.TitleBar;
 
 
-public abstract class BaseFragment extends Fragment implements webServiceResponseLisener {
+public abstract class BaseFragment extends Fragment implements webServiceResponseLisener, OnBackPressListener {
 
     protected Handler handler = new Handler();
 
@@ -105,6 +112,12 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
 
     }
 
+    @Override
+    public boolean onBackPressed() {
+
+        return new ChildBackPressHelper(this).onBackPressed();
+    }
+
     private void onNotificationReceived() {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -127,15 +140,33 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
             }
         };
     }
-    public HomeTabFragment getParentfragment(){
+
+    public HomeTabFragment getParentfragment() {
         return (HomeTabFragment) getParentFragment();
     }
+
     protected void onPushAction(Intent intent) {
     }
 
     protected void createClient() {
         // webService = WebServiceFactory.getInstanceWithBasicGsonConversion();
 
+    }
+
+    public NewsMainFragment getNewsMainFragment() {
+        return (NewsMainFragment) getParentFragment();
+    }
+    public PodcastMainFragment getPodcastMainFragment() {
+        return (PodcastMainFragment) getParentFragment();
+    }
+    public BooksMainFragment getBooksMainFragment() {
+        return (BooksMainFragment) getParentFragment();
+    }
+    public SearchMainFragment getSearchMainFragment() {
+        return (SearchMainFragment) getParentFragment();
+    }
+    public ProfileMainFragment getProfileMainFragment() {
+        return (ProfileMainFragment) getParentFragment();
     }
 
     protected void setEditTextFocus(AppCompatEditText textFocus) {
@@ -153,9 +184,11 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
 
         isLoading = true;
     }
-    public void showGuestMessage(){
-        UIHelper.showShortToastInCenter(getDockActivity(),getResString(R.string.guest_message));
+
+    public void showGuestMessage() {
+        UIHelper.showShortToastInCenter(getDockActivity(), getResString(R.string.guest_message));
     }
+
     public void loadingFinished() {
 
         if (getParentFragment() != null)
@@ -211,6 +244,66 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
         if (getMainActivity().getDrawerLayout() != null) {
             getMainActivity().lockDrawer();
         }
+        if (getParentFragment() instanceof NewsMainFragment){
+            setTitleBar(getNewsMainFragment().getTitleBar());
+        }
+        if (getParentFragment() instanceof ProfileMainFragment){
+            setTitleBar(getProfileMainFragment().getTitleBar());
+        }
+        if (getParentFragment() instanceof PodcastMainFragment){
+            setTitleBar(getPodcastMainFragment().getTitleBar());
+        }
+        if (getParentFragment() instanceof SearchMainFragment){
+            setTitleBar(getSearchMainFragment().getTitleBar());
+        }
+        if (getParentFragment() instanceof BooksMainFragment){
+            setTitleBar(getBooksMainFragment().getTitleBar());
+        }
+    }
+
+    public void replaceFromParentFragment(BaseFragment fragment, String tag) {
+        if (getParentFragment() instanceof NewsMainFragment){
+           getNewsMainFragment().replaceFragment(fragment, tag);
+        }
+        if (getParentFragment() instanceof ProfileMainFragment){
+            getProfileMainFragment().replaceFragment(fragment, tag);
+
+        }
+        if (getParentFragment() instanceof PodcastMainFragment){
+            getPodcastMainFragment().replaceFragment(fragment, tag);
+
+        }
+        if (getParentFragment() instanceof SearchMainFragment){
+            getSearchMainFragment().replaceFragment(fragment, tag);
+
+        }
+        if (getParentFragment() instanceof BooksMainFragment){
+            getBooksMainFragment().replaceFragment(fragment, tag);
+
+        }
+
+
+    }
+    public void popFromParentFragment() {
+        if (getParentFragment() instanceof NewsMainFragment){
+            getNewsMainFragment().popFragment();
+        }
+        if (getParentFragment() instanceof ProfileMainFragment){
+            getProfileMainFragment().popFragment();
+
+        }
+        if (getParentFragment() instanceof PodcastMainFragment){
+            getPodcastMainFragment().popFragment();
+
+        }
+        if (getParentFragment() instanceof SearchMainFragment){
+            getSearchMainFragment().popFragment();
+
+        }
+        if (getParentFragment() instanceof BooksMainFragment){
+            getBooksMainFragment().popFragment();
+
+        }
     }
 
     @Override
@@ -224,9 +317,10 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
 
     }
 
-   public String getResString(int stringResouseID) {
+    public String getResString(int stringResouseID) {
         return getDockActivity().getResources().getString(stringResouseID);
     }
+
     @Override
     public void ResponseSuccess(Object result, String Tag) {
 

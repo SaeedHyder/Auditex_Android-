@@ -65,7 +65,7 @@ public class NewAndNoteworthyListingFragment extends BaseFragment {
     }
 
     private void openPodcastEpisodeDetail(PodcastEpisodeEnt ent) {
-        getDockActivity().replaceDockableFragment(PodcastEpisodeDetailFragment.newInstance(ent), PodcastEpisodeDetailFragment.TAG);
+        replaceFromParentFragment(PodcastEpisodeDetailFragment.newInstance(ent), PodcastEpisodeDetailFragment.TAG);
     }
 
     public void setEpisodesCollection(ArrayList<PodcastEpisodeEnt> episodesCollection) {

@@ -1,13 +1,11 @@
 package com.ingic.auditix.fragments.standard;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.InflateException;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -15,13 +13,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ingic.auditix.R;
-import com.ingic.auditix.fragments.books.BooksFragment;
-import com.ingic.auditix.fragments.news.NewsFragment;
-import com.ingic.auditix.fragments.podcast.PodcastFragmentNew;
-import com.ingic.auditix.fragments.profile.ProfileFragment;
-import com.ingic.auditix.fragments.search.SearchFragment;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.fragments.books.BooksFragment;
+import com.ingic.auditix.fragments.books.BooksMainFragment;
+import com.ingic.auditix.fragments.news.NewsFragment;
+import com.ingic.auditix.fragments.news.NewsMainFragment;
+import com.ingic.auditix.fragments.podcast.PodcastFragmentNew;
+import com.ingic.auditix.fragments.podcast.PodcastMainFragment;
+import com.ingic.auditix.fragments.profile.ProfileFragment;
+import com.ingic.auditix.fragments.profile.ProfileMainFragment;
+import com.ingic.auditix.fragments.search.SearchFragment;
+import com.ingic.auditix.fragments.search.SearchMainFragment;
 import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.interfaces.OnBackPressListener;
 import com.ingic.auditix.interfaces.ViewPagerFragmentLifecycleListener;
 import com.ingic.auditix.ui.adapters.TabViewPagerAdapter;
 import com.ingic.auditix.ui.views.TitleBar;
@@ -54,6 +58,7 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
     private String tag = AppConstants.TAB_NEWS;
     private TitleBar titleBar;
     private View viewParent;
+    private int selectedTabPosition;
 
     public static HomeTabFragment newInstance() {
         Bundle args = new Bundle();
@@ -61,6 +66,31 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
         HomeTabFragment fragment = new HomeTabFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    private void bindTabsResources(BaseFragment fragment, Integer selectedTabIcon, Integer unselectedTabIcon, Integer tabText) {
+        adapter.addFragment(fragment);
+        selectedTabsIcons.add(selectedTabIcon);
+        unselectedTabsIcons.add(unselectedTabIcon);
+        tabTexts.add(getString(tabText));
+    }
+
+    public boolean onBackPressed() {
+        if (adapter != null) {
+            // currently visible tab Fragment
+            OnBackPressListener currentFragment = (OnBackPressListener) adapter.getRegisteredFragment(selectedTabPosition);
+
+            if (currentFragment != null) {
+                // lets see if the currentFragment or any of its childFragment can handle onBackPressed
+                return currentFragment.onBackPressed();
+            }
+        }
+        // this Fragment couldn't handle the onBackPressed call
+        return false;
     }
 
     @Override
@@ -86,17 +116,6 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
         titleBar.addBackground();
         this.titleBar = titleBar;
         setViewPager();
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    private void bindTabsResources(BaseFragment fragment, Integer selectedTabIcon, Integer unselectedTabIcon, Integer tabText) {
-        adapter.addFragment(fragment);
-        selectedTabsIcons.add(selectedTabIcon);
-        unselectedTabsIcons.add(unselectedTabIcon);
-        tabTexts.add(getString(tabText));
     }
 
     private void assignTabTag(int position) {
@@ -133,11 +152,11 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
         }
         assignTabTag(tab.getPosition());
         replaceTab(tab.getPosition());
-        ViewPagerFragmentLifecycleListener listener =
+        /*ViewPagerFragmentLifecycleListener listener =
                 (ViewPagerFragmentLifecycleListener) adapter.getItem(tab.getPosition());
         if (listener != null) {
             listener.onResumeFragment(getDockActivity(), prefHelper);
-        }
+        }*/
     }
 
     public void replaceTab(int position) {
@@ -150,11 +169,12 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
 
     }
 
-    public void replaceFragment(BaseFragment fragment) {
+    public void replaceFragment(BaseFragment fragment,String tag) {
         FragmentTransaction transaction = getChildFragmentManager()
                 .beginTransaction();
-        //transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
-        transaction.replace(R.id.containerFragment, fragment);
+        transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit, R.anim.fragment_popenter, R.anim.fragment_pop_exit);
+        transaction.replace(R.id.pager, fragment);
+        transaction.addToBackStack(tag);
         transaction.commit();
 
 
@@ -169,11 +189,11 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
             tv.setText(tabTexts.get(tab.getPosition()));
             tv.setTextColor(ContextCompat.getColor(getDockActivity(), R.color.app_font_gray));
         }
-        ViewPagerFragmentLifecycleListener listener =
+      /*  ViewPagerFragmentLifecycleListener listener =
                 (ViewPagerFragmentLifecycleListener) adapter.getItem(tab.getPosition());
         if (listener != null) {
             listener.onPauseFragment();
-        }
+        }*/
     }
 
     private void setViewPager() {
@@ -183,11 +203,11 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
             adapter.clearList();
             tabLayout.removeAllTabs();
         }
-        bindTabsResources(new NewsFragment(), R.drawable.news_orange_small, R.drawable.news_grey, R.string.news);
-        bindTabsResources(new PodcastFragmentNew(), R.drawable.podcast_orange_small, R.drawable.podcast_icon_grey, R.string.podcast);
-        bindTabsResources(new SearchFragment(), R.drawable.search_orange, R.drawable.search_grey, R.string.search);
-        bindTabsResources(new BooksFragment(), R.drawable.books_orange, R.drawable.books_grey, R.string.books);
-        bindTabsResources(new ProfileFragment(), R.drawable.profile_icon_orange, R.drawable.profile_icon_grey, R.string.profile);
+        bindTabsResources(new NewsMainFragment(), R.drawable.news_orange_small, R.drawable.news_grey, R.string.news);
+        bindTabsResources(new PodcastMainFragment(), R.drawable.podcast_orange_small, R.drawable.podcast_icon_grey, R.string.podcast);
+        bindTabsResources(new SearchMainFragment(), R.drawable.search_orange, R.drawable.search_grey, R.string.search);
+        bindTabsResources(new BooksMainFragment(), R.drawable.books_orange, R.drawable.books_grey, R.string.books);
+        bindTabsResources(new ProfileMainFragment(), R.drawable.profile_icon_orange, R.drawable.profile_icon_grey, R.string.profile);
         for (int i = 0; i < adapter.getCount(); i++) {
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setCustomView(R.layout.tab_item_home);
@@ -198,10 +218,10 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
           /*  ViewGroup vgTab = (ViewGroup) tabLayout.getChildAt(INDEX_PROFILE);
             if (vgTab != null)
                 vgTab.setEnabled(false);*/
-          Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(INDEX_PROFILE)).getCustomView()).setOnTouchListener((v, event) -> {
-              showGuestMessage();
-              return true;
-          });
+            Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(INDEX_PROFILE)).getCustomView()).setOnTouchListener((v, event) -> {
+                showGuestMessage();
+                return true;
+            });
         }
         tabLayout.addOnTabSelectedListener(this);
         selectTabBasedOnTag(tag);
@@ -267,6 +287,7 @@ public class HomeTabFragment extends BaseFragment implements TabLayout.OnTabSele
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         bindSelectedTabView(tab);
+        selectedTabPosition = tab.getPosition();
 
     }
 

@@ -10,6 +10,7 @@ import com.ingic.auditix.ui.binders.books.BookCategoryListBinder;
 import com.ingic.auditix.ui.binders.news.NewsCategoryListingBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
+import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import android.os.Bundle;
@@ -49,8 +50,9 @@ public class BookFilterListFragment extends BaseFragment {
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            assert getParentFragment() != null;
-            ((BooksFragment)getParentFragment()).openBookDetail(((BookDetailEnt) Ent).getBookID());
+            if (getParentFragment() != null) {
+                ((BooksFragment)getParentFragment()).openBookDetail(((BookDetailEnt)Ent).getBookID());
+            }
 
         }
     };
@@ -76,6 +78,12 @@ public class BookFilterListFragment extends BaseFragment {
         if (getArguments() != null) {
         }
 
+    }
+
+    @Override
+    public void setTitleBar(TitleBar titleBar) {
+        super.setTitleBar(titleBar);
+        titleBar.addBackground();
     }
 
     @Override

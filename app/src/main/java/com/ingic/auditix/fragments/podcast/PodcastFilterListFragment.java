@@ -10,6 +10,7 @@ import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.podcast.PodcastDefaultCategoryBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
+import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import android.os.Bundle;
@@ -87,7 +88,11 @@ public class PodcastFilterListFragment extends BaseFragment {
         }
 
     }
-
+    @Override
+    public void setTitleBar(TitleBar titleBar) {
+        super.setTitleBar(titleBar);
+        titleBar.addBackground();
+    }
     @Override
     public void ResponseSuccess(Object result, String Tag) {
         switch (Tag) {

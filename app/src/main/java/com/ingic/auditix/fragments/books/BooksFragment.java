@@ -120,7 +120,7 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
     }
 
     public void openBookDetail(Integer bookID) {
-        getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(bookID), BookDetailFragment.TAG);
+        replaceFromParentFragment(BookDetailFragment.newInstance(bookID), BookDetailFragment.TAG);
     }
 
     @Override
@@ -131,11 +131,7 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
-    }
+
 
     @Override
     public void ResponseSuccess(Object result, String Tag) {
@@ -151,7 +147,7 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
 
         }
     }
-
+    @Override
     public void setTitleBar(TitleBar titleBar) {
         if (getMainActivity().booksFilterFragment != null) {
             getMainActivity().setRightSideFragment(getMainActivity().booksFilterFragment);
@@ -249,7 +245,7 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
 
     private void openCategoryListing(int categoryID) {
         if (categoryID != -1) {
-            getDockActivity().replaceDockableFragment(BookCategoryListFragment.newInstance(categoryID), BookCategoryListFragment.TAG);
+            replaceFromParentFragment(BookCategoryListFragment.newInstance(categoryID), BookCategoryListFragment.TAG);
         }
     }
 
@@ -257,7 +253,7 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_allbooks_seeall:
-                getDockActivity().replaceDockableFragment(FeatureAllBooksListingFragment.newInstance(bookCategoryEnt), FeatureAllBooksListingFragment.TAG);
+                replaceFromParentFragment(FeatureAllBooksListingFragment.newInstance(bookCategoryEnt), FeatureAllBooksListingFragment.TAG);
                 break;
 
         }
@@ -278,16 +274,18 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
         isFilterVisible = true;
     }
 
+
     private void hideFilterList() {
         if (getChildFragmentManager().findFragmentById(R.id.containerFragment) != null) {
             getChildFragmentManager().beginTransaction().
                     remove(getChildFragmentManager().findFragmentById(R.id.containerFragment)).commit();
             getChildFragmentManager().popBackStack();
+            getMainActivity().newsFilterFragment.clearFilters();
             MainContainer.setVisibility(View.VISIBLE);
             containerFragment.setVisibility(View.GONE);
             isFilterVisible = false;
-
         }
+
     }
 
    /* @Override

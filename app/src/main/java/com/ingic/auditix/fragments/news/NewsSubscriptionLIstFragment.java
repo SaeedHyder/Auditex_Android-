@@ -44,7 +44,7 @@ public class NewsSubscriptionLIstFragment extends BaseFragment {
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(NewsCategoryDetailFragment.newInstance((NewsCategoryEnt) Ent), NewsCategoryDetailFragment.TAG);
+            replaceFromParentFragment(NewsChannelDetailFragment.newInstance((NewItemDetailEnt) Ent), NewsCategoryDetailFragment.TAG);
         }
     };
 
@@ -64,9 +64,7 @@ public class NewsSubscriptionLIstFragment extends BaseFragment {
 
     }
 
-    @Override
     public void setTitleBar(TitleBar titleBar) {
-        super.setTitleBar(titleBar);
         titleBar.hideButtons();
         titleBar.addBackground();
         titleBar.showBackButton();

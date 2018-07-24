@@ -19,7 +19,6 @@ import com.ingic.auditix.entities.EnableFilterDataEnt;
 import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
-import com.ingic.auditix.fragments.standard.HomeTabFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
@@ -79,11 +78,6 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
             openChannelDetail((NewItemDetailEnt) Ent);
         }
     };
-
-    public void openChannelDetail(NewItemDetailEnt Ent) {
-        getDockActivity().replaceDockableFragment(NewsChannelDetailFragment.newInstance(Ent), NewsCategoryDetailFragment.TAG);
-    }
-
     private RecyclerViewItemListener newCategoriesListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
@@ -92,7 +86,7 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(NewListingByCategoryFragment.newInstance(((NewsCategoryEnt) Ent).getId()), NewsCategoryDetailFragment.TAG);
+            replaceFromParentFragment(NewListingByCategoryFragment.newInstance(((NewsCategoryEnt) Ent).getId()), NewsCategoryDetailFragment.TAG);
         }
     };
 
@@ -104,18 +98,16 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
         return fragment;
     }
 
+    public void openChannelDetail(NewItemDetailEnt Ent) {
+        replaceFromParentFragment(NewsChannelDetailFragment.newInstance(Ent), NewsCategoryDetailFragment.TAG);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
     }
 
     @Override
@@ -133,7 +125,9 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
         }
     }
 
+    @Override
     public void setTitleBar(TitleBar titleBar) {
+        super.setTitleBar(titleBar);
         if (getMainActivity().newsFilterFragment != null) {
             getMainActivity().setRightSideFragment(getMainActivity().newsFilterFragment);
             getMainActivity().newsFilterFragment.setListener((filters, isClear) -> {
@@ -146,6 +140,7 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
                 }
             });
         }
+        titleBar.addBackground();
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.news));
         titleBar.showMenuButton();
@@ -167,12 +162,14 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
             getChildFragmentManager().beginTransaction().
                     remove(getChildFragmentManager().findFragmentById(R.id.containerFragment)).commit();
             getChildFragmentManager().popBackStack();
+            getMainActivity().newsFilterFragment.clearFilters();
             MainContainer.setVisibility(View.VISIBLE);
             containerFragment.setVisibility(View.GONE);
             isFilterVisible = false;
-
         }
+
     }
+
     public void replaceFragment(BaseFragment fragment) {
         FragmentTransaction transaction = getChildFragmentManager()
                 .beginTransaction();
@@ -182,7 +179,6 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
 
 
     }
-
 
 
     @Override
@@ -263,7 +259,7 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
 
     @OnClick(R.id.btn_subscription_seeall)
     public void onViewClicked() {
-        getDockActivity().replaceDockableFragment(NewsSubscriptionLIstFragment.newInstance(), NewsSubscriptionLIstFragment.TAG);
+        replaceFromParentFragment(NewsSubscriptionLIstFragment.newInstance(), NewsSubscriptionLIstFragment.TAG);
     }
 
 }

@@ -100,7 +100,6 @@ public class PodcastEpisodeDetailFragment extends BaseFragment {
     public void setPodcastEpisodeEnt(PodcastEpisodeEnt podcastEpisodeEnt) {
         this.podcastEpisodeEnt = podcastEpisodeEnt;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

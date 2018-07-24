@@ -280,4 +280,5 @@
     <string name="storage_permission">Permission is required to access this feature</string>
     <string name="subscriber">Subscriber :</string>
     <string name="countries">Countries :</string>
+    <string name="show_error">No Show are available!!</string>
 </resources>

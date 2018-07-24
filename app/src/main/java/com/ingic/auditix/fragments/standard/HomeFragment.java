@@ -40,7 +40,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        tabFragment = new HomeTabFragment();
+
     }
 
     @Override
@@ -67,6 +67,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        tabFragment = getMainActivity().mainFragment;
         getMainActivity().refreshSideMenu();
         if (getMainActivity().filterFragment != null) {
             getMainActivity().filterFragment.clearFilters();

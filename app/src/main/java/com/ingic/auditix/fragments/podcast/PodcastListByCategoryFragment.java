@@ -78,7 +78,7 @@ public class PodcastListByCategoryFragment extends BaseFragment  {
     }
 
     private void openPodcastDetail(PodcastDetailHomeEnt ent) {
-        getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(ent), "PodcastDetailFragment");
+        replaceFromParentFragment(PodcastDetailFragment.newInstance(ent), "PodcastDetailFragment");
     }
 
     @Override

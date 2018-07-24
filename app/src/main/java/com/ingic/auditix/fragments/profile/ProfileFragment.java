@@ -73,12 +73,6 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
     public void setTitleBar(TitleBar titleBar) {
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.profile));
@@ -95,7 +89,6 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
 //        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
         bindTabs();
     }

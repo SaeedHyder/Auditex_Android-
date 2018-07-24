@@ -9,13 +9,17 @@ import android.widget.ImageView;
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsChannelDetailEnt;
+import com.ingic.auditix.entities.NewsEpisodeEnt;
 import com.ingic.auditix.entities.PlayerNewsEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
+import com.ingic.auditix.helpers.UIHelper;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,6 +84,7 @@ public class NewsChannelDetailFragment extends BaseFragment {
     @Override
     public void setTitleBar(TitleBar titleBar) {
         super.setTitleBar(titleBar);
+        titleBar.addBackground();
         titleBar.hideButtons();
         titleBar.showBackButton();
         titleBar.addBackground();
@@ -108,18 +113,26 @@ public class NewsChannelDetailFragment extends BaseFragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+    private void openShowDetails(NewItemDetailEnt detailEnt, List<NewsEpisodeEnt>list){
+        if (list.isEmpty()){
+            UIHelper.showShortToastInCenter(getDockActivity(),getResString(R.string.show_error));
+            return;
+        }
+        replaceFromParentFragment(NewsChannelEpisodesFragment.newInstance(new PlayerNewsEnt(detailEnt, list)), NewsChannelEpisodesFragment.TAG);
+
+    }
 
     @OnClick({R.id.txtToday, R.id.txtYesterday, R.id.txtOlder})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txtToday:
-                getDockActivity().replaceDockableFragment(NewsChannelEpisodesFragment.newInstance(new PlayerNewsEnt(detailEnt, newsChannelDetailEnt.getNewsepisodestoday())), NewsChannelEpisodesFragment.TAG);
+                openShowDetails(detailEnt, newsChannelDetailEnt.getNewsepisodestoday());
                 break;
             case R.id.txtYesterday:
-                getDockActivity().replaceDockableFragment(NewsChannelEpisodesFragment.newInstance(new PlayerNewsEnt(detailEnt, newsChannelDetailEnt.getNewsepisodesyesterday())), NewsChannelEpisodesFragment.TAG);
+                openShowDetails(detailEnt, newsChannelDetailEnt.getNewsepisodesyesterday());
                 break;
             case R.id.txtOlder:
-                getDockActivity().replaceDockableFragment(NewsChannelEpisodesFragment.newInstance(new PlayerNewsEnt(detailEnt, newsChannelDetailEnt.getNewsepisodeslater())), NewsChannelEpisodesFragment.TAG);
+                openShowDetails(detailEnt, newsChannelDetailEnt.getNewsepisodeslater());
                 break;
         }
     }

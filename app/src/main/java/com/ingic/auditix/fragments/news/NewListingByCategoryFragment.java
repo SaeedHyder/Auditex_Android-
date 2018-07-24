@@ -52,7 +52,7 @@ public class NewListingByCategoryFragment extends BaseFragment {
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(NewsChannelDetailFragment.newInstance((NewItemDetailEnt) Ent), NewsCategoryDetailFragment.TAG);
+            replaceFromParentFragment(NewsChannelDetailFragment.newInstance((NewItemDetailEnt) Ent), NewsCategoryDetailFragment.TAG);
 
         }
     };
@@ -86,10 +86,9 @@ public class NewListingByCategoryFragment extends BaseFragment {
                 break;
         }
     }
-
-    @Override
     public void setTitleBar(TitleBar titleBar) {
-        super.setTitleBar(titleBar);
+
+        titleBar.addBackground();
         titleBar.hideButtons();
         titleBar.showBackButton();
         titleBar.addBackground();

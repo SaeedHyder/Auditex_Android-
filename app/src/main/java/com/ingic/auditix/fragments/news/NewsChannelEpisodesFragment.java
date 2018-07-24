@@ -52,7 +52,7 @@ public class NewsChannelEpisodesFragment extends BaseFragment {
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            getDockActivity().replaceDockableFragment(NewsEpisodeDetailFragment.newInstance(playerNewsEnt, position), NewsEpisodeDetailFragment.TAG);
+            replaceFromParentFragment(NewsEpisodeDetailFragment.newInstance(playerNewsEnt, position), NewsEpisodeDetailFragment.TAG);
         }
     };
 

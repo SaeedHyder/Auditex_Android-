@@ -212,7 +212,7 @@ public class PodcastDetailFragment extends BaseFragment {
             if (podcastDetailEnt != null) {
                 PodcastEpisodeEnt ent = (PodcastEpisodeEnt) Ent;
                 ent.setPodcast(podcastDetailEnt);
-                getDockActivity().replaceDockableFragment(PodcastEpisodeDetailFragment.newInstance(ent, podcastEpisodeCollection), PodcastEpisodeDetailFragment.TAG);
+                replaceFromParentFragment(PodcastEpisodeDetailFragment.newInstance(ent, podcastEpisodeCollection), PodcastEpisodeDetailFragment.TAG);
             }
 
         }

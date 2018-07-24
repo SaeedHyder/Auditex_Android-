@@ -16,6 +16,7 @@ import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.news.NewsCategoryListingBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
+import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import java.util.ArrayList;
@@ -55,8 +56,10 @@ public class NewsFilterListFragment extends BaseFragment {
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            assert getParentFragment() != null;
-            ((NewsFragment)getParentFragment()).openChannelDetail((NewItemDetailEnt) Ent);
+            if (getParentFragment() != null) {
+                ((NewsFragment)getParentFragment()).openChannelDetail((NewItemDetailEnt) Ent);
+            }
+            //replaceFromParentFragment(NewsChannelDetailFragment.newInstance(), NewsCategoryDetailFragment.TAG);
 
         }
     };
@@ -71,7 +74,11 @@ public class NewsFilterListFragment extends BaseFragment {
         fragment.setFilters(filters);
         return fragment;
     }
-
+    @Override
+    public void setTitleBar(TitleBar titleBar) {
+        super.setTitleBar(titleBar);
+        titleBar.addBackground();
+    }
     public void setFilters(EnableFilterDataEnt filters) {
         this.filters = filters;
     }

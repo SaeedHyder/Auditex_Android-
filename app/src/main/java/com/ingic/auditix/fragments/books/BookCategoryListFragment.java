@@ -58,6 +58,7 @@ public class BookCategoryListFragment extends BaseFragment {
 
         }
     };
+
     public static BookCategoryListFragment newInstance(int categoryID) {
         Bundle args = new Bundle();
 
@@ -68,7 +69,7 @@ public class BookCategoryListFragment extends BaseFragment {
     }
 
     private void openBookDetail(Integer bookID) {
-        getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(bookID), BookDetailFragment.TAG);
+        replaceFromParentFragment(BookDetailFragment.newInstance(bookID), BookDetailFragment.TAG);
     }
 
     public void setCategoryID(int CID) {

@@ -189,7 +189,7 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
     private void openSubscriptionFragment(String titleHeading) {
         SubscriptionsFragment fragment = new SubscriptionsFragment();
         fragment.setTitleHeading(titleHeading);
-        getDockActivity().replaceDockableFragment(fragment, "SubscriptionsFragment");
+        replaceFromParentFragment(fragment, "SubscriptionsFragment");
     }
 
     private void bindTabs() {

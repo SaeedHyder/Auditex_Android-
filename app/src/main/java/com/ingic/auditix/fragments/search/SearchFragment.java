@@ -112,11 +112,7 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
-    }
+
 
     @Override
     public void ResponseSuccess(Object result, String Tag) {
@@ -137,11 +133,11 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
     private void openItemDetailPage(Object searchItem) {
         if (searchItem instanceof PodcastDetailHomeEnt) {
             PodcastDetailHomeEnt ent = (PodcastDetailHomeEnt) searchItem;
-            getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(ent), PodcastDetailFragment.TAG);
+            replaceFromParentFragment(PodcastDetailFragment.newInstance(ent), PodcastDetailFragment.TAG);
         } else if (searchItem instanceof BookDetailEnt) {
-            getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(((BookDetailEnt) searchItem).getBookID()), BookDetailFragment.TAG);
+            replaceFromParentFragment(BookDetailFragment.newInstance(((BookDetailEnt) searchItem).getBookID()), BookDetailFragment.TAG);
         } else if (searchItem instanceof NewsCategoryEnt) {
-            getDockActivity().replaceDockableFragment(NewsCategoryDetailFragment.newInstance((NewsCategoryEnt) searchItem), NewsCategoryDetailFragment.TAG);
+            replaceFromParentFragment(NewsCategoryDetailFragment.newInstance((NewsCategoryEnt) searchItem), NewsCategoryDetailFragment.TAG);
         }
     }
 
@@ -269,13 +265,13 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnNewsSeeAll:
-                getDockActivity().replaceDockableFragment(SearchItemAllListingFragment.newInstance(searchCollection, AppConstants.TAB_NEWS, edtSearch.getText().toString()));
+                replaceFromParentFragment(SearchItemAllListingFragment.newInstance(searchCollection, AppConstants.TAB_NEWS, edtSearch.getText().toString()),SearchItemAllListingFragment.TAG);
                 break;
             case R.id.btnPodcastSeeAll:
-                getDockActivity().replaceDockableFragment(SearchItemAllListingFragment.newInstance(searchCollection, AppConstants.TAB_PODCAST, edtSearch.getText().toString()));
+                replaceFromParentFragment(SearchItemAllListingFragment.newInstance(searchCollection, AppConstants.TAB_PODCAST, edtSearch.getText().toString()),SearchItemAllListingFragment.TAG);
                 break;
             case R.id.btnBooksSeeAll:
-                getDockActivity().replaceDockableFragment(SearchItemAllListingFragment.newInstance(searchCollection, AppConstants.TAB_BOOKS, edtSearch.getText().toString()));
+                replaceFromParentFragment(SearchItemAllListingFragment.newInstance(searchCollection, AppConstants.TAB_BOOKS, edtSearch.getText().toString()),SearchItemAllListingFragment.TAG);
 
                 break;
         }

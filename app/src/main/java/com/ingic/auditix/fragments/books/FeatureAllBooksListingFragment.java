@@ -66,7 +66,6 @@ public class FeatureAllBooksListingFragment extends BaseFragment {
         }
 
     }
-
     @Override
     public void setTitleBar(TitleBar titleBar) {
         super.setTitleBar(titleBar);
@@ -76,7 +75,7 @@ public class FeatureAllBooksListingFragment extends BaseFragment {
         titleBar.showBackButton();
     }
     private void openBookDetail(Integer bookID) {
-        getDockActivity().replaceDockableFragment(BookDetailFragment.newInstance(bookID), BookDetailFragment.TAG);
+        replaceFromParentFragment(BookDetailFragment.newInstance(bookID), BookDetailFragment.TAG);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

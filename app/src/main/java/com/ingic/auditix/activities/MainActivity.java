@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -30,6 +31,7 @@ import com.ingic.auditix.fragments.books.BooksFilterFragment;
 import com.ingic.auditix.fragments.news.NewsFilterFragment;
 import com.ingic.auditix.fragments.podcast.PodcastFilterFragment;
 import com.ingic.auditix.fragments.standard.HomeFragment;
+import com.ingic.auditix.fragments.standard.HomeTabFragment;
 import com.ingic.auditix.fragments.standard.LanguageSelectionFragment;
 import com.ingic.auditix.fragments.dashboard.NotificationsFragment;
 import com.ingic.auditix.fragments.player.PlayerFragment;
@@ -107,6 +109,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
     private String mBackgroundFilename;
     private Bitmap background;
     private PlayerFragment playerFragment;
+    public HomeTabFragment mainFragment;
 
     public PlayerFragment getPlayerFragment() {
         return playerFragment;
@@ -374,6 +377,7 @@ public class MainActivity extends DockActivity implements OnClickListener {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_dock);
         ButterKnife.bind(this);
+        mainFragment = HomeTabFragment.newInstance();
         titleBar = header_main;
         titleBar.setMainActivity(this);
         getCMSFromService();
@@ -388,39 +392,31 @@ public class MainActivity extends DockActivity implements OnClickListener {
         settingSideMenu(sideMenuType, sideMenuDirection);
         setRightSideDrawer();
         initFiltersFragment();
-        titleBar.setMenuButtonListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (sideMenuType.equals(SideMenuChooser.DRAWER.getValue()) && getDrawerLayout() != null) {
-                    if (sideMenuDirection.equals(SideMenuDirection.LEFT.getValue())) {
-                        drawerLayout.openDrawer(Gravity.LEFT);
-                    } else {
-                        drawerLayout.openDrawer(Gravity.RIGHT);
-                    }
+        titleBar.setMenuButtonListener(v -> {
+            if (sideMenuType.equals(SideMenuChooser.DRAWER.getValue()) && getDrawerLayout() != null) {
+                if (sideMenuDirection.equals(SideMenuDirection.LEFT.getValue())) {
+                    drawerLayout.openDrawer(Gravity.LEFT);
                 } else {
-                    resideMenu.openMenu(SideMenuDirection.LEFT.getValue());
-
-
+                    drawerLayout.openDrawer(Gravity.RIGHT);
                 }
+            } else {
+                resideMenu.openMenu(SideMenuDirection.LEFT.getValue());
+
 
             }
+
         });
 
-        titleBar.setBackButtonListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                if (loading) {
-                    UIHelper.showLongToastInCenter(getApplicationContext(),
-                            R.string.message_wait);
-                } else {
-
-                    popFragment();
-                    UIHelper.hideSoftKeyboard(getApplicationContext(),
-                            titleBar);
-                }
+        titleBar.setBackButtonListener(v -> {
+            // TODO Auto-generated method stub
+            if (loading) {
+                UIHelper.showLongToastInCenter(getApplicationContext(),
+                        R.string.message_wait);
+            } else {
+                onBackPressed();
+               // popFragment();
+                UIHelper.hideSoftKeyboard(getApplicationContext(),
+                        titleBar);
             }
         });
         playerFragment = new PlayerFragment();
@@ -439,21 +435,29 @@ public class MainActivity extends DockActivity implements OnClickListener {
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(Gravity.RIGHT) || drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-            closeDrawer();
-        } else {
-            if (loading) {
-                UIHelper.showLongToastInCenter(getApplicationContext(),
-                        R.string.message_wait);
+
+            if (drawerLayout.isDrawerOpen(Gravity.RIGHT) || drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                closeDrawer();
             } else {
-                if (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED) {
-                    slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                if (loading) {
+                    UIHelper.showLongToastInCenter(getApplicationContext(),
+                            R.string.message_wait);
                 } else {
-                    if (imageAdvertise.getVisibility() != View.VISIBLE) {
-                        super.onBackPressed();
+                    if (getSupportFragmentManager().getBackStackEntryCount() > 1)
+                        popFragment();
+                    else {
+                        if (!mainFragment.onBackPressed()) {
+                            if (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED) {
+                                slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                            } else {
+                                if (imageAdvertise.getVisibility() != View.VISIBLE) {
+                                    super.onBackPressed();
+                                }
+                            }
+                        }
                     }
                 }
-            }
+
 
         }
     }
