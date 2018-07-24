@@ -321,7 +321,7 @@ public abstract class DockActivity extends AppCompatActivity implements
 
     }
 
-    public void addDownload(String serverPath, String audioUrl, String tag, String name, String parentTitle,Object detailObject) {
+   /* public void addDownload(String serverPath, String audioUrl, String tag, String name, String parentTitle,Object detailObject) {
         AndPermission.with(this)
                 .runtime()
                 .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
@@ -344,16 +344,16 @@ public abstract class DockActivity extends AppCompatActivity implements
                 .start();
 
 //        FileDownloader.getImpl().start(fileDownloadListener, false);
-    }
-    public void addDownload(String filePath, String tag, String name, String parentTitle,Object detailObject) {
+    }*/
+    public void addDownload(String filePath, String itemID, String name, String parentTitle,Object detailObject) {
         AndPermission.with(this)
                 .runtime()
                 .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
                 .onGranted(permissions -> {
                     FileDownloader.getImpl().create(filePath)
-                            .setPath(getDownloadPath(parentTitle, tag, ""))
+                            .setPath(getDownloadPath(parentTitle, itemID, ""))
                             .setListener(fileDownloadListener)
-                            .setTag(tag)
+                            .setTag(itemID)
                             .setTag(R.integer.key_Download, parentTitle)
                             .setTag(R.integer.key_item_name, detailObject)
                             .setTag(R.integer.key_Download_failed,name)
@@ -369,7 +369,30 @@ public abstract class DockActivity extends AppCompatActivity implements
 
 //        FileDownloader.getImpl().start(fileDownloadListener, false);
     }
+    public void addDownload(String filePath,String downloadPath, String itemID, String name, String parentTitle,Object detailObject) {
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE)
+                .onGranted(permissions -> {
+                    FileDownloader.getImpl().create(filePath)
+                            .setPath(downloadPath)
+                            .setListener(fileDownloadListener)
+                            .setTag(itemID)
+                            .setTag(R.integer.key_Download, parentTitle)
+                            .setTag(R.integer.key_item_name, detailObject)
+                            .setTag(R.integer.key_Download_failed,name)
+                            .setWifiRequired(!prefHelper.isDownloadOnAll())
+                            .setCallbackProgressTimes(100)
+                            .setAutoRetryTimes(5)
+                            .start();
+                })
+                .onDenied(permissions -> {
+                    UIHelper.showShortToastInCenter(this, getString(R.string.storage_permission));
+                })
+                .start();
 
+//        FileDownloader.getImpl().start(fileDownloadListener, false);
+    }
     private String getSymbolsReplacedString(String text) {
         return text.replaceAll("\\s+", "")
                 .replaceAll("\\\\", "")

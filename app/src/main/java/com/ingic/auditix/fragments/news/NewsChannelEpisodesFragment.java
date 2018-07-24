@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.NewsEpisodeEnt;
 import com.ingic.auditix.entities.PlayerNewsEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.news.NewsEpisodeListingBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -20,8 +22,11 @@ import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -119,5 +124,27 @@ public class NewsChannelEpisodesFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick(R.id.btnDownloadAll)
+    public void onViewClicked() {
+        for (NewsEpisodeEnt ent : playerNewsEnt.getNewsepisodeslist()
+                ) {
+            String path = getNewsDownloadPath(playerNewsEnt.getDetailEnt().getNewsID(), ent.getNewsepisodeid());
+            if (!new File(path).exists()) {
+                getDockActivity().addDownload(ent.getFilepath(),
+                        path,
+                        ent.getNewsepisodeid(),
+                        ent.getEpisodetitle(),
+                        playerNewsEnt.getDetailEnt().getName(),
+                        ent
+                );
+            }
+        }
+    }
+
+    private String getNewsDownloadPath(int newsID, String episodeID) {
+        return AppConstants.DOWNLOAD_PATH + File.separator + AppConstants.TAB_NEWS + File.separator + newsID + File.separator + episodeID;
+
     }
 }

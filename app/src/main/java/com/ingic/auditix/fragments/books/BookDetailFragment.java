@@ -278,7 +278,7 @@ public class BookDetailFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         serviceHelper.enqueueCall(webService.getBookDetails(this.bookID, prefHelper.getUserToken()), WebServiceConstants.GET_BOOK_DETAIL);
-        getDockActivity().setFileDownloadListener(fileDownloadListener);
+
         if (getMainActivity().getPlayerFragment() != null)
             getMainActivity().getPlayerFragment().setCheckChangeListener(favoritePlayerCheckChangeListener);
         if (detailEnt != null) {
@@ -295,6 +295,12 @@ public class BookDetailFragment extends BaseFragment {
                     e.printStackTrace();
                 }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDockActivity().setFileDownloadListener(fileDownloadListener);
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.DurationEnt;
 import com.ingic.auditix.entities.EnableFilterDataEnt;
 import com.ingic.auditix.entities.LocationEnt;
 import com.ingic.auditix.entities.PodcastFilterEnt;
@@ -17,6 +18,7 @@ import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.FilterDoneClickListener;
 import com.ingic.auditix.ui.binders.FilterBinder;
+import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.ingic.auditix.ui.views.TitleBar;
 import com.ingic.auditix.ui.views.sRangeSeekBar;
@@ -41,10 +43,18 @@ public class PodcastFilterFragment extends BaseFragment {
     @BindView(R.id.rvfilters)
     CustomRecyclerView rvfilters;
     Unbinder unbinder;
+    @BindView(R.id.txtMinDurationText)
+    AnyTextView txtMinDurationText;
+    @BindView(R.id.txtMaxDurationText)
+    AnyTextView txtMaxDurationText;
+    @BindView(R.id.txtMinSubscriberText)
+    AnyTextView txtMinSubscriberText;
+    @BindView(R.id.txtMaxSubscriberText)
+    AnyTextView txtMaxSubscriberText;
     private FilterBinder binder;
     private ArrayList<LocationEnt> locationCollection;
     private FilterDoneClickListener listener;
-    private boolean isClear = false;
+    private boolean isClear = true;
 
     public static PodcastFilterFragment newInstance() {
         Bundle args = new Bundle();
@@ -93,12 +103,23 @@ public class PodcastFilterFragment extends BaseFragment {
     }
 
     private void bindFilterData(PodcastFilterEnt result) {
-        rgbduration.setRangeValues(result.getMinMaxSubscibersAndDuration().getMinDuration(), result.getMinMaxSubscibersAndDuration().getMaxDuration());
-        rgbSubscriber.setRangeValues(result.getMinMaxSubscibersAndDuration().getMinSubscriber(), result.getMinMaxSubscibersAndDuration().getMaxSubscriber());
+        DurationEnt durationEnt = result.getMinMaxSubscibersAndDuration();
+        rgbduration.setRangeValues(durationEnt.getMinDuration(), durationEnt.getMaxDuration());
+        rgbSubscriber.setRangeValues(durationEnt.getMinSubscriber(), durationEnt.getMaxSubscriber());
+        txtMinDurationText.setText(durationEnt.getMinDuration() + "");
+        txtMaxDurationText.setText(durationEnt.getMaxDuration() + "");
+        txtMinSubscriberText.setText(durationEnt.getMinSubscriber() + "");
+        txtMaxSubscriberText.setText(durationEnt.getMaxSubscriber() + "");
+        swtInternational.setVisibility(View.GONE);
         rgbSubscriber.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
+
+            txtMinSubscriberText.setText(rgbSubscriber.getSelectedMinValue().toString());
+            txtMaxSubscriberText.setText(rgbSubscriber.getSelectedMaxValue().toString());
             isClear = false;
         });
         rgbduration.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
+            txtMinDurationText.setText(rgbduration.getSelectedMinValue().toString());
+            txtMaxDurationText.setText(rgbduration.getSelectedMaxValue().toString());
             isClear = false;
         });
         locationCollection = new ArrayList<>(result.getLocations());
@@ -106,7 +127,6 @@ public class PodcastFilterFragment extends BaseFragment {
                 new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
                 new DefaultItemAnimator());
         rvfilters.setNestedScrollingEnabled(false);
-
     }
 
     @Override
@@ -159,6 +179,7 @@ public class PodcastFilterFragment extends BaseFragment {
                 rgbSubscriber.getSelectedMinValue().intValue(), rgbSubscriber.getSelectedMaxValue().intValue(),
                 getFiltersCountries());
     }
+
 
 
 }

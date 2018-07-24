@@ -50,11 +50,15 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
     CircleProgressBar btnDownloadProgress;
     @BindView(R.id.btnDownload)
     ImageView btnDownload;
+    @BindView(R.id.btnDownloadEpisode)
+    AnyTextView btnDownloadEpisode;
     private int indexToStart = 0;
+    private String episodeID;
     private DownloadListenerFragment fileDownlaodListener = new DownloadListenerFragment() {
         @Override
         public void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-
+            episodeID=(String) task.getTag();
+            findAndUpdateDownloadState(AppConstants.DownloadStates.PENDING, 0);
         }
 
         @Override
@@ -69,16 +73,21 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
 
         @Override
         public void progress(BaseDownloadTask task, int progress) {
-
+            episodeID=(String) task.getTag();
+            findAndUpdateDownloadState(AppConstants.DownloadStates.DOWNLOADING, progress);
         }
 
         @Override
         public void completed(BaseDownloadTask task) {
+            episodeID=(String) task.getTag();
+            findAndUpdateDownloadState(AppConstants.DownloadStates.COMPLETE, 0);
 
         }
 
         @Override
         public void error(BaseDownloadTask task, Throwable e) {
+            episodeID=(String) task.getTag();
+            findAndUpdateDownloadState(AppConstants.DownloadStates.ERROR, 0);
 
         }
 
@@ -88,7 +97,6 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
         }
     };
 
-
     public static NewsEpisodeDetailFragment newInstance(PlayerNewsEnt data, int indexToStart) {
         Bundle args = new Bundle();
 
@@ -97,6 +105,47 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
         fragment.setEpisodeData(data);
         fragment.setIndexToStart(indexToStart);
         return fragment;
+    }
+
+    private void findAndUpdateDownloadState(int State, int Progress) {
+        NewsEpisodeEnt ent = new NewsEpisodeEnt();
+        ent.setNewsepisodeid(episodeID);
+        if (episodeData.getNewsepisodeslist().get(indexToStart).getNewsepisodeid().equalsIgnoreCase(episodeID)) {
+            switch (State) {
+                case AppConstants.DownloadStates.ERROR:
+                    btnDownload.setEnabled(true);
+                    btnDownloadEpisode.setEnabled(true);
+                    btnDownload.setVisibility(View.VISIBLE);
+                    btnDownloadProgress.setVisibility(View.GONE);
+                    break;
+                case AppConstants.DownloadStates.STARTED:
+              /*  holder.btnDownload.setVisibility(View.GONE);
+                holder.btnPlay.setVisibility(View.GONE);
+                holder.downloadProgress.setVisibility(View.VISIBLE);*/
+                    break;
+                case AppConstants.DownloadStates.DOWNLOADING:
+                    btnDownloadEpisode.setEnabled(false);
+                    btnDownload.setVisibility(View.GONE);
+                    btnDownloadProgress.setVisibility(View.VISIBLE);
+                    btnDownloadProgress.setProgress(Progress);
+                    break;
+                case AppConstants.DownloadStates.PENDING:
+                    btnDownloadEpisode.setEnabled(false);
+                    btnDownload.setVisibility(View.GONE);
+                    btnDownloadProgress.setVisibility(View.VISIBLE);
+                    break;
+                case AppConstants.DownloadStates.COMPLETE:
+                    btnDownload.setVisibility(View.VISIBLE);
+                    btnDownloadProgress.setVisibility(View.GONE);
+                    btnDownload.setEnabled(false);
+                    btnDownload.setAlpha(.5f);
+                    btnDownloadEpisode.setEnabled(false);
+                    break;
+                default:
+
+                    break;
+            }
+        }
     }
 
     public void setIndexToStart(int indexToStart) {
@@ -159,6 +208,10 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
 
     }
 
+    private boolean isAlreadyDownloaded(int newsID, String episodeID) {
+        return new File(getNewsDownloadPath(newsID, episodeID)).exists();
+    }
+
     private void bindData() {
         NewsEpisodeEnt episodeEnt = episodeData.getNewsepisodeslist().get(indexToStart);
         ImageLoader.getInstance().displayImage(episodeData.getDetailEnt().getImageUrl(), imgItemPic, options);
@@ -166,19 +219,18 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
         txtNarratorText.setText(episodeData.getDetailEnt().getNarratorName() + "");
         txtTitle.setEllipsize(TextUtils.TruncateAt.END);
         txtTitle.setMaxLines(3);
-        txtTitle.setText(episodeEnt.getEpisodetitle() + "");
+        txtTitle.setText(episodeData.getDetailEnt().getName() + "");
         txtAboutText.setText(episodeData.getDetailEnt().getDescription() + "");
         txtAboutText.setMovementMethod(new ScrollingMovementMethod());
+
+        if (isAlreadyDownloaded(episodeData.getDetailEnt().getNewsID(), episodeEnt.getNewsepisodeid())) {
+            btnDownload.setEnabled(false);
+            btnDownload.setAlpha(0.5f);
+            btnDownloadEpisode.setEnabled(false);
+        }
     }
 
-    @OnClick(R.id.btn_play)
-    public void onViewClicked() {
-      /*  getMainActivity().showBottomPlayer(null, newsCategoryID,
-                AppConstants.TAB_NEWS, null, episodeData, startingIndex,null);*/
-        /*getDockActivity().replaceDockableFragment(PlayerFragment.newInstance(null, 0,
-                AppConstants.TAB_NEWS, null, episodeData, startingIndex), PlayerFragment.TAG);*/
 
-    }
 
     private void openPlayer(PlayerNewsEnt playerNewsEnt, int startingIndex) {
         if (getMainActivity().newsFilterFragment != null) {
@@ -198,10 +250,17 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
                 openPlayer(episodeData, indexToStart);
                 break;
             case R.id.btnDownloadEpisode:
-                getDockActivity().addDownload(episodeData.getNewsepisodeslist().get(indexToStart).getFilepath(), episodeData.getDetailEnt().getNewsID() + "",
-                        episodeData.getNewsepisodeslist().get(indexToStart).getEpisodetitle() + "" + episodeData.getNewsepisodeslist().get(indexToStart).getNewsepisodeid(), episodeData.getDetailEnt().getName(), episodeData.getDetailEnt());
+                NewsEpisodeEnt item = episodeData.getNewsepisodeslist().get(indexToStart);
+                getDockActivity().addDownload(episodeData.getNewsepisodeslist().get(indexToStart).getFilepath(),
+                        getNewsDownloadPath(episodeData.getDetailEnt().getNewsID(), item.getNewsepisodeid()),
+                        item.getNewsepisodeid() + "",
+                        item.getEpisodetitle(),
+                        episodeData.getDetailEnt().getName(),
+                        item
+                );
                 break;
             case R.id.btnDownload:
+
                 break;
             case R.id.btnShareEpisode:
                 break;
@@ -210,62 +269,10 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
         }
     }
 
-  //region Downlaod Methods
-    void updateDownloadStatus(NewsEpisodeEnt entity){
-        if (isAlreadyDownloaded(entity.getFilepath())) {
-            btnDownload.setVisibility(View.GONE);
-            btnDownloadProgress.setVisibility(View.GONE);
-        } else if (entity.getStatusState() != AppConstants.DownloadStates.DOWNLOADING) {
-            DownloadItemModel downloadItem = getObjectfromRealm(entity.getNewsepisodeid()+"");
-            if (downloadItem != null) {
-                entity.setStatusState(downloadItem.getDownloadState());
-                entity.setDownloadProgress(downloadItem.getDownloadProgress());
-            }
-        }
-        int status = entity.getStatusState();
-        switch (status) {
-            case AppConstants.DownloadStates.ERROR:
-                btnDownload.setVisibility(View.VISIBLE);
-                btnDownloadProgress.setVisibility(View.GONE);
-                break;
-            case AppConstants.DownloadStates.STARTED:
-              /*  holder.btnDownload.setVisibility(View.GONE);
-                holder.btnPlay.setVisibility(View.GONE);
-                holder.downloadProgress.setVisibility(View.VISIBLE);*/
-                break;
-            case AppConstants.DownloadStates.DOWNLOADING:
-                btnDownload.setVisibility(View.GONE);
-                btnDownloadProgress.setVisibility(View.VISIBLE);
-                // entity.setDownloadProgress(entity.getDownloadProgress() + 1);
-                btnDownloadProgress.setProgress(entity.getDownloadProgress());
-                break;
-            case AppConstants.DownloadStates.PENDING:
-                btnDownload.setVisibility(View.GONE);
-                btnDownloadProgress.setVisibility(View.VISIBLE);
-                break;
-            case AppConstants.DownloadStates.COMPLETE:
-                btnDownload.setVisibility(View.GONE);
-                btnDownloadProgress.setVisibility(View.GONE);
-                break;
-            default:
-
-                break;
-        }
-
+    private String getNewsDownloadPath(int newsID, String episodeID) {
+        return AppConstants.DOWNLOAD_PATH + File.separator + AppConstants.TAB_NEWS + File.separator + newsID + File.separator + episodeID;
 
     }
 
-    private DownloadItemModel getObjectfromRealm(String chapterID) {
-        return getMainActivity().realm
-                .where(DownloadItemModel.class)
-                .equalTo("downloadTag", chapterID).findFirst();
-    }
 
-    private boolean isAlreadyDownloaded(String audioUrl) {
-        return new File(AppConstants.DOWNLOAD_PATH + File.separator + "Enter Parent Folder" + File.separator + audioUrl.
-                replaceAll("\\s+", "")
-                .replaceAll("\\\\", "")
-                .replaceAll("/", "")).exists();
-    }
-    //endregion
 }

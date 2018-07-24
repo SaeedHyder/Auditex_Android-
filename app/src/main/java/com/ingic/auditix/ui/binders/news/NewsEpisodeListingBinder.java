@@ -32,7 +32,7 @@ public class NewsEpisodeListingBinder extends RecyclerViewBinder<NewsEpisodeEnt>
     @Override
     public void bindView(NewsEpisodeEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
-        holder.txtTitle.setText(getResString(R.string.episode_no, context) + " " + position);
+        holder.txtTitle.setText(getResString(R.string.episode_no, context) + " " + (position + 1));
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onRecyclerItemClicked(entity, position);

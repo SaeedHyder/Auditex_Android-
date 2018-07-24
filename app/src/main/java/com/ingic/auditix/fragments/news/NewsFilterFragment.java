@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.DurationEnt;
 import com.ingic.auditix.entities.EnableFilterDataEnt;
 import com.ingic.auditix.entities.LocationEnt;
 import com.ingic.auditix.entities.NewsFilterEnt;
@@ -17,6 +18,7 @@ import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.FilterDoneClickListener;
 import com.ingic.auditix.ui.binders.FilterBinder;
+import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.ingic.auditix.ui.views.sRangeSeekBar;
 
@@ -41,10 +43,18 @@ public class NewsFilterFragment extends BaseFragment {
     @BindView(R.id.rvfilters)
     CustomRecyclerView rvfilters;
     Unbinder unbinder;
+    @BindView(R.id.txtMinDurationText)
+    AnyTextView txtMinDurationText;
+    @BindView(R.id.txtMaxDurationText)
+    AnyTextView txtMaxDurationText;
+    @BindView(R.id.txtMinSubscriberText)
+    AnyTextView txtMinSubscriberText;
+    @BindView(R.id.txtMaxSubscriberText)
+    AnyTextView txtMaxSubscriberText;
     private FilterBinder binder;
     private ArrayList<LocationEnt> locationCollection;
     private FilterDoneClickListener listener;
-    private boolean isClear = false;
+    private boolean isClear = true;
 
     public static NewsFilterFragment newInstance() {
         Bundle args = new Bundle();
@@ -90,12 +100,23 @@ public class NewsFilterFragment extends BaseFragment {
     }
 
     private void bindFilterData(NewsFilterEnt result) {
-        rgbduration.setRangeValues(result.getMinMaxSubscibersAndDuration().getMinDuration(), result.getMinMaxSubscibersAndDuration().getMaxDuration());
-        rgbSubscriber.setRangeValues(result.getMinMaxSubscibersAndDuration().getMinSubscriber(), result.getMinMaxSubscibersAndDuration().getMaxSubscriber());
+        DurationEnt durationEnt =result.getMinMaxSubscibersAndDuration();
+        rgbduration.setRangeValues(durationEnt.getMinDuration(), durationEnt.getMaxDuration());
+        rgbSubscriber.setRangeValues(durationEnt.getMinSubscriber(), durationEnt.getMaxSubscriber());
+        txtMinDurationText.setText(durationEnt.getMinDuration()+"");
+        txtMaxDurationText.setText(durationEnt.getMaxDuration()+"");
+        txtMinSubscriberText.setText(durationEnt.getMinSubscriber()+"");
+        txtMaxSubscriberText.setText(durationEnt.getMaxSubscriber()+"");
+        swtInternational.setVisibility(View.VISIBLE);
         rgbSubscriber.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
+
+            txtMinSubscriberText.setText(rgbSubscriber.getSelectedMinValue().toString());
+            txtMaxSubscriberText.setText(rgbSubscriber.getSelectedMaxValue().toString());
             isClear = false;
         });
         rgbduration.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
+            txtMinDurationText.setText(rgbduration.getSelectedMinValue().toString());
+            txtMaxDurationText.setText(rgbduration.getSelectedMaxValue().toString());
             isClear = false;
         });
         locationCollection = new ArrayList<>(result.getLocations());
@@ -103,7 +124,6 @@ public class NewsFilterFragment extends BaseFragment {
                 new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
                 new DefaultItemAnimator());
         rvfilters.setNestedScrollingEnabled(false);
-
     }
 
     @Override
@@ -117,7 +137,7 @@ public class NewsFilterFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binder = new FilterBinder();
-        swtInternational.setVisibility(View.VISIBLE);
+
         serviceHelper.enqueueCall(webService.getNewsFilterData(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FILTER);
 
     }
@@ -128,7 +148,7 @@ public class NewsFilterFragment extends BaseFragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.btn_close, R.id.btn_clear, R.id.btn_done,R.id.buttons})
+    @OnClick({R.id.btn_close, R.id.btn_clear, R.id.btn_done, R.id.buttons})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_clear:
@@ -143,7 +163,7 @@ public class NewsFilterFragment extends BaseFragment {
             case R.id.btn_done:
                 if (listener != null && binder != null) {
                     if (isClear)
-                    isClear = binder.isAllClear();
+                        isClear = binder.isAllClear();
                     listener.onDoneFiltering(getUserEnableFilters(), isClear);
 
                 }

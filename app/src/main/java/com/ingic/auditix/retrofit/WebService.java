@@ -2,6 +2,7 @@ package com.ingic.auditix.retrofit;
 
 
 import com.ingic.auditix.entities.AdvertisementEnt;
+import com.ingic.auditix.entities.AutoDownloadEnt;
 import com.ingic.auditix.entities.BookCategoriesEnt;
 import com.ingic.auditix.entities.BookCategoryDetailEnt;
 import com.ingic.auditix.entities.BookCategoryEnt;
@@ -332,5 +333,10 @@ public interface WebService {
     @GET("GetAllFavoriteNews")
     Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllFavoriteNews(@Header(WebServiceConstants.HEADER_KEY) String userToken);
 
+    //endregion
+
+    //region AutoDownlaod
+    @GET("GetPodcastNewsDownloadDetail")
+    Call<ResponseWrapper<AutoDownloadEnt>> getAllAutoDownloads(@Header(WebServiceConstants.HEADER_KEY) String userToken);
     //endregion
 }

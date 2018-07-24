@@ -40,6 +40,7 @@ import com.ingic.auditix.fragments.books.BookChaptersListingFragment;
 import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.UIHelper;
+import com.ingic.auditix.interfaces.DownloadListenerFragment;
 import com.ingic.auditix.interfaces.FavoriteCheckChangeListener;
 import com.ingic.auditix.interfaces.PlayerItemChangeListener;
 import com.ingic.auditix.interfaces.TrackListItemListener;
@@ -50,12 +51,14 @@ import com.ingic.auditix.media.PlayerAdapter;
 import com.ingic.auditix.ui.slidinglayout.SlidingUpPanelLayout;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRatingBar;
+import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -191,6 +194,42 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             }
         }
     });
+    private DownloadListenerFragment fileDownloadListener = new DownloadListenerFragment() {
+        @Override
+        public void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+        }
+
+        @Override
+        public void started(BaseDownloadTask task) {
+
+        }
+
+        @Override
+        public void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {
+
+        }
+
+        @Override
+        public void progress(BaseDownloadTask task, int progress) {
+
+        }
+
+        @Override
+        public void completed(BaseDownloadTask task) {
+
+        }
+
+        @Override
+        public void error(BaseDownloadTask task, Throwable e) {
+
+        }
+
+        @Override
+        public void warn(BaseDownloadTask task) {
+
+        }
+    };
 
     //endregion
 
@@ -250,15 +289,21 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         mUserPlaylist = new ArrayList<>();
         for (NewsEpisodeEnt tracks : tracklist
                 ) {
-            String path = AppConstants.DOWNLOAD_PATH + File.separator + newsEpisodeEnt.getDetailEnt().getName() + File.separator + (tracks.getEpisodetitle() + "" + tracks.getNewsepisodeid()).replaceAll("\\s+", "") + ".mp3";
+            String path = getNewsDownloadPath(ID, tracks.getNewsepisodeid());
             if (new File(path).exists()) {
-                mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path, false));
+                mUserPlaylist.add(new PlayListModel(AppConstants.FILE_PATH + path, "", true));
+
             } else {
                 mUserPlaylist.add(new PlayListModel("", tracks.getFilepath(), false));
             }
         }
         mPlayerAdapter.loadPlayList(mUserPlaylist, startingIndex);
         setItemName(startingIndex);
+
+    }
+
+    private String getNewsDownloadPath(int newsID, String episodeID) {
+        return AppConstants.DOWNLOAD_PATH + File.separator + AppConstants.TAB_NEWS + File.separator + newsID + File.separator + episodeID;
 
     }
 
@@ -311,7 +356,8 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 ) {
             String path = AppConstants.DOWNLOAD_PATH + File.separator + bookDetailEnt.getBookName() + File.separator + tracks.getChapterID().replaceAll("\\s+", "");
             if (new File(path).exists()) {
-                mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path , false));
+                mUserPlaylist.add(new PlayListModel(AppConstants.FILE_PATH + path, "", true));
+
 
             } else {
                 mUserPlaylist.add(new PlayListModel("", tracks.getFilePath(), false));
@@ -330,7 +376,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 ) {
             String path = AppConstants.DOWNLOAD_PATH + File.separator + podcastDetailEnt.getPodcastDetail().getName() + File.separator + tracks.getEpisodeTitle().replaceAll("\\s+", "") + ".mp3";
             if (new File(path).exists()) {
-                mUserPlaylist.add(new PlayListModel("", AppConstants.FILE_PATH + path, false));
+                mUserPlaylist.add(new PlayListModel(AppConstants.FILE_PATH + path, "", true));
             } else {
              /*   if (podcastDetailEnt.getPodcastDetail().getEpisodesAdded()) {
                     mUserPlaylist.add(new PlayListModel("", String.format("%s:%s/%s/mp3:%s/playlist.m3u8", podcastDetailEnt..WowzaURL, podcastDetailEnt.getWowzaPort(),
@@ -354,21 +400,27 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     }
 
     private void setItemName(int index) {
+        String name = "";
         if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
             if (index < mUserPlaylist.size()) {
-                setNameOnTextViews(podcastDetailEnt.getPodcastEpisodeList().get(index).getEpisodeTitle(), podcastDetailEnt.getPodcastDetail().getName());
+                name = podcastDetailEnt.getPodcastEpisodeList().get(index).getEpisodeTitle();
+                if (name == null)
+                    name = getResString(R.string.episode_no) + " " + (mPlayerAdapter.getCurrentItemIndex() + 1);
+                setNameOnTextViews(name, podcastDetailEnt.getPodcastDetail().getName());
                 if (itemChangeListener != null) {
                     itemChangeListener.onItemChanged(index);
                 }
             }
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
             if (index < mUserPlaylist.size()) {
-                String name = "";
+
                 if (!bookDetailEnt.getIsPurchased()) {
                     name = getResString(R.string.preview);
                 } else {
                     name = getResString(R.string.chapters) + " " + (index + 1);
                 }
+                if (name == null)
+                    name = getResString(R.string.chapters) + " " + (mPlayerAdapter.getCurrentItemIndex() + 1);
                 setNameOnTextViews(name, bookDetailEnt.getBookName());
                 if (itemChangeListener != null) {
                     itemChangeListener.onItemChanged(index);
@@ -376,11 +428,25 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             }
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
             if (index < mUserPlaylist.size()) {
-                setNameOnTextViews(newsEpisodeEnt.getNewsepisodeslist().get(index).getEpisodetitle(), newsEpisodeEnt.getDetailEnt().getName());
+                name = newsEpisodeEnt.getNewsepisodeslist().get(index).getEpisodetitle();
+                if (name == null)
+                    name = getResString(R.string.episode_no) + " " + (mPlayerAdapter.getCurrentItemIndex() + 1);
+                setNameOnTextViews(name, newsEpisodeEnt.getDetailEnt().getName());
                 if (itemChangeListener != null) {
                     itemChangeListener.onItemChanged(index);
                 }
             }
+        }
+        changeDownloadButtonState(index);
+    }
+
+    private void changeDownloadButtonState(int index) {
+        if (mUserPlaylist.get(index).isFromPath()) {
+            btnDownload.setEnabled(false);
+            btnDownload.setAlpha(.5f);
+        }else {
+            btnDownload.setEnabled(true);
+            btnDownload.setAlpha(1f);
         }
     }
 
@@ -428,12 +494,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                         }
                     });
 
-                    mMediaPlayer.setOnPreparedListener(new OnPreparedListener() {
-                        @Override
-                        public void onPrepared() {
-                            mMediaPlayer.start();
-                        }
-                    });
+                    mMediaPlayer.setOnPreparedListener(mMediaPlayer::start);
                     AdvertisementEnt ent = results.get(0);
                     mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     mMediaPlayer.setDataSource(Uri.parse(ent.getAudioUrl() + ent.getAudioPath()));
@@ -476,7 +537,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             btnFavorite.setChecked(bookDetailEnt.getIsFavorite());
             btnFavorite.setOnCheckedChangeListener(bookFavoriteListener);
         } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
-            // TODO: 7/16/18 favorite for News
+
             //  btnFavorite.setChecked(newsEpisodeEnt.isFavourite());
             btnFavorite.setOnCheckedChangeListener(newsFavoriteListener);
         }
@@ -613,11 +674,43 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
             case R.id.btnShare:
                 break;
             case R.id.btn_download:
+                // TODO: 7/24/18 Download for Items
+                if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)){
+                    BooksChapterItemEnt ent = bookDetailEnt.getChapters().getChapter().get(mPlayerAdapter.getCurrentItemIndex());
+                    assert ent != null;
+                    String path = AppConstants.DOWNLOAD_PATH + File.separator + bookDetailEnt.getBookName() + File.separator +
+                            ent.getChapterID().replaceAll("\\s+", "");
+                    if (!new File(path).exists()) {
+                        getDockActivity().addDownload(ent.getFilePath(), ent.getChapterID(), getBookDownloadName(ent.getChapterNumber()), bookDetailEnt.getBookName(), bookDetailEnt);
+                    }
+
+                }else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)){
+                    NewsEpisodeEnt item = newsEpisodeEnt.getNewsepisodeslist().get(mPlayerAdapter.getCurrentItemIndex());
+                    getDockActivity().addDownload(newsEpisodeEnt.getNewsepisodeslist().get(mPlayerAdapter.getCurrentItemIndex()).getFilepath(),
+                            getNewsDownloadPath(newsEpisodeEnt.getDetailEnt().getNewsID(), item.getNewsepisodeid()),
+                            item.getNewsepisodeid() + "",
+                            item.getEpisodetitle(),
+                            newsEpisodeEnt.getDetailEnt().getName(),
+                            item
+                    );
+
+                }else if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)){
+
+                }
                 break;
 
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDockActivity().setFileDownloadListener(fileDownloadListener);
+    }
+
+    private String getBookDownloadName(Integer number) {
+        return String.format(Locale.ENGLISH, "%s %s %d", bookDetailEnt.getBookName(), getResString(R.string.chapter), number);
+    }
     private void checkCanPlay() {
         if (mPlayerAdapter.isReadyForPlay()) {
             if (!mPlayerAdapter.isPlaying() && !hasPlaylistComplete) {

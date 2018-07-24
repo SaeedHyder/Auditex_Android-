@@ -12,12 +12,14 @@ import android.widget.Switch;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.BookFilterEnt;
+import com.ingic.auditix.entities.DurationEnt;
 import com.ingic.auditix.entities.EnableFilterDataEnt;
 import com.ingic.auditix.entities.LocationEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.FilterDoneClickListener;
 import com.ingic.auditix.ui.binders.FilterBinder;
+import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.ingic.auditix.ui.views.sRangeSeekBar;
 
@@ -44,10 +46,18 @@ public class BooksFilterFragment extends BaseFragment {
     Unbinder unbinder;
     @BindView(R.id.containerSubscriber)
     FrameLayout containerSubscriber;
+    @BindView(R.id.txtMinDurationText)
+    AnyTextView txtMinDurationText;
+    @BindView(R.id.txtMaxDurationText)
+    AnyTextView txtMaxDurationText;
+    @BindView(R.id.txtMinSubscriberText)
+    AnyTextView txtMinSubscriberText;
+    @BindView(R.id.txtMaxSubscriberText)
+    AnyTextView txtMaxSubscriberText;
     private FilterBinder binder;
     private ArrayList<LocationEnt> locationCollection;
     private FilterDoneClickListener listener;
-    private boolean isClear = false;
+    private boolean isClear = true;
 
     public static BooksFilterFragment newInstance() {
         Bundle args = new Bundle();
@@ -94,13 +104,27 @@ public class BooksFilterFragment extends BaseFragment {
     }
 
     private void bindFilterData(BookFilterEnt result) {
-
-        rgbduration.setRangeValues(result.getMinMaxSubscibersAndDuration().getMinDuration(), result.getMinMaxSubscibersAndDuration().getMaxDuration());
-        rgbSubscriber.setRangeValues(result.getMinMaxSubscibersAndDuration().getMinSubscriber(), result.getMinMaxSubscibersAndDuration().getMaxSubscriber());
+        DurationEnt durationEnt =result.getMinMaxSubscibersAndDuration();
+        rgbduration.setRangeValues(durationEnt.getMinDuration(), durationEnt.getMaxDuration());
+        rgbSubscriber.setRangeValues(durationEnt.getMinSubscriber(), durationEnt.getMaxSubscriber());
+        txtMinDurationText.setText(durationEnt.getMinDuration()+"");
+        txtMaxDurationText.setText(durationEnt.getMaxDuration()+"");
+        txtMinSubscriberText.setText(durationEnt.getMinSubscriber()+"");
+        txtMaxSubscriberText.setText(durationEnt.getMaxSubscriber()+"");
+        swtInternational.setVisibility(View.GONE);
+        rgbSubscriber.setVisibility(View.GONE);
+        containerSubscriber.setVisibility(View.GONE);
+        txtMaxSubscriberText.setVisibility(View.GONE);
+        txtMinSubscriberText.setVisibility(View.GONE);
         rgbSubscriber.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
+
+            txtMinSubscriberText.setText(rgbSubscriber.getSelectedMinValue().toString());
+            txtMaxSubscriberText.setText(rgbSubscriber.getSelectedMaxValue().toString());
             isClear = false;
         });
         rgbduration.setOnRangeSeekBarChangeListener((bar, minValue, maxValue) -> {
+            txtMinDurationText.setText(rgbduration.getSelectedMinValue().toString());
+            txtMaxDurationText.setText(rgbduration.getSelectedMaxValue().toString());
             isClear = false;
         });
         locationCollection = new ArrayList<>(result.getLocations());
@@ -121,9 +145,7 @@ public class BooksFilterFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binder = new FilterBinder();
-        swtInternational.setVisibility(View.VISIBLE);
-        rgbSubscriber.setVisibility(View.GONE);
-        containerSubscriber.setVisibility(View.GONE);
+
         serviceHelper.enqueueCall(webService.getBooksFilterData(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_FILTER);
 
     }

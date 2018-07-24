@@ -10,8 +10,8 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true"
         android:layout_above="@+id/buttons"
+        android:fillViewport="true"
         android:scrollbars="none">
 
         <android.support.v7.widget.LinearLayoutCompat
@@ -82,14 +82,44 @@
                         android:src="@drawable/down_arrow"/>
                 </FrameLayout>
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/x10"
+                    android:layout_marginStart="@dimen/x5"
+                    android:visibility="visible">
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/txtMinDurationText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:padding="@dimen/x5"
+                        android:text="1"
+                        android:textColor="@color/app_font_black"
+                        android:textSize="@dimen/x12"
+                        app:typeface="@string/font_normal"/>
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/txtMaxDurationText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:padding="@dimen/x5"
+                        android:text="10"
+                        android:textColor="@color/app_font_black"
+                        android:textSize="@dimen/x12"
+                        app:typeface="@string/font_normal"/>
+                </RelativeLayout>
+
                 <com.ingic.auditix.ui.views.sRangeSeekBar
                     android:id="@+id/rgbduration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="@dimen/x10"
-                    android:layout_marginStart="@dimen/x5"
                     android:layout_marginEnd="@dimen/x10"
+                    android:layout_marginStart="@dimen/x5"
                     android:visibility="visible"
                     app:activateOnDefaultValues="true"
                     app:activeColor="@color/app_filter_gray"
@@ -100,7 +130,7 @@
                     app:textAboveThumbsColor="@color/app_font_black"
                     app:thumbNormal="@drawable/circle_orange"
                     app:thumbPressed="@drawable/circle_orange"
-                    app:valuesAboveThumbs="true"/>
+                    app:valuesAboveThumbs="false"/>
 
                 <FrameLayout
                     android:id="@+id/containerSubscriber"
@@ -127,15 +157,43 @@
                         android:layout_marginEnd="@dimen/x15"
                         android:src="@drawable/down_arrow"/>
                 </FrameLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/x10"
+                    android:layout_marginStart="@dimen/x5"
+                    android:visibility="visible">
 
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/txtMinSubscriberText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:padding="@dimen/x5"
+                        android:text="1"
+                        android:textColor="@color/app_font_black"
+                        android:textSize="@dimen/x12"
+                        app:typeface="@string/font_normal"/>
+
+                    <com.ingic.auditix.ui.views.AnyTextView
+                        android:id="@+id/txtMaxSubscriberText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:padding="@dimen/x5"
+                        android:text="10"
+                        android:textColor="@color/app_font_black"
+                        android:textSize="@dimen/x12"
+                        app:typeface="@string/font_normal"/>
+                </RelativeLayout>
                 <com.ingic.auditix.ui.views.sRangeSeekBar
                     android:id="@+id/rgbSubscriber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="@dimen/x10"
-                    android:layout_marginStart="@dimen/x5"
                     android:layout_marginEnd="@dimen/x10"
+                    android:layout_marginStart="@dimen/x5"
                     android:visibility="visible"
                     app:activateOnDefaultValues="true"
                     app:activeColor="@color/app_filter_gray"
@@ -146,7 +204,7 @@
                     app:textAboveThumbsColor="@color/app_font_black"
                     app:thumbNormal="@drawable/circle_orange"
                     app:thumbPressed="@drawable/circle_orange"
-                    app:valuesAboveThumbs="true"/>
+                    app:valuesAboveThumbs="false"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -204,8 +262,8 @@
         android:id="@+id/buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:colorBackground"
         android:layout_alignParentBottom="true"
+        android:background="?android:colorBackground"
         android:orientation="vertical">
 
         <Button

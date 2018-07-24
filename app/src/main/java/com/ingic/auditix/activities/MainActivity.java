@@ -446,15 +446,16 @@ public class MainActivity extends DockActivity implements OnClickListener {
                     if (getSupportFragmentManager().getBackStackEntryCount() > 1)
                         popFragment();
                     else {
-                        if (!mainFragment.onBackPressed()) {
                             if (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED) {
                                 slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                             } else {
                                 if (imageAdvertise.getVisibility() != View.VISIBLE) {
-                                    super.onBackPressed();
+                                    if (!mainFragment.onBackPressed()) {
+                                        super.onBackPressed();
+                                    }
                                 }
                             }
-                        }
+
                     }
                 }
 
