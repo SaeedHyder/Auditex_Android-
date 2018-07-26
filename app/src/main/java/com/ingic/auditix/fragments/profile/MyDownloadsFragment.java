@@ -42,7 +42,7 @@ public class MyDownloadsFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
-//        adapter = new ArrayListAdapter<CartEnt>(getDockActivity(), new DownloadBinder());
+//        adapter = new ArrayListAdapter<CartEnt>(getDockActivity(), new PodcastDownloadBinder());
 
     }
 
@@ -93,7 +93,7 @@ public class MyDownloadsFragment extends BaseFragment {
         adapter.notifyDataSetChanged();*/
         rvDownloads.setNestedScrollingEnabled(false);
 
-      /*  rvDownloads.BindRecyclerView(new DownloadBinder(), downloadsCollections, new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
+      /*  rvDownloads.BindRecyclerView(new PodcastDownloadBinder(), downloadsCollections, new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false),
                 new DefaultItemAnimator());*/
         //setListViewHeightBasedOnChildren(sideoptions);
 

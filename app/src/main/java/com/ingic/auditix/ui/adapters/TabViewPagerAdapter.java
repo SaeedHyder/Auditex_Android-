@@ -3,6 +3,7 @@ package com.ingic.auditix.ui.adapters;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
@@ -16,7 +17,7 @@ import java.util.List;
  */
 
 
-public class TabViewPagerAdapter extends FragmentStatePagerAdapter {
+public class TabViewPagerAdapter extends FragmentPagerAdapter {
     private final List<BaseFragment> mFragmentList = new ArrayList<>();
 
     public TabViewPagerAdapter(FragmentManager manager) {

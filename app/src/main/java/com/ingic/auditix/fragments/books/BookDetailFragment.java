@@ -264,6 +264,9 @@ public class BookDetailFragment extends BaseFragment {
         titleBar.hideButtons();
         titleBar.showBackButton();
         titleBar.addBackground();
+        if (detailEnt != null) {
+            titleBar.setSubHeading(detailEnt.getBookName() + "");
+        }
         this.titleBar = titleBar;
     }
 
@@ -278,7 +281,7 @@ public class BookDetailFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         serviceHelper.enqueueCall(webService.getBookDetails(this.bookID, prefHelper.getUserToken()), WebServiceConstants.GET_BOOK_DETAIL);
-
+        getDockActivity().setFileDownloadListener(fileDownloadListener);
         if (getMainActivity().getPlayerFragment() != null)
             getMainActivity().getPlayerFragment().setCheckChangeListener(favoritePlayerCheckChangeListener);
         if (detailEnt != null) {
@@ -295,12 +298,6 @@ public class BookDetailFragment extends BaseFragment {
                     e.printStackTrace();
                 }
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getDockActivity().setFileDownloadListener(fileDownloadListener);
     }
 
     @Override
@@ -337,9 +334,9 @@ public class BookDetailFragment extends BaseFragment {
         txtAboutText.setText(result.getAboutTheBook() + "");
         txtNarratorIntroText.setText(result.getAboutTheNarrator() + "");
         rbRating.setScore(result.getRating() == -1 ? 0 : (float) result.getRating());
-        btnRate.setVisibility(result.getRated()?View.GONE:View.VISIBLE);
+//        btnRate.setVisibility(result.getRated()?View.GONE:View.VISIBLE);
         txtChaptersText.setText(String.format(Locale.ENGLISH, "%d %s",
-                result.getTotalsChapters() , getResString(R.string.chapters)));
+                result.getTotalsChapters(), getResString(R.string.chapters)));
         btnListen.setText(R.string.listenbook);
         btnAddFavorite.setChecked(result.getIsFavorite());
         if (titleBar != null) {

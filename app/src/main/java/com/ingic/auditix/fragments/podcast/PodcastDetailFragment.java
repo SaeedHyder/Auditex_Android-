@@ -449,7 +449,7 @@ public class PodcastDetailFragment extends BaseFragment {
                 // openPlayer(0);
                 break;
             case R.id.btn_download:
-// TODO: 1/15/2018 Download Work
+
                 break;
             case R.id.btn_add_favorite:
 

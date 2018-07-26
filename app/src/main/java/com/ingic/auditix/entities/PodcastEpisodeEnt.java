@@ -2,6 +2,7 @@ package com.ingic.auditix.entities;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.ingic.auditix.global.WebServiceConstants;
 
 /**
  * Created on 7/11/18.
@@ -9,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 public class PodcastEpisodeEnt {
     @SerializedName("PodcastEpisodeID")
     @Expose
-    private Integer podcastEpisodeID;
+    private String podcastEpisodeID;
     @SerializedName("PodcastId")
     @Expose
     private Integer podcastId;
@@ -52,6 +53,13 @@ public class PodcastEpisodeEnt {
     @SerializedName("EpisodeWebUrl")
     @Expose
     private String episodeWebUrl;
+    @SerializedName("CoverImage")
+    @Expose
+    private String CoverImage;
+
+    public String getCoverImage() {
+        return WebServiceConstants.IMAGE_PATH_NEW + CoverImage;
+    }
 
     public String getEpisodeWebUrl() {
         return episodeWebUrl;
@@ -61,11 +69,11 @@ public class PodcastEpisodeEnt {
         this.episodeWebUrl = episodeWebUrl;
     }
 
-    public Integer getPodcastEpisodeID() {
+    public String getPodcastEpisodeID() {
         return podcastEpisodeID;
     }
 
-    public void setPodcastEpisodeID(Integer podcastEpisodeID) {
+    public void setPodcastEpisodeID(String podcastEpisodeID) {
         this.podcastEpisodeID = podcastEpisodeID;
     }
 
@@ -172,6 +180,7 @@ public class PodcastEpisodeEnt {
     public void setInActive(Boolean inActive) {
         this.inActive = inActive;
     }
+
     @Override
     public boolean equals(Object obj) {
 
@@ -185,6 +194,6 @@ public class PodcastEpisodeEnt {
             return false;
         }
         PodcastEpisodeEnt other = (PodcastEpisodeEnt) obj;
-        return podcastEpisodeID.intValue() == other.podcastEpisodeID.intValue();
+        return podcastEpisodeID.equalsIgnoreCase(other.podcastEpisodeID);
     }
 }

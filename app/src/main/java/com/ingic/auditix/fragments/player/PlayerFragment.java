@@ -23,7 +23,6 @@ import android.widget.SeekBar;
 
 import com.devbrackets.android.exomedia.AudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnCompletionListener;
-import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 import com.dinuscxj.progressbar.CircleProgressBar;
 import com.google.android.exoplayer2.Player;
 import com.ingic.auditix.R;
@@ -58,7 +57,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -197,7 +195,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
     private DownloadListenerFragment fileDownloadListener = new DownloadListenerFragment() {
         @Override
         public void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-
+            findAndUpdateDownloadState(AppConstants.DownloadStates.PENDING, 0, (String) task.getTag());
         }
 
         @Override
@@ -212,16 +210,18 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
 
         @Override
         public void progress(BaseDownloadTask task, int progress) {
-
+            findAndUpdateDownloadState(AppConstants.DownloadStates.DOWNLOADING, progress, (String) task.getTag());
         }
 
         @Override
         public void completed(BaseDownloadTask task) {
+            findAndUpdateDownloadState(AppConstants.DownloadStates.COMPLETE, 0, (String) task.getTag());
 
         }
 
         @Override
         public void error(BaseDownloadTask task, Throwable e) {
+            findAndUpdateDownloadState(AppConstants.DownloadStates.ERROR, 0, (String) task.getTag());
 
         }
 
@@ -231,8 +231,6 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         }
     };
 
-    //endregion
-
     public static PlayerFragment newInstance(PlayerPodcatsEnt podcastDetail, Integer ID, String playerType,
                                              BookDetailEnt bookDetailEnt, PlayerNewsEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
         Bundle args = new Bundle();
@@ -241,6 +239,57 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         fragment.setArguments(args);
         fragment.setContent(podcastDetail, ID, playerType, bookDetailEnt, newsEpisodeEnt, startingIndex, checkChangeListener);
         return fragment;
+    }
+
+    //endregion
+    private void findAndUpdateDownloadState(int State, int Progress, String id) {
+        if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
+            if (newsEpisodeEnt.getNewsepisodeslist().get(mPlayerAdapter.getCurrentItemIndex()).getNewsepisodeid().equalsIgnoreCase(id)) {
+                switchDownloadStates(State, Progress);
+            }
+        } else if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
+            if (podcastDetailEnt.getPodcastEpisodeList().get(mPlayerAdapter.getCurrentItemIndex()).getPodcastEpisodeID().equalsIgnoreCase(id)) {
+                switchDownloadStates(State, Progress);
+            }
+
+        } else if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
+            if (bookDetailEnt.getChapters().getChapter().get(mPlayerAdapter.getCurrentItemIndex()).getChapterID().equalsIgnoreCase(id)) {
+                switchDownloadStates(State, Progress);
+            }
+        }
+    }
+
+    private void switchDownloadStates(int State, int Progress) {
+        switch (State) {
+            case AppConstants.DownloadStates.ERROR:
+                btnDownload.setEnabled(true);
+                btnDownload.setVisibility(View.VISIBLE);
+                btnDownloadProgress.setVisibility(View.GONE);
+                break;
+            case AppConstants.DownloadStates.STARTED:
+          /*  holder.btnDownload.setVisibility(View.GONE);
+            holder.btnPlay.setVisibility(View.GONE);
+            holder.downloadProgress.setVisibility(View.VISIBLE);*/
+                break;
+            case AppConstants.DownloadStates.DOWNLOADING:
+                btnDownload.setVisibility(View.GONE);
+                btnDownloadProgress.setVisibility(View.VISIBLE);
+                btnDownloadProgress.setProgress(Progress);
+                break;
+            case AppConstants.DownloadStates.PENDING:
+                btnDownload.setVisibility(View.GONE);
+                btnDownloadProgress.setVisibility(View.VISIBLE);
+                break;
+            case AppConstants.DownloadStates.COMPLETE:
+                btnDownload.setVisibility(View.VISIBLE);
+                btnDownloadProgress.setVisibility(View.GONE);
+                btnDownload.setEnabled(false);
+                btnDownload.setAlpha(.5f);
+                break;
+            default:
+
+                break;
+        }
     }
 
     public void setContent(PlayerPodcatsEnt podcastDetail, Integer trackID, String playerType, BookDetailEnt bookDetailEnt, PlayerNewsEnt newsEpisodeEnt, int startingIndex, FavoriteCheckChangeListener checkChangeListener) {
@@ -289,7 +338,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         mUserPlaylist = new ArrayList<>();
         for (NewsEpisodeEnt tracks : tracklist
                 ) {
-            String path = getNewsDownloadPath(ID, tracks.getNewsepisodeid());
+            String path = getDownloadPath(ID, tracks.getNewsepisodeid(), AppConstants.TAB_NEWS);
             if (new File(path).exists()) {
                 mUserPlaylist.add(new PlayListModel(AppConstants.FILE_PATH + path, "", true));
 
@@ -302,10 +351,15 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
 
     }
 
-    private String getNewsDownloadPath(int newsID, String episodeID) {
-        return AppConstants.DOWNLOAD_PATH + File.separator + AppConstants.TAB_NEWS + File.separator + newsID + File.separator + episodeID;
+    private String getDownloadPath(int parentID, String episodeID, String parentTag) {
+        File directory = new File(String.valueOf(AppConstants.DOWNLOAD_PATH + File.separator + parentTag + File.separator + parentID));
+        if(!directory.exists()){
+            directory.mkdir();
+        }
+        return AppConstants.DOWNLOAD_PATH + File.separator + parentTag + File.separator + parentID + File.separator + episodeID;
 
     }
+
 
     private void setupUIViewsPodcast(PlayerPodcatsEnt ent) {
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getResources().getDimension(R.dimen.x10)));
@@ -374,7 +428,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         mUserPlaylist = new ArrayList<>();
         for (PodcastEpisodeEnt tracks : trackList
                 ) {
-            String path = AppConstants.DOWNLOAD_PATH + File.separator + podcastDetailEnt.getPodcastDetail().getName() + File.separator + tracks.getEpisodeTitle().replaceAll("\\s+", "") + ".mp3";
+            String path = getDownloadPath(tracks.getPodcastId(), tracks.getPodcastEpisodeID(), AppConstants.TAB_PODCAST);
             if (new File(path).exists()) {
                 mUserPlaylist.add(new PlayListModel(AppConstants.FILE_PATH + path, "", true));
             } else {
@@ -444,7 +498,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         if (mUserPlaylist.get(index).isFromPath()) {
             btnDownload.setEnabled(false);
             btnDownload.setAlpha(.5f);
-        }else {
+        } else {
             btnDownload.setEnabled(true);
             btnDownload.setAlpha(1f);
         }
@@ -474,6 +528,12 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -562,6 +622,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
         addSlidingListener();
     }
 
+
     @Override
     public void onStop() {
         super.onStop();
@@ -621,6 +682,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                     case DRAGGING:
                         break;
                     case EXPANDED:
+                        getDockActivity().setFileDownloadListener(fileDownloadListener);
                         btnFavorite.setVisibility(View.INVISIBLE);
                       /*  btnPlayerPlay.setVisibility(View.GONE);
                         pbBottomBuffering.setVisibility(View.GONE);*/
@@ -675,7 +737,7 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                 break;
             case R.id.btn_download:
                 // TODO: 7/24/18 Download for Items
-                if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)){
+                if (playerType.equalsIgnoreCase(AppConstants.TAB_BOOKS)) {
                     BooksChapterItemEnt ent = bookDetailEnt.getChapters().getChapter().get(mPlayerAdapter.getCurrentItemIndex());
                     assert ent != null;
                     String path = AppConstants.DOWNLOAD_PATH + File.separator + bookDetailEnt.getBookName() + File.separator +
@@ -684,33 +746,35 @@ public class PlayerFragment extends BaseFragment implements TrackListItemListene
                         getDockActivity().addDownload(ent.getFilePath(), ent.getChapterID(), getBookDownloadName(ent.getChapterNumber()), bookDetailEnt.getBookName(), bookDetailEnt);
                     }
 
-                }else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)){
+                } else if (playerType.equalsIgnoreCase(AppConstants.TAB_NEWS)) {
                     NewsEpisodeEnt item = newsEpisodeEnt.getNewsepisodeslist().get(mPlayerAdapter.getCurrentItemIndex());
-                    getDockActivity().addDownload(newsEpisodeEnt.getNewsepisodeslist().get(mPlayerAdapter.getCurrentItemIndex()).getFilepath(),
-                            getNewsDownloadPath(newsEpisodeEnt.getDetailEnt().getNewsID(), item.getNewsepisodeid()),
+                    getDockActivity().addDownload(item.getFilepath(),
+                            getDownloadPath(newsEpisodeEnt.getDetailEnt().getNewsID(), item.getNewsepisodeid(), AppConstants.TAB_NEWS),
                             item.getNewsepisodeid() + "",
                             item.getEpisodetitle(),
                             newsEpisodeEnt.getDetailEnt().getName(),
                             item
                     );
 
-                }else if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)){
-
+                } else if (playerType.equalsIgnoreCase(AppConstants.TAB_PODCAST)) {
+                    PodcastEpisodeEnt item = podcastDetailEnt.getPodcastEpisodeList().get(mPlayerAdapter.getCurrentItemIndex());
+                    getDockActivity().addDownload(item.getFilePath(),
+                            getDownloadPath(item.getPodcastId(), item.getPodcastEpisodeID(), AppConstants.TAB_PODCAST),
+                            item.getPodcastEpisodeID(),
+                            item.getEpisodeTitle(),
+                            podcastDetailEnt.getPodcastDetail().getName(),
+                            item
+                    );
                 }
                 break;
 
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getDockActivity().setFileDownloadListener(fileDownloadListener);
-    }
-
     private String getBookDownloadName(Integer number) {
         return String.format(Locale.ENGLISH, "%s %s %d", bookDetailEnt.getBookName(), getResString(R.string.chapter), number);
     }
+
     private void checkCanPlay() {
         if (mPlayerAdapter.isReadyForPlay()) {
             if (!mPlayerAdapter.isPlaying() && !hasPlaylistComplete) {

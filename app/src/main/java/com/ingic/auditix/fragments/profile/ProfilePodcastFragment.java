@@ -2,7 +2,6 @@ package com.ingic.auditix.fragments.profile;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,34 +13,30 @@ import android.widget.ImageView;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.CartEnt;
-import com.ingic.auditix.entities.PodcastDetailEnt;
+import com.ingic.auditix.entities.PodcastEpisodeEnt;
 import com.ingic.auditix.entities.SubscribePodcastEnt;
-import com.ingic.auditix.fragments.podcast.PodcastDetailFragment;
-import com.ingic.auditix.fragments.podcast.SubscriptionsFragment;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
-import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.fragments.podcast.PodcastEpisodeDetailFragment;
+import com.ingic.auditix.fragments.podcast.SubscriptionsFragment;
 import com.ingic.auditix.global.WebServiceConstants;
-import com.ingic.auditix.helpers.FileHelper;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
-import com.ingic.auditix.ui.binders.DownloadBinder;
+import com.ingic.auditix.ui.binders.podcast.PodcastDownloadBinder;
 import com.ingic.auditix.ui.binders.podcast.PodcastSubscriptionBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.realm.RealmResults;
 
 /**
  * Created on 1/6/2018.
  */
-public class ProfilePodcastFragment extends BaseFragment implements TabLayout.OnTabSelectedListener {
+public class ProfilePodcastFragment extends BaseFragment  {
     public static final String TAG = "ProfilePodcastFragment";
     @BindView(R.id.txt_subscription)
     AnyTextView txtSubscription;
@@ -95,32 +90,21 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
 
         }
     };
-    private ArrayList<PodcastDetailEnt> downloadCollection;
     private RecyclerViewItemListener downloadListner = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
-            PodcastDetailEnt ent = (PodcastDetailEnt) Ent;
-            getMainActivity().onLoadingStarted();
-            if (FileHelper.deleteDirectory(new File(AppConstants.DOWNLOAD_PATH
-                    + File.separator
-                    + ent.getTitle()))) {
-                getMainActivity().realm.beginTransaction();
-                ent.deleteFromRealm();
-                getMainActivity().realm.commitTransaction();
-                downloadCollection.remove(position);
-                rvDownloads.notifyDataSetChanged();
-                getMainActivity().onLoadingFinished();
-            }
+
 
 
         }
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-          // getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance((PodcastDetailEnt) Ent), PodcastDetailFragment.TAG);
+           replaceFromParentFragment(PodcastEpisodeDetailFragment.newInstance((PodcastEpisodeEnt) Ent),PodcastEpisodeDetailFragment.TAG);
 
         }
     };
+    private DisplayImageOptions options;
 
     public static ProfilePodcastFragment newInstance() {
         Bundle args = new Bundle();
@@ -153,13 +137,10 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
         }
     }
 
-
-    private DisplayImageOptions options;
-
     private void bindSubscriptionList(ArrayList<SubscribePodcastEnt> result) {
         subscribePodcastcollection = new ArrayList<>(3);
         for (int i = 0; i < result.size(); i++) {
-            if (i == 2) {
+            if (i == 4) {
                 break;
             }
             subscribePodcastcollection.add(result.get(i));
@@ -192,32 +173,6 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
         replaceFromParentFragment(fragment, "SubscriptionsFragment");
     }
 
-    private void bindTabs() {
-        bindData();
-        fragmentList = new ArrayList<>(3);
-        fragmentList.add(new MyDownloadsFragment());
-        fragmentList.add(new MyDownloadsFragment());
-        fragmentList.add(new MyDownloadsFragment());
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.today), true);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.this_month), false);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.older), false);
-//        replaceTab(startingWithIndex);
-
-        bindViewWithPosition(startingWithIndex);
-        tabLayout.addOnTabSelectedListener(this);
-
-    }
-
-    private void replaceTab(int position) {
-        FragmentTransaction transaction = getChildFragmentManager()
-                .beginTransaction();
-        transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
-        transaction.replace(R.id.viewpager, fragmentList.get(position));
-        transaction.commit();
-
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_podcast, container, false);
@@ -230,8 +185,8 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
         super.onViewCreated(view, savedInstanceState);
         //bindTabs();
         options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
-        RealmResults<PodcastDetailEnt> results = getMainActivity().realm.where(PodcastDetailEnt.class).findAll();
-        bindSingleDownloadList(results);
+        assert getParentFragment() != null;
+        bindSingleDownloadList(((ProfileFragment)getParentFragment()).getDownloadDetailEnt().getPodcastEpisode());
 
     }
 
@@ -247,56 +202,12 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
         unbinder.unbind();
     }
 
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-        //replaceTab(tab.getPosition());
-        replaceList(tab.getPosition());
-    }
 
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-
-    }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-
-    }
-
-    private void bindData() {
-        todayDownloadsCollections = new ArrayList<>();
-        monthDownloadsCollections = new ArrayList<>();
-        olderDownloadsCollections = new ArrayList<>();
-       /* todayDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        todayDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        todayDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        todayDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        todayDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        todayDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        todayDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        monthDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        monthDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        monthDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        monthDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        monthDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        olderDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        olderDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        olderDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        olderDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        olderDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        olderDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        olderDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        olderDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        olderDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));
-        olderDownloadsCollections.add(new CartEnt(0, "as", "Asd", "asd", "Asd", "Asd"));*/
-    }
-
-    private void bindSingleDownloadList(RealmResults<PodcastDetailEnt> result) {
+    private void bindSingleDownloadList(ArrayList<PodcastEpisodeEnt> result) {
         if (result.size() > 0) {
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
             layoutManager.setAutoMeasureEnabled(true);
-            downloadCollection = new ArrayList<>(result.subList(0, result.size()));
-            rvDownloads.BindRecyclerView(new DownloadBinder(downloadListner, options), downloadCollection, layoutManager, new DefaultItemAnimator());
+            rvDownloads.BindRecyclerView(new PodcastDownloadBinder(downloadListner, options), result, layoutManager, new DefaultItemAnimator());
             rvDownloads.setNestedScrollingEnabled(false);
         } else {
             rvDownloads.setVisibility(View.GONE);
@@ -306,33 +217,5 @@ public class ProfilePodcastFragment extends BaseFragment implements TabLayout.On
 
     }
 
-    private void bindViewWithPosition(int Position) {
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
-        layoutManager.setAutoMeasureEnabled(true);
-        if (Position == 0) {
-            //    rvDownloads.BindRecyclerView(new DownloadBinder(), todayDownloadsCollections, layoutManager, new DefaultItemAnimator());
-        } else if (Position == 1) {
-            //     rvDownloads.BindRecyclerView(new DownloadBinder(), monthDownloadsCollections, layoutManager, new DefaultItemAnimator());
-        } else if (Position == 2) {
-            //  rvDownloads.BindRecyclerView(new DownloadBinder(), olderDownloadsCollections, layoutManager, new DefaultItemAnimator());
-        }
-        rvDownloads.setNestedScrollingEnabled(false);
-
-    }
-
-    private void replaceList(int position) {
-        willbeimplementedinfuture();
-        rvDownloads.clearList();
-        if (position == 0) {
-            rvDownloads.addAll(todayDownloadsCollections);
-        } else if (position == 1) {
-            rvDownloads.addAll(monthDownloadsCollections);
-        } else if (position == 2) {
-            rvDownloads.addAll(olderDownloadsCollections);
-
-        }
-        rvDownloads.notifyDataSetChanged();
-
-    }
 }

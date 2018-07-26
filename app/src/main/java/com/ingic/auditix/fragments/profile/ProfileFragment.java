@@ -3,19 +3,22 @@ package com.ingic.auditix.fragments.profile;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.ingic.auditix.R;
+import com.ingic.auditix.entities.DownloadDetailEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
-import com.ingic.auditix.fragments.standard.HomeTabFragment;
 import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
 import com.ingic.auditix.interfaces.ViewPagerFragmentLifecycleListener;
 import com.ingic.auditix.ui.views.TitleBar;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -33,8 +36,10 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
     @BindView(R.id.viewpager)
     FrameLayout viewpager;
     Unbinder unbinder;
+    ArrayList<String> newsAndPodcastsEpisodesID = new ArrayList<>();
     private ArrayList<BaseFragment> fragmentList;
     private int startingWithIndex = 0;
+    private DownloadDetailEnt downloadDetailEnt;
 
     public static ProfileFragment newInstance() {
         Bundle args = new Bundle();
@@ -73,6 +78,16 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
 
     }
 
+    @Override
+    public void ResponseSuccess(Object result, String Tag) {
+        switch (Tag) {
+            case WebServiceConstants.GET_ALL_DOWNLAOD_DETAILS:
+                downloadDetailEnt = (DownloadDetailEnt) result;
+                bindTabs();
+                break;
+        }
+    }
+
     public void setTitleBar(TitleBar titleBar) {
         titleBar.hideButtons();
         titleBar.setSubHeading(getString(R.string.profile));
@@ -89,8 +104,37 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
-        bindTabs();
+        serviceHelper.enqueueCall(webService.getAllDownloadDetails(getAllDownloadIDS(AppConstants.TAB_PODCAST), getAllDownloadIDS(AppConstants.TAB_NEWS), prefHelper.getUserToken()), WebServiceConstants.GET_ALL_DOWNLAOD_DETAILS);
+
+    }
+
+    public DownloadDetailEnt getDownloadDetailEnt() {
+        return downloadDetailEnt;
+    }
+
+    public String getAllDownloadIDS(String tag) {
+        ArrayList<String> idList = new ArrayList<>();
+        String path = AppConstants.DOWNLOAD_PATH + File.separator + tag;
+        Log.d("Files", "Path: " + path);
+        File directory = new File(path);
+        if (directory.exists()) {
+            File[] files = directory.listFiles();
+
+            for (File file : files
+                    ) {
+                String childPath = AppConstants.DOWNLOAD_PATH + File.separator + tag + File.separator + file.getName();
+                File childdirectory = new File(childPath);
+                File[] childfiles = childdirectory.listFiles();
+                for (File childFile : childfiles
+                        ) {
+                    if (!childFile.getName().contains(".temp"))
+                        idList.add(childFile.getName());
+                }
+
+            }
+            return android.text.TextUtils.join(",", idList);
+        }
+        return "";
     }
 
     private void replaceTab(int position) {

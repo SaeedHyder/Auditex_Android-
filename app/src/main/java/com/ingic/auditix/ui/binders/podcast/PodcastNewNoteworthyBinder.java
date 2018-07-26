@@ -68,6 +68,7 @@ public class PodcastNewNoteworthyBinder extends RecyclerViewBinder<PodcastEpisod
     public void bindView(PodcastEpisodeEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
         imageLoader.displayImage(entity.getPodcast().getImageUrl(), holder.txtItemImage, options);
+        holder.btnSubscribe.setVisibility(View.GONE);
         holder.txtItemText.setText(entity.getEpisodeTitle() + "");
         if (entity.getPodcast().getSubscribed()) {
             holder.btnSubscribe.setText(R.string.unsubscribe);

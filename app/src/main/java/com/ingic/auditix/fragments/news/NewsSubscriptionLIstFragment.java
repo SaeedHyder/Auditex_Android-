@@ -91,10 +91,8 @@ public class NewsSubscriptionLIstFragment extends BaseFragment {
             rvNews.setVisibility(View.VISIBLE);
         }
         DisplayImageOptions options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
-        LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL,false);
-        rvNews.BindRecyclerView(new NewsSubscriptionListBinder(options, newSubscriptionListener, prefHelper), result, gridLayoutManager, new DefaultItemAnimator());
+        rvNews.BindRecyclerView(new NewsSubscriptionListBinder(options, newSubscriptionListener, prefHelper), result, new LinearLayoutManager(getDockActivity()), new DefaultItemAnimator());
         rvNews.setHasFixedSize(true);
-        rvNews.addItemDecoration(new GridSpacingItemDecoration(2, Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)), true));
         rvNews.setNestedScrollingEnabled(false);
     }
     @Override

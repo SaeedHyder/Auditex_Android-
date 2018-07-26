@@ -190,8 +190,6 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
         getDockActivity().setFileDownloadListener(fileDownlaodListener);
         bindData();
     }
-
-
     public String getDurationText(Integer secound) {
         int minutes = (secound % 3600) / 60;
         int hours = secound / 3600;
@@ -251,7 +249,7 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
                 break;
             case R.id.btnDownloadEpisode:
                 NewsEpisodeEnt item = episodeData.getNewsepisodeslist().get(indexToStart);
-                getDockActivity().addDownload(episodeData.getNewsepisodeslist().get(indexToStart).getFilepath(),
+                getDockActivity().addDownload(item.getFilepath(),
                         getNewsDownloadPath(episodeData.getDetailEnt().getNewsID(), item.getNewsepisodeid()),
                         item.getNewsepisodeid() + "",
                         item.getEpisodetitle(),
@@ -270,6 +268,10 @@ public class NewsEpisodeDetailFragment extends BaseFragment {
     }
 
     private String getNewsDownloadPath(int newsID, String episodeID) {
+        File directory = new File(String.valueOf(AppConstants.DOWNLOAD_PATH + File.separator + AppConstants.TAB_PODCAST + File.separator + newsID));
+        if(!directory.exists()){
+            directory.mkdir();
+        }
         return AppConstants.DOWNLOAD_PATH + File.separator + AppConstants.TAB_NEWS + File.separator + newsID + File.separator + episodeID;
 
     }

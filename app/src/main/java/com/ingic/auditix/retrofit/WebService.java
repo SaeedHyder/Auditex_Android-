@@ -7,10 +7,10 @@ import com.ingic.auditix.entities.BookCategoriesEnt;
 import com.ingic.auditix.entities.BookCategoryDetailEnt;
 import com.ingic.auditix.entities.BookCategoryEnt;
 import com.ingic.auditix.entities.BookDetailEnt;
-import com.ingic.auditix.entities.BookFavoriteEnt;
 import com.ingic.auditix.entities.BookFilterEnt;
 import com.ingic.auditix.entities.BookGenreEnt;
 import com.ingic.auditix.entities.CMSEnt;
+import com.ingic.auditix.entities.DownloadDetailEnt;
 import com.ingic.auditix.entities.FavoriteBookEnt;
 import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
@@ -195,7 +195,7 @@ public interface WebService {
 
     @GET("AddListeningEventPodcast")
     Call<ResponseWrapper> addListeningEventPodcast(@Query("PodcastID") Integer PodcastID,
-                                                   @Query("EpisodeID") Integer EpisodeID, @Header(WebServiceConstants.HEADER_KEY) String header);
+                                                   @Query("EpisodeID") String EpisodeID, @Header(WebServiceConstants.HEADER_KEY) String header);
 
     @GET("GetLocationList")
     Call<ResponseWrapper<ArrayList<PodcastLocationEnt>>> getAllFilter(@Header(WebServiceConstants.HEADER_KEY) String header);
@@ -338,5 +338,10 @@ public interface WebService {
     //region AutoDownlaod
     @GET("GetPodcastNewsDownloadDetail")
     Call<ResponseWrapper<AutoDownloadEnt>> getAllAutoDownloads(@Header(WebServiceConstants.HEADER_KEY) String userToken);
+    @GET("GetPodcastNewsAndBookByEpisodesId")
+    Call<ResponseWrapper<DownloadDetailEnt>> getAllDownloadDetails(@Query("PodcastEpisodeIds") String PodcastEpisodeIds,
+                                                                    @Query("NewsEpisodeIds") String NewsEpisodeIds,
+                                                                    @Header(WebServiceConstants.HEADER_KEY) String userToken);
+
     //endregion
 }

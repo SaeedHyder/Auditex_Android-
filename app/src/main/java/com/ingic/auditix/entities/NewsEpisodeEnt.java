@@ -2,6 +2,7 @@ package com.ingic.auditix.entities;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.ingic.auditix.global.WebServiceConstants;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
@@ -44,7 +45,13 @@ public class NewsEpisodeEnt extends RealmObject {
     private String newsepisodeid;
     private int statusState;
     private int downloadProgress = 0;
+    @SerializedName("CoverImage")
+    @Expose
+    private String CoverImage;
 
+    public String getCoverImage() {
+        return WebServiceConstants.IMAGE_PATH_NEW + CoverImage;
+    }
     public int getStatusState() {
         return statusState;
     }

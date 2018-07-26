@@ -1,14 +1,12 @@
-package com.ingic.auditix.ui.binders;
+package com.ingic.auditix.ui.binders.news;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-
 import com.ingic.auditix.R;
-import com.ingic.auditix.entities.CartEnt;
-import com.ingic.auditix.entities.PodcastDetailEnt;
+import com.ingic.auditix.entities.NewsEpisodeEnt;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.viewbinders.abstracts.RecyclerViewBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -21,16 +19,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created on 1/6/2018.
+ * Created on 7/26/18.
  */
-
-public class DownloadBinder extends RecyclerViewBinder<PodcastDetailEnt> implements View.OnClickListener {
+public class NewsDownloadBinder extends RecyclerViewBinder<NewsEpisodeEnt> implements View.OnClickListener {
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
     private RecyclerViewItemListener downloadListner;
     private DisplayImageOptions options;
     private ImageLoader imageLoader = ImageLoader.getInstance();
 
-    public DownloadBinder(RecyclerViewItemListener downloadListner, DisplayImageOptions options) {
+    public NewsDownloadBinder(RecyclerViewItemListener downloadListner, DisplayImageOptions options) {
         super(R.layout.row_item_downloads);
         viewBinderHelper.setOpenOnlyOne(true);
         this.downloadListner = downloadListner;
@@ -44,12 +41,12 @@ public class DownloadBinder extends RecyclerViewBinder<PodcastDetailEnt> impleme
     }
 
     @Override
-    public void bindView(PodcastDetailEnt entity, int position, Object viewHolder, Context context) {
+    public void bindView(NewsEpisodeEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
         viewBinderHelper.bind(holder.swipeLayout, String.valueOf(position));
-        imageLoader.displayImage(entity.getImage(), holder.imgItemPic, options);
-        holder.txtTitle.setText(entity.getTitle() + "");
-        holder.txtDownloadOnText.setText(entity.getDownloadedOn() + "");
+        imageLoader.displayImage(entity.getCoverImage(), holder.imgItemPic, options);
+        holder.txtTitle.setText(entity.getEpisodetitle() + "");
+        holder.txtDownloadOnText.setVisibility(View.GONE);
         holder.btnDelete.setTag(R.integer.key_recycler_object, entity);
         holder.btnDelete.setTag(R.integer.key_recycler_position, position);
         holder.btnDelete.setOnClickListener(this);

@@ -74,7 +74,7 @@
                     android:text=""
                     android:textColor="@color/app_font_gray"
                     android:textSize="@dimen/x13"
-                    app:layout_constraintEnd_toStartOf="@+id/btn_play"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/txt_narrator"
                     app:layout_constraintTop_toBottomOf="@id/txt_title"
                     app:typeface="@string/font_normal"/>
@@ -123,7 +123,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/x40"
             android:padding="@dimen/x5">
 
             <com.ingic.auditix.ui.views.AnyTextView
@@ -159,7 +159,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/x50"
             android:padding="@dimen/x5">
 
             <com.ingic.auditix.ui.views.AnyTextView
@@ -178,6 +178,24 @@
                 android:textSize="@dimen/x15"
                 app:typeface="@string/font_normal"
                 />
+            <com.dinuscxj.progressbar.CircleProgressBar
+                android:id="@+id/btn_download_progress"
+                android:layout_width="@dimen/x40"
+                android:layout_height="@dimen/x40"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                app:line_count="30"
+                app:line_width="3dp"
+                app:progress_background_color="@color/transparent"
+                app:progress_end_color="@color/app_orange"
+                app:progress_shader="sweep"
+                app:progress_start_color="@color/app_orange"
+                app:progress_stroke_cap="round"
+                app:progress_stroke_width="4dp"
+                app:progress_text_color="@color/app_orange"
+                app:style="solid_line"
+                />
 
             <ImageView
                 android:id="@+id/btnDownload"
@@ -187,7 +205,6 @@
                 android:layout_centerVertical="true"
                 android:src="@drawable/download"/>
         </RelativeLayout>
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
@@ -195,7 +212,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/x40"
             android:padding="@dimen/x5">
 
             <com.ingic.auditix.ui.views.AnyTextView

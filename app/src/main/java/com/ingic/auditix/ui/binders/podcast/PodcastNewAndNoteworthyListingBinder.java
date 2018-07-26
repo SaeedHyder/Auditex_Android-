@@ -66,6 +66,7 @@ public class PodcastNewAndNoteworthyListingBinder extends RecyclerViewBinder<Pod
     @Override
     public void bindView(PodcastEpisodeEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
+        holder.btnSubscribe.setVisibility(View.GONE);
         imageLoader.displayImage(entity.getPodcast().getImageUrl(), holder.imgItemPic, options);
         holder.txtTitle.setText(entity.getEpisodeTitle() + "");
         holder.txtNarratorText.setText(entity.getPodcast().getArtistName() + "");

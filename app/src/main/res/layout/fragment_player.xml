@@ -325,7 +325,6 @@
                     android:layout_height="@dimen/x40"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginStart="@dimen/x20"
-                    android:progress="100"
                     android:visibility="gone"
                     app:line_count="30"
                     app:line_width="3dp"

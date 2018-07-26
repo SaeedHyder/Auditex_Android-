@@ -54,8 +54,7 @@ public class NewsMainFragment extends BaseFragment implements ViewPagerFragmentL
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState == null)
-            replaceFragment(NewsFragment.newInstance(), "NewsFragment");
+        replaceFragment(NewsFragment.newInstance(), "NewsFragment");
     }
 
     public void replaceFragment(BaseFragment fragment, String tag) {

@@ -5,6 +5,7 @@ public class WebServiceConstants {
     public static final String Local_SERVICE_URL = "http://10.100.20.21:100/";
     public static final int SUCCESS_RESPONSE_CODE = 200;
     public static final String IMAGE_PATH = "http://auditix.stagingic.com/AuditixShared/Users/";
+    public static final String IMAGE_PATH_NEW = "http://auditix.stagingic.com/";
     public static final int GENDER_MALE = 0;
     public static final int GENDER_FEMALE = 1;
     public static final int CMS_TYPE_TERMS = 1;
@@ -75,4 +76,5 @@ public class WebServiceConstants {
 
     public static final String GET_FILTER_DATA = "GET_FILTER_DATA";
     public static final String GET_PAGED_DATA = "GET_PAGED_DATA";
+    public static final String GET_ALL_DOWNLAOD_DETAILS = "GET_ALL_DOWNLAOD_DETAILS";
 }

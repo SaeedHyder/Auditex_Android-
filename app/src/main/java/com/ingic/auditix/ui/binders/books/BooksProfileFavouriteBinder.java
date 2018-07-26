@@ -44,6 +44,7 @@ public class BooksProfileFavouriteBinder extends RecyclerViewBinder<BookFavorite
     public void bindView(BookFavoriteEnt entity, int position, Object viewHolder, Context context) {
         ViewHolder holder = (ViewHolder) viewHolder;
         imageLoader.displayImage(entity.getImageUrl(), holder.txtItemImage, options);
+        holder.btnSubscribe.setText(R.string.unfavorite);
         holder.txtItemText.setText(entity.getBookName() + "");
         holder.btnSubscribe.setTag(R.integer.key_recycler_object, entity);
         holder.btnSubscribe.setTag(R.integer.key_recycler_position, position);

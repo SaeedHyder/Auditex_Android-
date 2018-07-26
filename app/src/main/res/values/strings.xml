@@ -281,4 +281,6 @@
     <string name="subscriber">Subscriber :</string>
     <string name="countries">Countries :</string>
     <string name="show_error">No Show are available!!</string>
+    <string name="download_all_books">Download All Books</string>
+    <string name="unfavorite">Unfavorite</string>
 </resources>

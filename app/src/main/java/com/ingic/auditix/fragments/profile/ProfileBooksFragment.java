@@ -153,16 +153,15 @@ public class ProfileBooksFragment extends BaseFragment {
         booksCollections = new ArrayList<>();
         booksCollections.addAll(result);
 
-        if (booksCollections.size() <= 0) {
+        /*if (booksCollections.size() <= 0) {
             txtNoData.setVisibility(View.VISIBLE);
             rvBooks.setVisibility(View.GONE);
         } else {
             txtNoData.setVisibility(View.GONE);
             rvBooks.setVisibility(View.VISIBLE);
-        }
-        layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
+        }*/
         rvBooks.BindRecyclerView(new LibraryBooksBinder(options, booksItemListener), booksCollections,
-                layoutManager,
+                new LinearLayoutManager(getDockActivity()),
                 new DefaultItemAnimator());
         rvBooks.setNestedScrollingEnabled(false);
     }
