@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.NewItemDetailEnt;
-import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.entities.NewsEpisodeEnt;
 import com.ingic.auditix.entities.PlayerNewsEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
@@ -18,6 +17,7 @@ import com.ingic.auditix.fragments.news.NewsCategoryDetailFragment;
 import com.ingic.auditix.fragments.news.NewsChannelDetailFragment;
 import com.ingic.auditix.fragments.news.NewsEpisodeDetailFragment;
 import com.ingic.auditix.fragments.news.NewsSubscriptionLIstFragment;
+import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.news.NewsDownloadBinder;
@@ -27,6 +27,7 @@ import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -58,30 +59,61 @@ public class ProfileNewsFragment extends BaseFragment {
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            replaceFromParentFragment(NewsChannelDetailFragment.newInstance((NewItemDetailEnt) Ent), NewsCategoryDetailFragment.TAG);
+            ((ProfileFragment)getParentFragment()).replaceFromParentFragment(NewsChannelDetailFragment.newInstance((NewItemDetailEnt) Ent), NewsCategoryDetailFragment.TAG);
         }
     };
     private RecyclerViewItemListener downloadListner = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
+            NewsEpisodeEnt ent = (NewsEpisodeEnt) Ent;
+            getMainActivity().onLoadingStarted();
+            if (new File(getNewsDownloadPath(ent.getNewsid(), ent.getNewsepisodeid())).delete()) {
+                assert getParentFragment() != null;
+                ((ProfileFragment) getParentFragment()).getDownloadDetailEnt().getNewsEpisode().remove(position);
+                rvNews.notifyDataSetChanged();
 
+            }
+            getMainActivity().onLoadingFinished();
 
 
         }
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-           // replaceFromParentFragment(NewsEpisodeDetailFragment.newInstance(new PlayerNewsEnt()), NewsCategoryDetailFragment.TAG);
+            openNewsEpisodeDetail((NewsEpisodeEnt) Ent);
 
         }
     };
+
+    private void openNewsEpisodeDetail(NewsEpisodeEnt Ent) {
+        NewItemDetailEnt newItemDetailEnt = new NewItemDetailEnt();
+        newItemDetailEnt.setNewsID(Ent.getNewsid());
+        newItemDetailEnt.setName(Ent.getName());
+        newItemDetailEnt.setNarratorName(Ent.getNarratorName());
+        newItemDetailEnt.setDescription(Ent.getDescription());
+        newItemDetailEnt.setImageUrl(Ent.getCoverImage());
+        ArrayList<NewsEpisodeEnt> episodeEnts = new ArrayList<>();
+        episodeEnts.add(Ent);
+        ((ProfileFragment)getParentFragment()).replaceFromParentFragment(NewsEpisodeDetailFragment.newInstance(new PlayerNewsEnt(newItemDetailEnt, episodeEnts), 0), NewsEpisodeDetailFragment.TAG);
+    }
+
     private DisplayImageOptions options;
+
     public static ProfileNewsFragment newInstance() {
         Bundle args = new Bundle();
 
         ProfileNewsFragment fragment = new ProfileNewsFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private String getNewsDownloadPath(int newsID, String episodeID) {
+        File directory = new File(String.valueOf(AppConstants.DOWNLOAD_PATH + File.separator + AppConstants.TAB_PODCAST + File.separator + newsID));
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        return AppConstants.DOWNLOAD_PATH + File.separator + AppConstants.TAB_NEWS + File.separator + newsID + File.separator + episodeID;
+
     }
 
     @Override
@@ -123,7 +155,7 @@ public class ProfileNewsFragment extends BaseFragment {
         options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
         serviceHelper.enqueueCall(webService.getAllSubscribeNews(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_NEWS_SUBSCRIBE);
         assert getParentFragment() != null;
-        bindSingleDownloadList(((ProfileFragment)getParentFragment()).getDownloadDetailEnt().getNewsEpisode());
+        bindSingleDownloadList(((ProfileFragment) getParentFragment()).getDownloadDetailEnt().getNewsEpisode());
     }
 
     private void bindNewsCategories(ArrayList<NewItemDetailEnt> result) {
@@ -153,12 +185,11 @@ public class ProfileNewsFragment extends BaseFragment {
     private void bindSingleDownloadList(ArrayList<NewsEpisodeEnt> result) {
         if (result.size() > 0) {
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
-            layoutManager.setAutoMeasureEnabled(true);
             rvNews.BindRecyclerView(new NewsDownloadBinder(downloadListner, options), result, layoutManager, new DefaultItemAnimator());
             rvNews.setNestedScrollingEnabled(false);
         } else {
             rvNews.setVisibility(View.GONE);
-            rvNews.setVisibility(View.VISIBLE);
+            txtNoData.setVisibility(View.VISIBLE);
 
         }
 
@@ -166,6 +197,6 @@ public class ProfileNewsFragment extends BaseFragment {
 
     @OnClick(R.id.btn_recommne_seeall)
     public void onViewClicked() {
-        replaceFromParentFragment(NewsSubscriptionLIstFragment.newInstance(), NewsSubscriptionLIstFragment.TAG);
+        ((ProfileFragment)getParentFragment()).replaceFromParentFragment(NewsSubscriptionLIstFragment.newInstance(), NewsSubscriptionLIstFragment.TAG);
     }
 }

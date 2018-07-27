@@ -116,6 +116,7 @@ public class PodcastFilterListFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+       // filters = getMainActivity().filterFragment.getUserEnableFilters();
         getFilterData(WebServiceConstants.GET_FILTER_DATA);
 
     }

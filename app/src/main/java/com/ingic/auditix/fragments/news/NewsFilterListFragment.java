@@ -114,6 +114,7 @@ public class NewsFilterListFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+       // this.filters = getMainActivity().newsFilterFragment.getUserEnableFilters();
         getFilterData(WebServiceConstants.GET_FILTER_DATA);
 
     }

@@ -169,7 +169,7 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
 
     private void bindBooksSearch(ArrayList<BookDetailEnt> bookDetailEnts) {
         if (bookDetailEnts.size() <= 0) {
-            btnBooksSeeAll.setVisibility(View.VISIBLE);
+            btnBooksSeeAll.setVisibility(View.GONE);
 
             txtBooksNoData.setVisibility(View.VISIBLE);
             rvBooks.setVisibility(View.GONE);
@@ -184,7 +184,7 @@ public class SearchFragment extends BaseFragment implements ViewPagerFragmentLif
 
     private void bindNewsSearch(ArrayList<NewsCategoryEnt> newsCategoryEnts) {
         if (newsCategoryEnts.size() <= 0) {
-            btnNewsSeeAll.setVisibility(View.VISIBLE);
+            btnNewsSeeAll.setVisibility(View.GONE);
             txtNewsNoData.setVisibility(View.VISIBLE);
             rvNews.setVisibility(View.GONE);
         } else {

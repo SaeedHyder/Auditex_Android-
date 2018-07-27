@@ -193,11 +193,14 @@ public class NewsFragment extends BaseFragment implements ViewPagerFragmentLifec
         super.onViewCreated(view, savedInstanceState);
         options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
         getNewsCategories();
-        if (isFilterVisible) {
+        if (getMainActivity().newsFilterFragment != null) {
+            getMainActivity().newsFilterFragment.clearFilters();
+        }
+        /*if (!getMainActivity().newsFilterFragment.isClear()) {
             showFilterList();
         } else {
             hideFilterList();
-        }
+        }*/
 //        setTitleBar(((HomeTabFragment) getParentFragment()).getTitleBar());
 
     }

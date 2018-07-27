@@ -14,7 +14,10 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class NewsEpisodeEnt extends RealmObject {
-
+    @PrimaryKey
+    @Expose
+    @SerializedName("NewsEpisodeID")
+    private String newsepisodeid;
     @Expose
     @SerializedName("CreatedDate")
     private String createddate;
@@ -39,19 +42,38 @@ public class NewsEpisodeEnt extends RealmObject {
     @Expose
     @SerializedName("NewsID")
     private int newsid;
-    @PrimaryKey
-    @Expose
-    @SerializedName("NewsEpisodeID")
-    private String newsepisodeid;
-    private int statusState;
-    private int downloadProgress = 0;
     @SerializedName("CoverImage")
     @Expose
     private String CoverImage;
+    @SerializedName("NarratorName")
+    @Expose
+    private String NarratorName;
+    @SerializedName("Description")
+    @Expose
+    private String Description;
+    @SerializedName("Name")
+    @Expose
+    private String Name;
+
+    private int statusState;
+    private int downloadProgress = 0;
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public String getNarratorName() {
+        return NarratorName;
+    }
 
     public String getCoverImage() {
         return WebServiceConstants.IMAGE_PATH_NEW + CoverImage;
     }
+
     public int getStatusState() {
         return statusState;
     }
@@ -139,6 +161,7 @@ public class NewsEpisodeEnt extends RealmObject {
     public void setNewsepisodeid(String newsepisodeid) {
         this.newsepisodeid = newsepisodeid;
     }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {

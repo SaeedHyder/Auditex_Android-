@@ -114,8 +114,7 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
 
     @Override
     public boolean onBackPressed() {
-
-        return new ChildBackPressHelper(this).onBackPressed();
+        return isAdded() && new ChildBackPressHelper(this).onBackPressed();
     }
 
     private void onNotificationReceived() {
@@ -156,15 +155,19 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
     public NewsMainFragment getNewsMainFragment() {
         return (NewsMainFragment) getParentFragment();
     }
+
     public PodcastMainFragment getPodcastMainFragment() {
         return (PodcastMainFragment) getParentFragment();
     }
+
     public BooksMainFragment getBooksMainFragment() {
         return (BooksMainFragment) getParentFragment();
     }
+
     public SearchMainFragment getSearchMainFragment() {
         return (SearchMainFragment) getParentFragment();
     }
+
     public ProfileMainFragment getProfileMainFragment() {
         return (ProfileMainFragment) getParentFragment();
     }
@@ -244,65 +247,20 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
         if (getMainActivity().getDrawerLayout() != null) {
             getMainActivity().lockDrawer();
         }
-        if (getParentFragment() instanceof NewsMainFragment){
+        if (getParentFragment() instanceof NewsMainFragment) {
             setTitleBar(getNewsMainFragment().getTitleBar());
         }
-        if (getParentFragment() instanceof ProfileMainFragment){
+        if (getParentFragment() instanceof ProfileMainFragment) {
             setTitleBar(getProfileMainFragment().getTitleBar());
         }
-        if (getParentFragment() instanceof PodcastMainFragment){
+        if (getParentFragment() instanceof PodcastMainFragment) {
             setTitleBar(getPodcastMainFragment().getTitleBar());
         }
-        if (getParentFragment() instanceof SearchMainFragment){
+        if (getParentFragment() instanceof SearchMainFragment) {
             setTitleBar(getSearchMainFragment().getTitleBar());
         }
-        if (getParentFragment() instanceof BooksMainFragment){
+        if (getParentFragment() instanceof BooksMainFragment) {
             setTitleBar(getBooksMainFragment().getTitleBar());
-        }
-    }
-
-    public void replaceFromParentFragment(BaseFragment fragment, String tag) {
-        if (getParentFragment() instanceof NewsMainFragment){
-           getNewsMainFragment().replaceFragment(fragment, tag);
-        }
-        if (getParentFragment() instanceof ProfileMainFragment){
-            getProfileMainFragment().replaceFragment(fragment, tag);
-
-        }
-        if (getParentFragment() instanceof PodcastMainFragment){
-            getPodcastMainFragment().replaceFragment(fragment, tag);
-
-        }
-        if (getParentFragment() instanceof SearchMainFragment){
-            getSearchMainFragment().replaceFragment(fragment, tag);
-
-        }
-        if (getParentFragment() instanceof BooksMainFragment){
-            getBooksMainFragment().replaceFragment(fragment, tag);
-
-        }
-
-
-    }
-    public void popFromParentFragment() {
-        if (getParentFragment() instanceof NewsMainFragment){
-            getNewsMainFragment().popFragment();
-        }
-        if (getParentFragment() instanceof ProfileMainFragment){
-            getProfileMainFragment().popFragment();
-
-        }
-        if (getParentFragment() instanceof PodcastMainFragment){
-            getPodcastMainFragment().popFragment();
-
-        }
-        if (getParentFragment() instanceof SearchMainFragment){
-            getSearchMainFragment().popFragment();
-
-        }
-        if (getParentFragment() instanceof BooksMainFragment){
-            getBooksMainFragment().popFragment();
-
         }
     }
 
@@ -315,6 +273,52 @@ public abstract class BaseFragment extends Fragment implements webServiceRespons
                 UIHelper.hideSoftKeyboard(getDockActivity(), getDockActivity()
                         .getWindow().getDecorView());
 
+    }
+
+    public void replaceFromParentFragment(BaseFragment fragment, String tag) {
+        if (getParentFragment() instanceof NewsMainFragment) {
+            getNewsMainFragment().replaceFragment(fragment, tag);
+        }
+        if (getParentFragment() instanceof ProfileMainFragment) {
+            getProfileMainFragment().replaceFragment(fragment, tag);
+
+        }
+        if (getParentFragment() instanceof PodcastMainFragment) {
+            getPodcastMainFragment().replaceFragment(fragment, tag);
+
+        }
+        if (getParentFragment() instanceof SearchMainFragment) {
+            getSearchMainFragment().replaceFragment(fragment, tag);
+
+        }
+        if (getParentFragment() instanceof BooksMainFragment) {
+            getBooksMainFragment().replaceFragment(fragment, tag);
+
+        }
+
+
+    }
+
+    public void popFromParentFragment() {
+        if (getParentFragment() instanceof NewsMainFragment) {
+            getNewsMainFragment().popFragment();
+        }
+        if (getParentFragment() instanceof ProfileMainFragment) {
+            getProfileMainFragment().popFragment();
+
+        }
+        if (getParentFragment() instanceof PodcastMainFragment) {
+            getPodcastMainFragment().popFragment();
+
+        }
+        if (getParentFragment() instanceof SearchMainFragment) {
+            getSearchMainFragment().popFragment();
+
+        }
+        if (getParentFragment() instanceof BooksMainFragment) {
+            getBooksMainFragment().popFragment();
+
+        }
     }
 
     public String getResString(int stringResouseID) {
