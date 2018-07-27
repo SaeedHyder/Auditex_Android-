@@ -178,7 +178,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
                 android:maxLines="1"
-                android:text="@string/notification"
+                android:text="@string/notification_settings"
                 android:textColor="@color/app_font_gray"
                 android:textSize="15sp"
                 android:textStyle="normal"

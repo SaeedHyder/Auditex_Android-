@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.ingic.auditix.R;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.helpers.TokenUpdater;
 import com.ingic.auditix.ui.views.TitleBar;
 
 import java.io.File;
@@ -61,13 +63,21 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
+
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         tabFragment = getMainActivity().mainFragment;
+
+
+        TokenUpdater.getInstance().UpdateToken(getDockActivity(), prefHelper.getUser().getAccountID(), FirebaseInstanceId.getInstance().getToken(),
+                prefHelper.getUserToken(),prefHelper.isGuest());
+
+
         getMainActivity().refreshSideMenu();
         if (getMainActivity().filterFragment != null) {
             getMainActivity().filterFragment.clearFilters();

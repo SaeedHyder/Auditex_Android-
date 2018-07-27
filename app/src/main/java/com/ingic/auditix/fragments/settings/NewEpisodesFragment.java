@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.Switch;
 
 import com.ingic.auditix.R;
@@ -13,6 +14,7 @@ import com.ingic.auditix.ui.views.TitleBar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -20,13 +22,14 @@ import butterknife.Unbinder;
  */
 public class NewEpisodesFragment extends BaseFragment implements CompoundButton.OnCheckedChangeListener {
     public static final String TAG = "NewEpisodesFragment";
-    @BindView(R.id.swt_stream)
-    Switch swtStream;
+
     @BindView(R.id.swt_downloaded_wifi)
     Switch swtDownloadedWifi;
     @BindView(R.id.swt_donload_wifi_cell)
     Switch swtDonloadWifiCell;
     Unbinder unbinder;
+    @BindView(R.id.fl_autoDownload)
+    FrameLayout flAutoDownload;
 
     public static NewEpisodesFragment newInstance() {
         Bundle args = new Bundle();
@@ -63,7 +66,7 @@ public class NewEpisodesFragment extends BaseFragment implements CompoundButton.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        swtStream.setOnCheckedChangeListener(this);
+
         swtDownloadedWifi.setOnCheckedChangeListener(this);
         swtDonloadWifiCell.setOnCheckedChangeListener(this);
         swtDonloadWifiCell.setChecked(prefHelper.isDownloadOnAll());
@@ -78,9 +81,7 @@ public class NewEpisodesFragment extends BaseFragment implements CompoundButton.
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         switch (compoundButton.getId()) {
-            case R.id.swt_stream:
-                willbeimplementedinfuture();
-                break;
+
             case R.id.swt_downloaded_wifi:
                 swtDonloadWifiCell.setChecked(!b);
                 break;
@@ -89,5 +90,10 @@ public class NewEpisodesFragment extends BaseFragment implements CompoundButton.
                 swtDownloadedWifi.setChecked(!b);
                 break;
         }
+    }
+
+    @OnClick(R.id.fl_autoDownload)
+    public void onViewClicked() {
+            getDockActivity().replaceDockableFragment(AutoDownloadFragment.newInstance(),"AutoDownloadFragment");
     }
 }

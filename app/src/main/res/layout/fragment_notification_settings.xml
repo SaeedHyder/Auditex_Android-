@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/app_filter_gray"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/x5"
+            android:paddingEnd="@dimen/x15"
+            android:paddingStart="@dimen/x15"
+            android:paddingTop="@dimen/x5"
+            android:text="@string/podcast_channels"
+            android:textColor="@color/black"
+            android:textSize="@dimen/x13"
+            app:typeface="@string/font_normal" />
+
+        <com.ingic.auditix.ui.views.ExpandedListView
+            android:id="@+id/rv_podcast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+           />
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x100"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/no_data_available"
+            android:textColor="@color/dark_grey"
+            android:textSize="@dimen/x15"
+            android:visibility="gone"
+            app:typeface="Roboto-Regular.ttf"
+
+            />
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/app_filter_gray"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/x5"
+            android:paddingEnd="@dimen/x15"
+            android:paddingStart="@dimen/x15"
+            android:paddingTop="@dimen/x5"
+            android:text="@string/news_channels"
+            android:textColor="@color/black"
+            android:textSize="@dimen/x13"
+            app:typeface="@string/font_normal" />
+
+        <com.ingic.auditix.ui.views.ExpandedListView
+            android:id="@+id/rv_news_channels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+          />
+
+        <com.ingic.auditix.ui.views.AnyTextView
+            android:id="@+id/txt_no_data_2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x100"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/no_data_available"
+            android:textColor="@color/dark_grey"
+            android:textSize="@dimen/x15"
+
+            android:visibility="gone"
+            app:typeface="Roboto-Regular.ttf"
+
+            />
+
+    </LinearLayout>
+
+</ScrollView>

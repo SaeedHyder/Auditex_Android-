@@ -38,6 +38,8 @@ public class AppConstants {
     public static String DateFormat_DMY2 = "dd-MM-yy";
     public static String DateFormat_HM = "HH:mm";
     public static String DateFormat_YMDHMS = "yyyy-MM-dd HH:mm:ss";
+    public static String News = "News";
+    public static String Podcast = "Podcast";
     //Path to Downloads
     public static String DOWNLOAD_PATH = "";
 

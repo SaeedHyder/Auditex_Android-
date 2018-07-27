@@ -21,11 +21,16 @@
 
         />
 
-    <ListView
+    <com.ingic.auditix.ui.views.CustomRecyclerView
         android:id="@+id/lv_notification"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@null">
-    </ListView>
+        android:layout_marginTop="@dimen/x10"
+        android:layout_marginStart="@dimen/x10"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginBottom="@dimen/x30"
+        android:divider="@null"
+        android:scrollbars="none"/>
+
 
 </LinearLayout>

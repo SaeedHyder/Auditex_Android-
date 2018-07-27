@@ -58,7 +58,15 @@ public class WebServiceConstants {
     public static final String SUBSCRIBE_NEWS = "SUBSCRIBE_NEWS";
     public static final String FAVORITE_NEWS = "FAVORITE_NEWS";
     public static final String UNFAVORITE_NEWS = "UNFAVORITE_NEWS";
+    public static final String DELETE_NOTIFICATION = "DELETE_NOTIFICATION";
     public static final String GET_ALL_FAVORITE = "GET_ALL_FAVORITE";
+    public static final String GET_ALL_PODCAST_NEWS = "GET_ALL_PODCAST_NEWS";
+    public static final String UNSET_NOTIFICATIONS_SETTING = "UNSET_NOTIFICATIONS_SETTING";
+    public static final String SET_NOTIFICATIONS_SETTING = "SET_NOTIFICATIONS_SETTING";
+    public static final String SET_NEWS= "SET_NEWS";
+    public static final String UNSET_NEWS = "UNSET_NEWS";
+    public static final String SET_PODCAST = "SET_PODCAST";
+    public static final String UNSET_PODCAST = "UNSET_PODCAST";
 
     public static final String GET_ADVERTISEMENT = "GET_ADVERTISEMENT";
     public static final String GET_ALL_PODCAST_CATEGORIES = "GET_ALL_PODCAST_CATEGORIES";

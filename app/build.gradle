@@ -102,7 +102,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     implementation project(':nineoldandroids-library-2.4.0')
     implementation project(':library')
-    implementation 'com.google.firebase:firebase-messaging:11.8.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
     implementation 'com.droidninja:filepicker:2.1.1'
@@ -117,5 +116,8 @@ dependencies {
     }
     implementation 'com.hbb20:ccp:2.2.2'
     implementation 'com.yanzhenjie:permission:2.0.0-rc5'
+    //implementation 'com.google.firebase:firebase-core:16.0.1'
+    //implementation 'com.google.firebase:firebase-messaging:17.1.0'
+    implementation 'com.google.firebase:firebase-messaging:11.8.0'
 }
 apply plugin: 'com.google.gms.google-services'

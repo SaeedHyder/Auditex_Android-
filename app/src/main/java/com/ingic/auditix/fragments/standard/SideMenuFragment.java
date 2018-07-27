@@ -20,6 +20,8 @@ import com.ingic.auditix.fragments.dashboard.NotificationsFragment;
 import com.ingic.auditix.fragments.settings.SettingsFragment;
 import com.ingic.auditix.global.WebServiceConstants;
 import com.ingic.auditix.helpers.DialogHelper;
+import com.ingic.auditix.helpers.UIHelper;
+import com.ingic.auditix.interfaces.LanguageInterface;
 import com.ingic.auditix.ui.adapters.ArrayListAdapter;
 import com.ingic.auditix.ui.binders.NavigationBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
@@ -36,7 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SideMenuFragment extends BaseFragment {
+public class SideMenuFragment extends BaseFragment implements LanguageInterface {
 
     @BindView(R.id.img_profile)
     CircleImageView imgProfile;
@@ -60,7 +62,7 @@ public class SideMenuFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new ArrayListAdapter<NavigationEnt>(getDockActivity(), new NavigationBinder(prefHelper));
+        adapter = new ArrayListAdapter<NavigationEnt>(getDockActivity(), new NavigationBinder(prefHelper, getDockActivity(), this));
     }
 
     @Override
@@ -148,11 +150,13 @@ public class SideMenuFragment extends BaseFragment {
 
     private void initView() {
         navigationEnts = new ArrayList<>();
-        navigationEnts.add(new NavigationEnt(R.drawable.home_grey, getResources().getString(R.string.home), 0));
-        navigationEnts.add(new NavigationEnt(R.drawable.dashboard_grey, getResources().getString(R.string.dashboard), 0));
-        navigationEnts.add(new NavigationEnt(R.drawable.notifications_grey, getResources().getString(R.string.notification), prefHelper.getNotificationCount()));
-        navigationEnts.add(new NavigationEnt(R.drawable.settings, getResources().getString(R.string.settings), 0));
-        navigationEnts.add(new NavigationEnt(R.drawable.about, getResources().getString(R.string.about), 0));
+        navigationEnts.add(new NavigationEnt(R.drawable.home_grey, getDockActivity().getResources().getString(R.string.home), 0));
+        //  navigationEnts.add(new NavigationEnt(R.drawable.dashboard_grey, getDockActivity().getResources().getString(R.string.dashboard), 0));
+        //  navigationEnts.add(new NavigationEnt(R.drawable.notifications_grey, getDockActivity().getResources().getString(R.string.notification), prefHelper.getNotificationCount()));
+        navigationEnts.add(new NavigationEnt(R.drawable.settings, getDockActivity().getResources().getString(R.string.settings), 0));
+        navigationEnts.add(new NavigationEnt(R.drawable.about, getDockActivity().getResources().getString(R.string.about), 0));
+        navigationEnts.add(new NavigationEnt(R.drawable.about, getDockActivity().getResources().getString(R.string.contact_us), 0));
+        navigationEnts.add(new NavigationEnt(R.drawable.about, getDockActivity().getResources().getString(R.string.language), 0));
         navigationEnts.add(new NavigationEnt(R.drawable.logout_grey, prefHelper.isGuest() ? getResString(R.string.login) : getResString(R.string.logout), 0));
         bindview();
     }
@@ -185,6 +189,8 @@ public class SideMenuFragment extends BaseFragment {
                     getDockActivity().replaceDockableFragment(SettingsFragment.newInstance(), SettingsFragment.TAG);
                 } else if (navigationEnts.get(position).getTitle().equals(getResources().getString(R.string.about))) {
                     getDockActivity().replaceDockableFragment(AboutUsFragment.newInstance(), AboutUsFragment.TAG);
+                } else if (navigationEnts.get(position).getTitle().equals(getResources().getString(R.string.contact_us))) {
+                    getDockActivity().replaceDockableFragment(ContactUsFragment.newInstance(), ContactUsFragment.TAG);
                 } else if (navigationEnts.get(position).getTitle().equals(getString(R.string.logout))) {
                     final DialogHelper logoutdialog = new DialogHelper(getDockActivity());
                     logoutdialog.initlogout(R.layout.dialog_logout, new View.OnClickListener() {
@@ -225,5 +231,10 @@ public class SideMenuFragment extends BaseFragment {
 
         fileOrDirectory.delete();
 
+    }
+
+    @Override
+    public void changeListner(NavigationEnt entity, int position, boolean b) {
+        UIHelper.showShortToastInCenter(getDockActivity(), "will be implemented in future version");
     }
 }

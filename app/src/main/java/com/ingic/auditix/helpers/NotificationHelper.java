@@ -13,14 +13,19 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
+import com.ingic.auditix.R;
 import com.ingic.auditix.global.AppConstants;
+import com.ingic.auditix.services.MyFirebaseMessagingService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import static com.ingic.auditix.BaseApplication.CHANNEL;
 
 /**
  * Created on 5/8/2017.
@@ -38,6 +43,8 @@ public class NotificationHelper {
     public void showNotification(Context mContext, int icon, String title, String message, String timeStamp,
                                  Intent intent) {
         // Check for empty push message
+
+
         if (TextUtils.isEmpty(message))
             return;
 
@@ -59,6 +66,28 @@ public class NotificationHelper {
 
         bigTextStyle.bigText(message);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            Notification notification = new NotificationCompat.Builder(mContext, CHANNEL)
+                    .setSmallIcon(icon)
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                    .setTicker(message).setWhen(0)
+                    .setAutoCancel(true)
+                    .setContentIntent(resultPendingIntent)
+                    .setSound(alarmSound)
+                    .setStyle(bigTextStyle)
+                    .setWhen(getTimeMilliSec(timeStamp))
+                    .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
+                    .setOnlyAlertOnce(true).setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .build();
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
+            notificationManager.notify(1, notification);
+
+        } else {
         Notification notification;
 
         notification = mBuilder
@@ -78,6 +107,8 @@ public class NotificationHelper {
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(AppConstants.NOTIFICATION_ID);
         notificationManager.notify(AppConstants.NOTIFICATION_ID, notification);
+
+        }
         //AppConstants.NOTIFICATION_ID++;
 
     }

@@ -119,11 +119,11 @@ public class SettingsFragment extends BaseFragment {
                 // getDockActivity().replaceDockableFragment(PlayedEpisodesFragment.newInstance(), PlayedEpisodesFragment.TAG);
                 break;
             case R.id.btn_notifications:
-                if (prefHelper.isGuest()) {
+              /*  if (prefHelper.isGuest()) {
                     showGuestMessage();
                     return;
-                }
-                getDockActivity().replaceDockableFragment(NotificationsFragment.newInstance(), NotificationsFragment.TAG);
+                }*/
+                getDockActivity().replaceDockableFragment(NotificationSettingsFragment.newInstance(), NotificationSettingsFragment.TAG);
                 break;
             case R.id.btn_privacy_policy:
                 getDockActivity().replaceDockableFragment(PrivacyPolicyFragment.newInstance(), PrivacyPolicyFragment.TAG);

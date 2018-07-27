@@ -105,6 +105,7 @@
 
     <!--App Texts-->
     <string name="notification">Notifications</string>
+    <string name="notification_settings">Notifications Settings</string>
     <string name="short_lorem_ipsum">LOREM IPSUM DOLOR SIT</string>
     <string name="next">Next</string>
     <string name="sign_in">Sign in</string>
@@ -137,11 +138,13 @@
     <string name="enter_FullName">Name cannot be Empty</string>
     <string name="sign_up_selection">Sign Up</string>
     <string name="home">Home</string>
+    <string name="arabic">عربى</string>
     <string name="podcast">Podcasts</string>
     <string name="news">News</string>
     <string name="dashboard">My Dashboard</string>
     <string name="logout">Log Out</string>
     <string name="about">About</string>
+    <string name="language">Language</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="logout_message">Are you sure you want to logout?</string>
@@ -216,6 +219,7 @@
     <string name="i_agree">I Agree</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="about_us">About Us</string>
+    <string name="contact_us">Contact Us</string>
     <string name="my_account">My Account</string>
     <string name="payment_details">Payment Details</string>
     <string name="continues_play">Continuous Play</string>
@@ -280,7 +284,15 @@
     <string name="storage_permission">Permission is required to access this feature</string>
     <string name="subscriber">Subscriber :</string>
     <string name="countries">Countries :</string>
+
     <string name="show_error">No Show are available!!</string>
     <string name="download_all_books">Download All Books</string>
     <string name="unfavorite">Unfavorite</string>
+
+    <string name="podcast_channels">Podcast Channels</string>
+    <string name="news_channels">News Channels</string>
+    <string name="auto_download">Auto Download</string>
+    <string name="english">English</string>
+    <string name="type_your_message_here">Type your message here...</string>
+
 </resources>

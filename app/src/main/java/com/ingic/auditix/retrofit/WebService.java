@@ -16,6 +16,8 @@ import com.ingic.auditix.entities.NewItemDetailEnt;
 import com.ingic.auditix.entities.NewsCategoryEnt;
 import com.ingic.auditix.entities.NewsChannelDetailEnt;
 import com.ingic.auditix.entities.NewsFilterEnt;
+import com.ingic.auditix.entities.NotificaitonsSettingsEnt;
+import com.ingic.auditix.entities.NotificationEnt;
 import com.ingic.auditix.entities.PodcastCategoriesEnt;
 import com.ingic.auditix.entities.PodcastCategoryListEnt;
 import com.ingic.auditix.entities.PodcastDetailEnt;
@@ -123,13 +125,20 @@ public interface WebService {
                                       @Field("IsGuest") boolean IsGuest,
                                       @Header(WebServiceConstants.HEADER_KEY) String header);
 
+
     @POST("GetUnReadCount")
     Call<ResponseWrapper<Integer>> getUnreadCount(@Header(WebServiceConstants.HEADER_KEY) String header);
 
-    @FormUrlEncoded
+
     @POST("GetAllNotifications")
-    Call<ResponseWrapper<ArrayList<Object>>> getAllNotifications(@Field("AccountDeviceId") Integer accountID,
-                                                                 @Header(WebServiceConstants.HEADER_KEY) String header);
+    Call<ResponseWrapper<ArrayList<NotificationEnt>>> getAllNotifications(@Header(WebServiceConstants.HEADER_KEY) String header);
+
+
+    @POST("RemoveNotifications")
+    Call<ResponseWrapper> deleteNotification(@Header(WebServiceConstants.HEADER_KEY) String header,
+                                                                         @Query("NotificationId") String NotificationId);
+
+
     //endregion
 
     //region Podcast Module
@@ -333,6 +342,7 @@ public interface WebService {
     @GET("GetAllFavoriteNews")
     Call<ResponseWrapper<ArrayList<NewsCategoryEnt>>> getAllFavoriteNews(@Header(WebServiceConstants.HEADER_KEY) String userToken);
 
+
     //endregion
 
     //region AutoDownlaod
@@ -344,4 +354,35 @@ public interface WebService {
                                                                     @Header(WebServiceConstants.HEADER_KEY) String userToken);
 
     //endregion
+
+    @GET("GetAllPodcastsAndNews")
+    Call<ResponseWrapper<NotificaitonsSettingsEnt>> getAllPodcastsAndNews(@Header(WebServiceConstants.HEADER_KEY) String userToken);
+
+
+    @GET("SetNotificationSetting")
+    Call<ResponseWrapper> setNotificationSetting(@Header(WebServiceConstants.HEADER_KEY) String userToken,
+                                                 @Query("EntityId") String EntityId,
+                                                 @Query("EntityType") String EntityType);
+
+    @GET("UnsetNotificationSetting")
+    Call<ResponseWrapper> unsetNotificationSetting(@Header(WebServiceConstants.HEADER_KEY) String userToken,
+                                                   @Query("EntityId") String EntityId,
+                                                   @Query("EntityType") String EntityType);
+
+    @GET("SetAutodownloadPodcast")
+    Call<ResponseWrapper> setAutodownloadPodcast(@Header(WebServiceConstants.HEADER_KEY) String userToken,
+                                                 @Query("PodcastId") String PodcastId);
+
+    @GET("UnsetAutodownloadPodcast")
+    Call<ResponseWrapper> unsetAutodownloadPodcast(@Header(WebServiceConstants.HEADER_KEY) String userToken,
+                                                 @Query("PodcastId") String PodcastId);
+
+    @GET("SetAutodownloadNews")
+    Call<ResponseWrapper> setAutodownloadNews(@Header(WebServiceConstants.HEADER_KEY) String userToken,
+                                                 @Query("NewsId") String NewsId);
+
+    @GET("UnsetAutodownloadNews")
+    Call<ResponseWrapper> unsetAutodownloadNews(@Header(WebServiceConstants.HEADER_KEY) String userToken,
+                                                   @Query("NewsId") String NewsId);
+
 }

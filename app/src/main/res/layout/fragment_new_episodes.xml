@@ -8,8 +8,9 @@
               android:padding="@dimen/x10">
 
     <FrameLayout
+        android:id="@+id/fl_autoDownload"
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_height="@dimen/x50">
 
         <com.ingic.auditix.ui.views.AnyTextView
@@ -17,19 +18,19 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
             android:maxLines="1"
-            android:text="@string/stream"
+            android:text="@string/auto_download"
             android:textColor="@color/app_font_gray"
             android:textSize="15sp"
             android:textStyle="normal"
             app:typeface="@string/font_normal"
             />
 
-        <Switch
-            android:id="@+id/swt_stream"
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
-            android:checked="true"/>
+            android:layout_marginEnd="@dimen/x10"
+            android:src="@drawable/right_arrow_orange"/>
 
         <View
             android:layout_width="match_parent"

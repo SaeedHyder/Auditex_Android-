@@ -10,103 +10,70 @@ import com.google.gson.annotations.SerializedName;
 
 public class NotificationEnt {
 
-    @SerializedName("id")
+    @SerializedName("UserNotificationID")
     @Expose
-    private Integer id;
-    @SerializedName("sender_id")
+    private Integer userNotificationID;
+    @SerializedName("NotificationID")
     @Expose
-    private Integer senderId;
-    @SerializedName("reciever_id")
+    private Integer notificationID;
+    @SerializedName("AccountID")
     @Expose
-    private Integer recieverId;
-    @SerializedName("message")
+    private Integer accountID;
+    @SerializedName("AccountDeviceID")
     @Expose
-    private String message;
-    @SerializedName("ma_message")
+    private Integer accountDeviceID;
+    @SerializedName("NotificationTitle")
     @Expose
-    private String Mamessage;
-    @SerializedName("in_message")
+    private String notificationTitle;
+    @SerializedName("NotificationMessage")
     @Expose
-    private String Inmessage;
-    @SerializedName("action_type")
-    @Expose
-    private String actionType;
-    @SerializedName("action_id")
-    @Expose
-    private Integer actionId;
-    @SerializedName("created_at")
-    @Expose
-    private String createdAt;
+    private String notificationMessage;
 
-    public String getMamessage() {
-        return Mamessage;
+    public Integer getUserNotificationID() {
+        return userNotificationID;
     }
 
-    public void setMamessage(String mamessage) {
-        Mamessage = mamessage;
+    public void setUserNotificationID(Integer userNotificationID) {
+        this.userNotificationID = userNotificationID;
     }
 
-    public String getInmessage() {
-        return Inmessage;
+    public Integer getNotificationID() {
+        return notificationID;
     }
 
-    public void setInmessage(String inmessage) {
-        Inmessage = inmessage;
+    public void setNotificationID(Integer notificationID) {
+        this.notificationID = notificationID;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getAccountID() {
+        return accountID;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setAccountID(Integer accountID) {
+        this.accountID = accountID;
     }
 
-    public Integer getSenderId() {
-        return senderId;
+    public Integer getAccountDeviceID() {
+        return accountDeviceID;
     }
 
-    public void setSenderId(Integer senderId) {
-        this.senderId = senderId;
+    public void setAccountDeviceID(Integer accountDeviceID) {
+        this.accountDeviceID = accountDeviceID;
     }
 
-    public Integer getRecieverId() {
-        return recieverId;
+    public String getNotificationTitle() {
+        return notificationTitle;
     }
 
-    public void setRecieverId(Integer recieverId) {
-        this.recieverId = recieverId;
+    public void setNotificationTitle(String notificationTitle) {
+        this.notificationTitle = notificationTitle;
     }
 
-    public String getMessage() {
-        return message;
+    public String getNotificationMessage() {
+        return notificationMessage;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getActionType() {
-        return actionType;
-    }
-
-    public void setActionType(String actionType) {
-        this.actionType = actionType;
-    }
-
-    public Integer getActionId() {
-        return actionId;
-    }
-
-    public void setActionId(Integer actionId) {
-        this.actionId = actionId;
-    }
-
-    public String getCreatedAt() {
-        return DateHelper.getLocalTimeDate(createdAt);
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setNotificationMessage(String notificationMessage) {
+        this.notificationMessage = notificationMessage;
     }
 }

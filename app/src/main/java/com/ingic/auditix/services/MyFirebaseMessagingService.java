@@ -32,6 +32,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+
+
         preferenceHelper = new BasePreferenceHelper(getApplicationContext());
         Log.e(TAG, "From: " + remoteMessage.getFrom());
 
@@ -40,41 +42,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.e(TAG, "Data Payload: " + remoteMessage.getData().toString());
+            buildNotificationData(remoteMessage);
+        } else {
             buildNotification(remoteMessage);
-
-
         }
     }
 
-    private void getNotificationCount() {
-
-
-        webservice = WebServiceFactory.getWebServiceInstanceWithCustomInterceptor(getApplicationContext(),
-                WebServiceConstants.SERVICE_URL);
-        preferenceHelper = new BasePreferenceHelper(getApplicationContext());
-        Call<ResponseWrapper<Integer>> callback = webservice.getUnreadCount(preferenceHelper.getUserToken());
-        callback.enqueue(new Callback<ResponseWrapper<Integer>>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseWrapper<Integer>> call, @NonNull Response<ResponseWrapper<Integer>> response) {
-                if (response.body() != null ) {
-                    preferenceHelper.setNotificationCount(response.body().getResult());
-                }
-                Intent pushNotification = new Intent(AppConstants.PUSH_NOTIFICATION);
-                pushNotification.putExtra("message", "");
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(pushNotification);
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseWrapper<Integer>> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-
-
-    }
-
-    private void buildNotification(RemoteMessage messageBody) {
+    private void buildNotificationData(RemoteMessage messageBody) {
         //getNotificaitonCount();
         String title = getString(R.string.app_name);
         String message = messageBody.getData().get("message");
@@ -88,8 +62,66 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         pushNotification.putExtra("message", message);
 
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(pushNotification);
+
+        showNotificationMessage(MyFirebaseMessagingService.this, title, message, "", resultIntent);
+
+    }
+
+    private void buildNotification(RemoteMessage messageBody) {
+
+        String title = getString(R.string.app_name);
+        String message = messageBody.getNotification().getBody().toString();
+        Log.e(TAG, "message: " + message);
+        Intent resultIntent = new Intent(MyFirebaseMessagingService.this, MainActivity.class);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        resultIntent.putExtra("message", message);
+        resultIntent.putExtra("tapped", true);
+
+        Intent pushNotification = new Intent(AppConstants.PUSH_NOTIFICATION);
+        pushNotification.putExtra("message", message);
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(pushNotification);
+
         showNotificationMessage(MyFirebaseMessagingService.this, title, message, "", resultIntent);
     }
+
+
+    private void getNotificationCount() {
+
+
+        webservice = WebServiceFactory.getWebServiceInstanceWithCustomInterceptor(getApplicationContext(),
+                WebServiceConstants.SERVICE_URL);
+        preferenceHelper = new BasePreferenceHelper(getApplicationContext());
+        Call<ResponseWrapper<Integer>> callback = webservice.getUnreadCount(preferenceHelper.getUserToken());
+        callback.enqueue(new Callback<ResponseWrapper<Integer>>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseWrapper<Integer>> call, @NonNull Response<ResponseWrapper<Integer>> response) {
+                if (response.body() != null) {
+                    preferenceHelper.setNotificationCount(response.body().getResult());
+                }
+                Intent pushNotification = new Intent(AppConstants.PUSH_NOTIFICATION);
+                pushNotification.putExtra("message", "");
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(pushNotification);
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseWrapper<Integer>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void showNotificationMessage(Context context, String title, String message, String
+            timeStamp, Intent intent) {
+        NotificationHelper.getInstance().showNotification(context,
+                R.drawable.app_icon,
+                title,
+                message,
+                timeStamp,
+                intent);
+    }
+
 
     /*private void getNotificaitonCount() {
         webservice = WebServiceFactory.getWebServiceInstanceWithCustomInterceptor(this, WebServiceConstants.Local_SERVICE_URL);
@@ -108,21 +140,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         });
     }*/
 
-    private void SendNotification(int count, JSONObject json) {
 
-    }
-
-    /**
-     * Showing notification with text only
-     */
-    private void showNotificationMessage(Context context, String title, String message, String timeStamp, Intent intent) {
-        NotificationHelper.getInstance().showNotification(context,
-                R.drawable.ic_launcher,
-                title,
-                message,
-                timeStamp,
-                intent);
-    }
 
 
 }

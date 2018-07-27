@@ -1,71 +1,81 @@
 package com.ingic.auditix.ui.binders;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.ingic.auditix.R;
 import com.ingic.auditix.entities.NotificationEnt;
-import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.helpers.BasePreferenceHelper;
-import com.ingic.auditix.helpers.DateHelper;
-import com.ingic.auditix.ui.viewbinders.abstracts.ViewBinder;
+import com.ingic.auditix.interfaces.RecyclerViewItemListener;
+import com.ingic.auditix.ui.viewbinders.abstracts.RecyclerViewBinder;
 import com.ingic.auditix.ui.views.AnyTextView;
+import com.ingic.auditix.ui.views.SwipeRevealLayout;
+import com.ingic.auditix.ui.views.ViewBinderHelper;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by khan_muhammad on 9/15/2017.
  */
 
-public class BinderNotification extends ViewBinder<NotificationEnt> {
+public class BinderNotification extends RecyclerViewBinder<NotificationEnt> implements View.OnClickListener {
 
     private Context context;
-    private ImageLoader imageLoader;
     private BasePreferenceHelper preferenceHelper;
+    private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
+    private DisplayImageOptions imageoptions;
+    private ImageLoader imageLoader;
+    private RecyclerViewItemListener listener;
 
-    public BinderNotification(Context context, BasePreferenceHelper prefHelper) {
+
+    public BinderNotification(DisplayImageOptions imageoptions, RecyclerViewItemListener listener) {
         super(R.layout.fragment_notification_item);
-        this.context = context;
-        this.preferenceHelper = prefHelper;
+        this.imageoptions = imageoptions;
+        this.listener = listener;
+        viewBinderHelper.setOpenOnlyOne(true);
         imageLoader = ImageLoader.getInstance();
     }
 
     @Override
     public BaseViewHolder createViewHolder(View view) {
-        return new BinderNotification.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void bindView(NotificationEnt entity, int position, int grpPosition, View view, Activity activity) {
+    public void bindView(NotificationEnt entity, int position, Object viewHolder, Context context) {
+        ViewHolder holder = (ViewHolder) viewHolder;
 
-        BinderNotification.ViewHolder viewHolder = (BinderNotification.ViewHolder) view.getTag();
-
-        viewHolder.tv_date.setText(DateHelper.getFormatedDate(AppConstants.DateFormat_YMDHMS, AppConstants.DateFormat_DMY2,
-                entity.getCreatedAt()));
-        viewHolder.tv_time.setText(DateHelper.getFormatedDate(AppConstants.DateFormat_YMDHMS, AppConstants.DateFormat_HM,
-                entity.getCreatedAt()));
-
-        viewHolder.tv_msg.setText(entity.getMessage());
-        /*if(entity.getCreatedAt() != null && entity.getCreatedAt().length() > 0) {
-            viewHolder.tv_date.setText(DateHelper.dateFormat(entity.getCreatedAt(), DateHelper.DATE_FORMAT, DateHelper.DATE_TIME_FORMAT));
-            viewHolder.tv_time.setText(DateHelper.dateFormat(entity.getCreatedAt(), DateHelper.TIME_FORMAT, DateHelper.DATE_TIME_FORMAT));
-        }*/
+        viewBinderHelper.bind(holder.swipeLayout, String.valueOf(position));
+        holder.btnDelete.setTag(R.integer.key_recycler_object, entity);
+        holder.btnDelete.setTag(R.integer.key_recycler_position, position);
+        holder.btnDelete.setOnClickListener(this);
+        holder.tvMsg.setText(entity.getNotificationMessage());
     }
 
-    public static class ViewHolder extends BaseViewHolder {
+    @Override
+    public void onClick(View v) {
+        if (listener != null) {
+            listener.onRecyclerItemButtonClicked(v.getTag(R.integer.key_recycler_object),
+                    (int) v.getTag(R.integer.key_recycler_position));
+        }
+    }
 
-        ImageView ivNotification;
-        AnyTextView tv_msg;
-        AnyTextView tv_date;
-        AnyTextView tv_time;
 
-        public ViewHolder(View view) {
+    static class ViewHolder extends BaseViewHolder {
+        @BindView(R.id.btn_delete)
+        ImageView btnDelete;
+        @BindView(R.id.tv_msg)
+        AnyTextView tvMsg;
+        @BindView(R.id.swipe_layout)
+        SwipeRevealLayout swipeLayout;
 
-            ivNotification = (ImageView) view.findViewById(R.id.ivNotification);
-            tv_msg = (AnyTextView) view.findViewById(R.id.tv_msg);
-            tv_date = (AnyTextView) view.findViewById(R.id.tv_date);
-            tv_time = (AnyTextView) view.findViewById(R.id.tv_time);
+        ViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
         }
     }
 }
