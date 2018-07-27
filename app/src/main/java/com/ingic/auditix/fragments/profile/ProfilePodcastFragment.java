@@ -16,9 +16,12 @@ import com.ingic.auditix.entities.CartEnt;
 import com.ingic.auditix.entities.PodcastEpisodeEnt;
 import com.ingic.auditix.entities.SubscribePodcastEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
+import com.ingic.auditix.fragments.podcast.PodcastDetailFragment;
 import com.ingic.auditix.fragments.podcast.PodcastEpisodeDetailFragment;
 import com.ingic.auditix.fragments.podcast.SubscriptionsFragment;
+import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
+import com.ingic.auditix.helpers.FileHelper;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.podcast.PodcastDownloadBinder;
 import com.ingic.auditix.ui.binders.podcast.PodcastSubscriptionBinder;
@@ -26,6 +29,7 @@ import com.ingic.auditix.ui.views.AnyTextView;
 import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -36,7 +40,7 @@ import butterknife.Unbinder;
 /**
  * Created on 1/6/2018.
  */
-public class ProfilePodcastFragment extends BaseFragment  {
+public class ProfilePodcastFragment extends BaseFragment {
     public static final String TAG = "ProfilePodcastFragment";
     @BindView(R.id.txt_subscription)
     AnyTextView txtSubscription;
@@ -93,14 +97,22 @@ public class ProfilePodcastFragment extends BaseFragment  {
     private RecyclerViewItemListener downloadListner = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
+            PodcastEpisodeEnt ent = (PodcastEpisodeEnt) Ent;
+            getMainActivity().onLoadingStarted();
+            if (new File(getPodcastDownloadPath(ent.getPodcastId(), ent.getPodcastEpisodeID())).delete()) {
+                assert getParentFragment() != null;
+                ((ProfileFragment) getParentFragment()).getDownloadDetailEnt().getPodcastEpisode().remove(position);
+                rvDownloads.notifyDataSetChanged();
 
+            }
+            getMainActivity().onLoadingFinished();
 
 
         }
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-           replaceFromParentFragment(PodcastEpisodeDetailFragment.newInstance((PodcastEpisodeEnt) Ent),PodcastEpisodeDetailFragment.TAG);
+            ((ProfileFragment)getParentFragment()). replaceFromParentFragment(PodcastEpisodeDetailFragment.newInstance((PodcastEpisodeEnt) Ent), PodcastEpisodeDetailFragment.TAG);
 
         }
     };
@@ -114,8 +126,17 @@ public class ProfilePodcastFragment extends BaseFragment  {
         return fragment;
     }
 
+    private String getPodcastDownloadPath(int podcastID, String episodeID) {
+        File directory = new File(String.valueOf(AppConstants.DOWNLOAD_PATH + File.separator + AppConstants.TAB_PODCAST + File.separator + podcastID));
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        return AppConstants.DOWNLOAD_PATH + File.separator + AppConstants.TAB_PODCAST + File.separator + podcastID + File.separator + episodeID;
+
+    }
+
     private void openPodcastDetail(Integer trackId) {
-        //getDockActivity().replaceDockableFragment(PodcastDetailFragment.newInstance(trackId), "PodcastDetailFragment");
+        //((ProfileFragment)getParentFragment()). replaceFromParentFragment(PodcastDetailFragment.newInstance(trackId), "PodcastDetailFragment");
     }
 
     @Override
@@ -170,7 +191,7 @@ public class ProfilePodcastFragment extends BaseFragment  {
     private void openSubscriptionFragment(String titleHeading) {
         SubscriptionsFragment fragment = new SubscriptionsFragment();
         fragment.setTitleHeading(titleHeading);
-        replaceFromParentFragment(fragment, "SubscriptionsFragment");
+        ((ProfileFragment)getParentFragment()). replaceFromParentFragment(fragment, "SubscriptionsFragment");
     }
 
     @Override
@@ -186,7 +207,7 @@ public class ProfilePodcastFragment extends BaseFragment  {
         //bindTabs();
         options = getMainActivity().getImageLoaderRoundCornerTransformation(Math.round(getDockActivity().getResources().getDimension(R.dimen.x10)));
         assert getParentFragment() != null;
-        bindSingleDownloadList(((ProfileFragment)getParentFragment()).getDownloadDetailEnt().getPodcastEpisode());
+        bindSingleDownloadList(((ProfileFragment) getParentFragment()).getDownloadDetailEnt().getPodcastEpisode());
 
     }
 
@@ -206,7 +227,6 @@ public class ProfilePodcastFragment extends BaseFragment  {
     private void bindSingleDownloadList(ArrayList<PodcastEpisodeEnt> result) {
         if (result.size() > 0) {
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false);
-            layoutManager.setAutoMeasureEnabled(true);
             rvDownloads.BindRecyclerView(new PodcastDownloadBinder(downloadListner, options), result, layoutManager, new DefaultItemAnimator());
             rvDownloads.setNestedScrollingEnabled(false);
         } else {

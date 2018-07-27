@@ -144,6 +144,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     if (prefHelper.isGuest()) {
                         showGuestMessage();
                     }else {
+                        getDockActivity().popBackStackTillEntry(0);
                         tabFragment.setTag(AppConstants.TAB_PROFILE);
                         getDockActivity().replaceDockableFragment(tabFragment, "HomeTabFragment");
                     }

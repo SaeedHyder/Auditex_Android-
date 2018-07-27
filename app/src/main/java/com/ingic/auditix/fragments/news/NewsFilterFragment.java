@@ -56,6 +56,10 @@ public class NewsFilterFragment extends BaseFragment {
     private FilterDoneClickListener listener;
     private boolean isClear = true;
 
+    public boolean isClear() {
+        return isClear;
+    }
+
     public static NewsFilterFragment newInstance() {
         Bundle args = new Bundle();
 
@@ -142,11 +146,7 @@ public class NewsFilterFragment extends BaseFragment {
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
+
 
     @OnClick({R.id.btn_close, R.id.btn_clear, R.id.btn_done, R.id.buttons})
     public void onViewClicked(View view) {
@@ -176,7 +176,7 @@ public class NewsFilterFragment extends BaseFragment {
     }
 
     @NonNull
-    private EnableFilterDataEnt getUserEnableFilters() {
+    public EnableFilterDataEnt getUserEnableFilters() {
         return new EnableFilterDataEnt(rgbduration.getSelectedMinValue().intValue(), rgbduration.getSelectedMaxValue().intValue(),
                 rgbSubscriber.getSelectedMinValue().intValue(), rgbSubscriber.getSelectedMaxValue().intValue(),
                 getFiltersCountries());

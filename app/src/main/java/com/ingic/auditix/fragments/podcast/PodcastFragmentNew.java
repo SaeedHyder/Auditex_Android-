@@ -246,11 +246,14 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
                     WebServiceConstants.GET_DEFAULT_PODCASTS, false);
             serviceHelper.enqueueCall(webService.getAllPodcastCategories(prefHelper.getUserToken()), WebServiceConstants.GET_ALL_PODCAST_CATEGORIES, false);
             isFirstTime = false;
-            if (isFilterVisible) {
+            if (getMainActivity().filterFragment != null) {
+                getMainActivity().filterFragment.clearFilters();
+            }
+           /* if (isFilterVisible) {
                 showFilterList();
             } else {
                 hideFilterList();
-            }
+            }*/
 
         }
     }
@@ -266,7 +269,7 @@ public class PodcastFragmentNew extends BaseFragment implements ViewPagerFragmen
             getChildFragmentManager().beginTransaction().
                     remove(getChildFragmentManager().findFragmentById(R.id.containerFragment)).commit();
             getChildFragmentManager().popBackStack();
-            getMainActivity().newsFilterFragment.clearFilters();
+            getMainActivity().filterFragment.clearFilters();
             MainContainer.setVisibility(View.VISIBLE);
             containerFragment.setVisibility(View.GONE);
             isFilterVisible = false;

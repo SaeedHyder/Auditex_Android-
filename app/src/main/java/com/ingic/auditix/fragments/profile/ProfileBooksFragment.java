@@ -13,7 +13,9 @@ import com.ingic.auditix.entities.BookFavoriteEnt;
 import com.ingic.auditix.entities.FavoriteBookEnt;
 import com.ingic.auditix.fragments.abstracts.BaseFragment;
 import com.ingic.auditix.fragments.books.BookDetailFragment;
+import com.ingic.auditix.global.AppConstants;
 import com.ingic.auditix.global.WebServiceConstants;
+import com.ingic.auditix.helpers.FileHelper;
 import com.ingic.auditix.interfaces.RecyclerViewItemListener;
 import com.ingic.auditix.ui.binders.books.BooksProfileFavouriteBinder;
 import com.ingic.auditix.ui.binders.books.LibraryBooksBinder;
@@ -22,6 +24,7 @@ import com.ingic.auditix.ui.views.CustomRecyclerView;
 import com.ingic.auditix.ui.views.TitleBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -58,12 +61,24 @@ public class ProfileBooksFragment extends BaseFragment {
 
         @Override
         public void onRecyclerItemClicked(Object Ent, int position) {
-            replaceFromParentFragment(BookDetailFragment.newInstance(((BookFavoriteEnt) Ent).getBookID()), BookDetailFragment.TAG);
+            ((ProfileFragment)getParentFragment()).replaceFromParentFragment(BookDetailFragment.newInstance(((BookFavoriteEnt) Ent).getBookID()), BookDetailFragment.TAG);
         }
     };
     private RecyclerViewItemListener booksItemListener = new RecyclerViewItemListener() {
         @Override
         public void onRecyclerItemButtonClicked(Object Ent, int position) {
+            BookDetailEnt ent = (BookDetailEnt) Ent;
+            getMainActivity().onLoadingStarted();
+            if (FileHelper.deleteDirectory(new File(AppConstants.DOWNLOAD_PATH
+                    + File.separator
+                    + ent.getBookName()))) {
+                getMainActivity().realm.beginTransaction();
+                ent.deleteFromRealm();
+                getMainActivity().realm.commitTransaction();
+                booksCollections.remove(position);
+                rvBooks.notifyDataSetChanged();
+                getMainActivity().onLoadingFinished();
+            }
 
         }
 
@@ -71,10 +86,7 @@ public class ProfileBooksFragment extends BaseFragment {
         public void onRecyclerItemClicked(Object Ent, int position) {
             BookDetailEnt detailEnt = (BookDetailEnt) Ent;
             if (detailEnt != null && detailEnt.getChapters() != null && detailEnt.getChapters().getChapter().size() > 0) {
-                if (getMainActivity().booksFilterFragment != null) {
-                    getMainActivity().booksFilterFragment.clearFilters();
-                }
-                replaceFromParentFragment(BookDetailFragment.newInstance(detailEnt.getBookID()), BookDetailFragment.TAG);
+                ((ProfileFragment)getParentFragment()).replaceFromParentFragment(BookDetailFragment.newInstance(detailEnt.getBookID()), BookDetailFragment.TAG);
             }
         }
     };
@@ -153,13 +165,13 @@ public class ProfileBooksFragment extends BaseFragment {
         booksCollections = new ArrayList<>();
         booksCollections.addAll(result);
 
-        /*if (booksCollections.size() <= 0) {
+        if (booksCollections.size() <= 0) {
             txtNoData.setVisibility(View.VISIBLE);
             rvBooks.setVisibility(View.GONE);
         } else {
             txtNoData.setVisibility(View.GONE);
             rvBooks.setVisibility(View.VISIBLE);
-        }*/
+        }
         rvBooks.BindRecyclerView(new LibraryBooksBinder(options, booksItemListener), booksCollections,
                 new LinearLayoutManager(getDockActivity()),
                 new DefaultItemAnimator());

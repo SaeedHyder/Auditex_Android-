@@ -94,6 +94,10 @@ public class PodcastFilterFragment extends BaseFragment {
         }
     }
 
+    public boolean isClear() {
+        return isClear;
+    }
+
     public String getFiltersCountries() {
         return binder == null ? "" : binder.getFilterCheckIDs();
     }
@@ -174,7 +178,7 @@ public class PodcastFilterFragment extends BaseFragment {
     }
 
     @NonNull
-    private EnableFilterDataEnt getUserEnableFilters() {
+    public EnableFilterDataEnt getUserEnableFilters() {
         return new EnableFilterDataEnt(rgbduration.getSelectedMinValue().intValue(), rgbduration.getSelectedMaxValue().intValue(),
                 rgbSubscriber.getSelectedMinValue().intValue(), rgbSubscriber.getSelectedMaxValue().intValue(),
                 getFiltersCountries());

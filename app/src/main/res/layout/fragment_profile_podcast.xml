@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:orientation="vertical"
-    android:padding="@dimen/x10"
+
     android:scrollbars="none">
 
 
@@ -24,6 +24,7 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
+                android:padding="@dimen/x10"
                 android:layout_height="wrap_content">
 
                 <com.ingic.auditix.ui.views.AnyTextView
@@ -169,6 +170,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="@dimen/x10"
+                android:visibility="invisible"
                 android:background="@color/app_gray"/>
 
             <com.ingic.auditix.ui.views.AnyTextView
@@ -177,6 +179,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginTop="@dimen/x10"
+                android:paddingStart="@dimen/x10"
                 android:maxLines="1"
                 android:text="@string/downloads"
                 android:textAllCaps="true"
@@ -201,6 +204,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
+                android:visibility="invisible"
                 android:layout_marginTop="@dimen/x10"
                 android:background="@color/app_gray"/>
 
@@ -208,7 +212,6 @@
                 android:id="@+id/lv_downloads"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/x65"
                 android:divider="@null"
                 android:visibility="visible"
                 />

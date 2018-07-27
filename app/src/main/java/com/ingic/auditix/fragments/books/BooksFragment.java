@@ -219,11 +219,14 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getDefaultBooks();
-        if (isFilterVisible) {
+        if (getMainActivity().booksFilterFragment != null) {
+            getMainActivity().booksFilterFragment.clearFilters();
+        }
+       /* if (isFilterVisible) {
             showFilterList();
         } else {
             hideFilterList();
-        }
+        }*/
     }
 
 
@@ -280,7 +283,7 @@ public class BooksFragment extends BaseFragment implements ViewPagerFragmentLife
             getChildFragmentManager().beginTransaction().
                     remove(getChildFragmentManager().findFragmentById(R.id.containerFragment)).commit();
             getChildFragmentManager().popBackStack();
-            getMainActivity().newsFilterFragment.clearFilters();
+            getMainActivity().booksFilterFragment.clearFilters();
             MainContainer.setVisibility(View.VISIBLE);
             containerFragment.setVisibility(View.GONE);
             isFilterVisible = false;

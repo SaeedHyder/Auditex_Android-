@@ -12,11 +12,12 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
-        android:paddingEnd="@dimen/x10"
-        android:paddingStart="@dimen/x10">
+       >
 
         <FrameLayout
             android:layout_width="match_parent"
+            android:paddingEnd="@dimen/x10"
+            android:paddingStart="@dimen/x10"
             android:layout_height="wrap_content">
 
             <com.ingic.auditix.ui.views.AnyTextView
@@ -69,6 +70,8 @@
 
         <FrameLayout
             android:layout_width="match_parent"
+            android:paddingEnd="@dimen/x10"
+            android:paddingStart="@dimen/x10"
             android:layout_height="wrap_content">
 
             <com.ingic.auditix.ui.views.AnyTextView

@@ -142,7 +142,7 @@ public class ProfileFragment extends BaseFragment implements TabLayout.OnTabSele
                 .beginTransaction();
         transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
         transaction.replace(R.id.viewpager, fragmentList.get(position));
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
 
 
     }
